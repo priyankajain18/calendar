@@ -8,6 +8,8 @@ Prerequisites
  * trytond (http://www.tryton.org/)
  * vobject (http://vobject.skyhouseconsulting.com/)
  * pywebdav (http://sourceforge.net/projects/pywebdav/)
+ * python-dateutil (http://labix.org/python-dateutil)
+ * pytz (http://pytz.sourceforge.net/)
 
 Installation
 ------------
