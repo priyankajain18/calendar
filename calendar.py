@@ -357,7 +357,7 @@ class Event(ModelSQL, ModelView):
     all_day = fields.Boolean('All Day')
     dtstart = fields.DateTime('Start Date', required=True, select=1)
     dtend = fields.DateTime('End Date', select=1)
-    timezone = fields.Char('Timezone')
+    timezone = fields.Selection('timezones', 'Timezone')
     categories = fields.Many2Many('calendar.event-calendar.category',
             'event', 'category', 'Categories')
     classification = fields.Selection([
@@ -455,6 +455,9 @@ class Event(ModelSQL, ModelView):
         user_obj = self.pool.get('res.user')
         user_ = user_obj.browse(cursor, user, user, context=context)
         return user_.timezone
+
+    def timezones(self, cursor, user, context=None):
+        return [(x, x) for x in pytz.common_timezones] + [('', '')]
 
     def get_calendar_field(self, cursor, user, ids, name, arg, context=None):
         assert name in ('calendar_owner', 'calendar_read_users',
@@ -913,7 +916,12 @@ class Event(ModelSQL, ModelView):
                 res['alarms'].append(('create', vals))
 
         if hasattr(ical, 'vtimezone'):
-            res['timezone'] = ical.vtimezone.tzid.value
+            if ical.vtimezone.tzid.value in pytz.common_timezones:
+                res['timezone'] = ical.vtimezone.tzid.value
+            else:
+                for timezone in pytz.common_timezones:
+                    if ical.vtimezone.tzid.value.endswith(timezone):
+                        res['timezone'] = timezone
 
         res['vevent'] = vevent.serialize()
 
