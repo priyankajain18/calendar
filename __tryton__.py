@@ -3,11 +3,13 @@
 #this repository contains the full copyright notices and license terms.
 {
     'name' : 'Calendar',
+    'name_es_CO' : 'Calendario',
     'version' : '0.0.1',
     'author' : 'B2CK',
     'email': 'info@b2ck.com',
     'website': 'http://www.tryton.org/',
     'description': 'Add CalDAV support',
+    'description_es_CO' : 'Añade soporte para CalDAV',
     'depends' : [
         'ir',
         'res',
@@ -17,5 +19,6 @@
         'calendar.xml',
     ],
     'translation': [
+        'es_CO.csv',
     ],
 }
