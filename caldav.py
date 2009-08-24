@@ -200,10 +200,6 @@ def _get_caldav_post(self, uri, body, contenttype=''):
     except (DAV_Error, DAV_NotFound, DAV_Secret, DAV_Forbidden):
         raise
     except Exception, e:
-        print e
-        import traceback, sys
-        print reduce(lambda x, y: x+y,
-        traceback.format_exception(*sys.exc_info()))
         raise DAV_Error(500)
     return res
 
@@ -230,12 +226,10 @@ def do_POST(self):
 
         headers = {}
 
-        print body
         try:
             DATA = '%s\n' % dc._get_caldav_post(uri, body, ct)
         except DAV_Error, (ec, dd):
             return self.send_status(ec)
-        print DATA
         self.send_body_chunks(DATA, '200', 'OK', 'OK')
         return
     return _prev_do_POST(self)

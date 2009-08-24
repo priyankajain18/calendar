@@ -295,27 +295,13 @@ class Collection(ModelSQL, ModelView):
                     context=context)
             if not event_id:
                 raise DAV_NotFound
-            try:
-                ical = event_obj.event2ical(cursor, user, event_id, context=context)
-            except Exception, e:
-                print e
-                import traceback, sys
-                print reduce(lambda x, y: x+y,
-                traceback.format_exception(*sys.exc_info()))
-                raise
+            ical = event_obj.event2ical(cursor, user, event_id, context=context)
             return ical.serialize()
         calendar_ics_id = self.calendar(cursor, user, uri, ics=True,
                 context=context)
         if calendar_ics_id:
-            try:
-                ical = calendar_obj.calendar2ical(cursor, user, calendar_ics_id,
-                        context=context)
-            except Exception, e:
-                print e
-                import traceback, sys
-                print reduce(lambda x, y: x+y,
-                traceback.format_exception(*sys.exc_info()))
-                raise
+            ical = calendar_obj.calendar2ical(cursor, user, calendar_ics_id,
+                    context=context)
             return ical.serialize()
         return super(Collection, self).get_data(cursor, user, uri,
                 context=context, cache=cache)
@@ -379,24 +365,10 @@ class Collection(ModelSQL, ModelView):
                     context=context)
             if not event_id:
                 ical = vobject.readOne(data)
-                try:
-                    values = event_obj.ical2values(cursor, user, None, ical,
-                            calendar_id, context=context)
-                except Exception, e:
-                    print e
-                    import traceback, sys
-                    print reduce(lambda x, y: x+y,
-                    traceback.format_exception(*sys.exc_info()))
-                    raise
-                try:
-                    event_id = event_obj.create(cursor, user, values,
-                            context=context)
-                except Exception, e:
-                    print e
-                    import traceback, sys
-                    print reduce(lambda x, y: x+y,
-                    traceback.format_exception(*sys.exc_info()))
-                    raise DAV_Forbidden
+                values = event_obj.ical2values(cursor, user, None, ical,
+                        calendar_id, context=context)
+                event_id = event_obj.create(cursor, user, values,
+                        context=context)
                 event = event_obj.browse(cursor, user, event_id,
                         context=context)
                 calendar = calendar_obj.browse(cursor, user, calendar_id,
@@ -405,24 +377,10 @@ class Collection(ModelSQL, ModelView):
                         '/' + event.uuid + '.ics'
             if event_id:
                 ical = vobject.readOne(data)
-                try:
-                    values = event_obj.ical2values(cursor, user, event_id, ical,
-                            calendar_id, context=context)
-                except Exception, e:
-                    print e
-                    import traceback, sys
-                    print reduce(lambda x, y: x+y,
-                    traceback.format_exception(*sys.exc_info()))
-                    raise
-                try:
-                    event_obj.write(cursor, user, event_id, values,
-                            context=context)
-                except Exception, e:
-                    print e
-                    import traceback, sys
-                    print reduce(lambda x, y: x+y,
-                    traceback.format_exception(*sys.exc_info()))
-                    raise DAV_Forbidden
+                values = event_obj.ical2values(cursor, user, event_id, ical,
+                        calendar_id, context=context)
+                event_obj.write(cursor, user, event_id, values,
+                        context=context)
                 return
         calendar_ics_id = self.calendar(cursor, user, uri, ics=True,
                 context=context)
