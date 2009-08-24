@@ -333,7 +333,8 @@ class Collection(ModelSQL, ModelView):
         raise DAV_NotFound
 
     def get_calendar_data(self, cursor, user, uri, context=None, cache=None):
-        return self.get_data(cursor, user, uri, context=context, cache=cache)
+        return self.get_data(cursor, user, uri, context=context, cache=cache)\
+                .decode('utf-8')
 
     def get_calendar_home_set(self, cursor, user, uri, context=None,
             cache=None):
