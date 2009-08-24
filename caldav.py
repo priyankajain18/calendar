@@ -28,10 +28,10 @@ TrytonDAVInterface.M_NS['urn:ietf:params:xml:ns:caldav'] = '_get_caldav'
 DAV_VERSION_1['version'] += ',calendar-access,calendar-schedule'#,calendar-auto-schedule'
 DAV_VERSION_2['version'] += ',calendar-access,calendar-schedule'#,calendar-auto-schedule'
 
-propfind.PROPFIND._mk_prop_response = propfind.PROPFIND.mk_prop_response
+_mk_prop_response = propfind.PROPFIND.mk_prop_response
 
 def mk_prop_response(self, uri, good_props, bad_props, doc):
-    res = propfind.PROPFIND._mk_prop_response(self, uri, good_props, bad_props, doc)
+    res = _mk_prop_response(self, uri, good_props, bad_props, doc)
     parent_uri = get_uriparentpath(uri and uri.strip('/') or '')
     if not parent_uri:
         return res
@@ -47,7 +47,7 @@ def mk_prop_response(self, uri, good_props, bad_props, doc):
             cols[0].parentNode.appendChild(vc)
     return res
 
-propfind.PROPFIND.mk_prop_response = propfind.PROPFIND.mk_prop_response
+propfind.PROPFIND.mk_prop_response = mk_prop_response
 
 def _get_caldav_calendar_description(self, uri):
     dbname, dburi = self._get_dburi(uri)
