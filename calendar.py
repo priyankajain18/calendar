@@ -545,19 +545,19 @@ class Event(ModelSQL, ModelView):
                                 'calendar': calendar_id,
                                 'parent': new_id,
                                 }, context=context)
-                    else:
-                        parent_ids = self.search(cursor, 0, [
-                            ('uuid', '=', event.uuid),
-                            ('calendar.owner.email', 'in', attendee_emails),
-                            ('id', '!=', event.id),
-                            ('recurrence', '=', False),
-                            ], context=context)
-                        for parent in self.browse(cursor, 0, parent_ids,
-                                context=context):
-                            self.copy(cursor, 0, event.id, default={
-                                'calendar': parent.calendar.id,
-                                'parent': parent.id,
-                                }, context=context)
+                else:
+                    parent_ids = self.search(cursor, 0, [
+                        ('uuid', '=', event.uuid),
+                        ('calendar.owner.email', 'in', attendee_emails),
+                        ('id', '!=', event.id),
+                        ('recurrence', '=', False),
+                        ], context=context)
+                    for parent in self.browse(cursor, 0, parent_ids,
+                            context=context):
+                        self.copy(cursor, 0, event.id, default={
+                            'calendar': parent.calendar.id,
+                            'parent': parent.id,
+                            }, context=context)
         return res
 
     def _event2update(self, cursor, user, event, context=None):
