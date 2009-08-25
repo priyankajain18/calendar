@@ -410,6 +410,7 @@ class Collection(ModelSQL, ModelView):
             raise DAV_Forbidden
         return super(Collection, self).rmcol(cursor, user, uri, context=context,
                 cache=cache)
+
     def rm(self, cursor, user, uri, context=None, cache=None):
         event_obj = self.pool.get('calendar.event')
 
@@ -448,4 +449,5 @@ class Collection(ModelSQL, ModelView):
             return 1
         return super(Collection, self).exists(cursor, user, uri, context=context,
                 cache=cache)
+
 Collection()
