@@ -1,6 +1,7 @@
 #This file is part of Tryton.  The COPYRIGHT file at the top level of
 #this repository contains the full copyright notices and license terms.
 from trytond.model import ModelSQL, ModelView, fields
+from trytond.tools import Cache
 import uuid
 import vobject
 import dateutil.tz
@@ -39,6 +40,25 @@ class Calendar(ModelSQL, ModelView):
             ('check_name', 'Calendar name can not end with .ics'),
         ]
 
+    def create(self, cursor, user, vals, context=None):
+        res = super(Calendar, self).create(cursor, user, vals, context=context)
+        # Restart the cache for get_name
+        self.get_name(cursor.dbname)
+        return res
+
+    def write(self, cursor, user, ids, vals, context=None):
+        res = super(Calendar, self).write(cursor, user, ids, vals,
+                context=context)
+        # Restart the cache for get_name
+        self.get_name(cursor.dbname)
+        return res
+
+    def delete(self, cursor, user, ids, context=None):
+        res = super(Calendar, self).delete(cursor, user, ids, context=context)
+        # Restart the cache for calendar
+        self.get_name(cursor.dbname)
+        return res
+
     def check_name(self, cursor, user, ids):
         '''
         Check the name doesn't end with .ics
@@ -47,6 +67,25 @@ class Calendar(ModelSQL, ModelView):
             if calendar.name.endswith('.ics'):
                 return False
         return True
+
+    def get_name(self, cursor, user, name, context=None):
+        '''
+        Return the calendar id of the name
+
+        :param cursor: the database cursor
+        :param user: the user id
+        :param name: the calendar name
+        :param context: the context
+        :return: the calendar.calendar id or False
+        '''
+        calendar_ids = self.search(cursor, user, [
+            ('name', '=', name),
+            ], limit=1, context=context)
+        if calendar_ids:
+            return calendar_ids[0]
+        return False
+
+    get_name = Cache('calendar_calendar.get_name')(get_name)
 
     def calendar2ical(self, cursor, user, calendar_id, context=None):
         '''
@@ -518,6 +557,7 @@ class Event(ModelSQL, ModelView):
 
     def create(self, cursor, user, values, context=None):
         calendar_obj = self.pool.get('calendar.calendar')
+        collection_obj = self.pool.get('webdav.collection')
 
         res = super(Event, self).create(cursor, user, values, context=context)
         event = self.browse(cursor, user, res, context=context)
@@ -558,6 +598,8 @@ class Event(ModelSQL, ModelView):
                             'calendar': parent.calendar.id,
                             'parent': parent.id,
                             }, context=context)
+        # Restart the cache for event
+        collection_obj.event(cursor.dbname)
         return res
 
     def _event2update(self, cursor, user, event, context=None):
@@ -595,6 +637,7 @@ class Event(ModelSQL, ModelView):
 
     def write(self, cursor, user, ids, values, context=None):
         calendar_obj = self.pool.get('calendar.calendar')
+        collection_obj = self.pool.get('webdav.collection')
 
         values = values.copy()
         if 'sequence' in values:
@@ -664,10 +707,13 @@ class Event(ModelSQL, ModelView):
                                 'calendar': parent.calendar.id,
                                 'parent': parent.id,
                                 }, context=context)
+        # Restart the cache for event
+        collection_obj.event(cursor.dbname)
         return res
 
     def delete(self, cursor, user, ids, context=None):
         attendee_obj = self.pool.get('calendar.event.attendee')
+        collection_obj = self.pool.get('webdav.collection')
 
         if isinstance(ids, (int, long)):
             ids = [ids]
@@ -707,7 +753,10 @@ class Event(ModelSQL, ModelView):
                             attendee_obj.write(cursor, 0, attendee.id, {
                                 'status': 'declined',
                                 }, context=context)
-        return super(Event, self).delete(cursor, user, ids, context=context)
+        res = super(Event, self).delete(cursor, user, ids, context=context)
+        # Restart the cache for event
+        collection_obj.event(cursor.dbname)
+        return res
 
     def ical2values(self, cursor, user, event_id, ical, calendar_id,
             vevent=None, context=None):

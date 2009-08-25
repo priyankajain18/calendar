@@ -1,6 +1,7 @@
 #This file is part of Tryton.  The COPYRIGHT file at the top level of
 #this repository contains the full copyright notices and license terms.
 from trytond.model import ModelView, ModelSQL
+from trytond.tools import Cache
 from DAV.errors import DAV_NotFound, DAV_Forbidden
 import vobject
 import urllib
@@ -32,11 +33,7 @@ class Collection(ModelSQL, ModelView):
                     calendar = calendar[:-4]
                 else:
                     return False
-            calendar_ids = calendar_obj.search(cursor, user, [
-                ('name', '=', calendar),
-                ], limit=1, context=context)
-            if calendar_ids:
-                return calendar_ids[0]
+            return calendar_obj.get_name(cursor, user, calendar, context=context)
         return False
 
     def event(self, cursor, user, uri, calendar_id=False, context=None):
@@ -67,6 +64,8 @@ class Collection(ModelSQL, ModelView):
             if event_ids:
                 return event_ids[0]
         return False
+
+    event = Cache('webdav_collection.event')(event)
 
     def _caldav_filter_domain_calendar(self, cursor, user, filter, context=None):
         '''
