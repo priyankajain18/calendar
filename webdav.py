@@ -375,7 +375,7 @@ class Collection(ModelSQL, ModelView):
                         context=context)
                 return cursor.database_name + '/Calendars/' + calendar.name + \
                         '/' + event.uuid + '.ics'
-            if event_id:
+            else:
                 ical = vobject.readOne(data)
                 values = event_obj.ical2values(cursor, user, event_id, ical,
                         calendar_id, context=context)
