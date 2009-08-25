@@ -1135,43 +1135,9 @@ EventCategory()
 class Alarm(ModelSQL):
     'Alarm'
     _description = __doc__
-    _name = 'calendar.event.alarm'
+    _name = 'calendar.alarm'
 
-    event = fields.Many2One('calendar.event', 'Event', ondelete='CASCADE',
-            required=True, select=1)
     valarm = fields.Binary('valarm')
-
-    def create(self, cursor, user, values, context=None):
-        event_obj = self.pool.get('calendar.event')
-        if values.get('event'):
-            # Update write_date of event
-            event_obj.write(cursor, user, values['event'], {}, context=context)
-        return super(Alarm, self).create(cursor, user, values, context=context)
-
-    def write(self, cursor, user, ids, values, context=None):
-        event_obj = self.pool.get('calendar.event')
-        if isinstance(ids, (int, long)):
-            ids = [ids]
-        event_ids = [x.event.id for x in self.browse(cursor, user, ids,
-            context=context)]
-        if values.get('event'):
-            event_ids.append(values['event'])
-        if event_ids:
-            # Update write_date of event
-            event_obj.write(cursor, user, event_ids, {}, context=context)
-        return super(Alarm, self).write(cursor, user, ids, values,
-                context=context)
-
-    def delete(self, cursor, user, ids, context=None):
-        event_obj = self.pool.get('calendar.event')
-        if isinstance(ids, (int, long)):
-            ids = [ids]
-        event_ids = [x.event.id for x in self.browse(cursor, user, ids,
-            context=context)]
-        if event_ids:
-            # Update write_date of event
-            event_obj.write(cursor, user, event_ids, {}, context=context)
-        return super(Alarm, self).delete(cursor, user, ids, context=context)
 
     def valarm2values(self, cursor, user, valarm, context=None):
         '''
@@ -1205,13 +1171,70 @@ class Alarm(ModelSQL):
 Alarm()
 
 
+class EventAlarm(ModelSQL):
+    'Alarm'
+    _description = __doc__
+    _name = 'calendar.event.alarm'
+    _inherits = {'calendar.alarm': 'calendar_alarm'}
+
+    calendar_alarm = fields.Many2One('calendar.alarm', 'Calendar Alarm',
+            required=True, ondelete='CASCADE', select=1)
+    event = fields.Many2One('calendar.event', 'Event', ondelete='CASCADE',
+            required=True, select=1)
+
+    def create(self, cursor, user, values, context=None):
+        event_obj = self.pool.get('calendar.event')
+        if values.get('event'):
+            # Update write_date of event
+            event_obj.write(cursor, user, values['event'], {}, context=context)
+        return super(EventAlarm, self).create(cursor, user, values, context=context)
+
+    def write(self, cursor, user, ids, values, context=None):
+        event_obj = self.pool.get('calendar.event')
+        if isinstance(ids, (int, long)):
+            ids = [ids]
+        event_ids = [x.event.id for x in self.browse(cursor, user, ids,
+            context=context)]
+        if values.get('event'):
+            event_ids.append(values['event'])
+        if event_ids:
+            # Update write_date of event
+            event_obj.write(cursor, user, event_ids, {}, context=context)
+        return super(EventAlarm, self).write(cursor, user, ids, values,
+                context=context)
+
+    def delete(self, cursor, user, ids, context=None):
+        event_obj = self.pool.get('calendar.event')
+        alarm_obj = self.pool.get('calendar.alarm')
+        if isinstance(ids, (int, long)):
+            ids = [ids]
+        event_alarms = self.browse(cursor, user, ids, context=context)
+        alarm_ids = [a.calendar_alarm.id for a in event_alarms]
+        event_ids = [x.event.id for x in event_alarms]
+        if event_ids:
+            # Update write_date of event
+            event_obj.write(cursor, user, event_ids, {}, context=context)
+        res = super(EventAlarm, self).delete(cursor, user, ids, context=context)
+        if alarm_ids:
+            alarm_obj.delete(cursor, user, alarm_ids, context=context)
+        return res
+
+    def valarm2values(self, cursor, user, alarm, context=None):
+        alarm_obj = self.pool.get('calendar.alarm')
+        return alarm_obj.valarm2values(cursor, user, alarm, context=context)
+
+    def alarm2valarm(self, cursor, user, alarm, context=None):
+        alarm_obj = self.pool.get('calendar.alarm')
+        return alarm_obj.alarm2valarm(cursor, user, alarm, context=context)
+
+EventAlarm()
+
+
 class Attendee(ModelSQL, ModelView):
     'Attendee'
     _description = __doc__
-    _name = 'calendar.event.attendee'
+    _name = 'calendar.attendee'
 
-    event = fields.Many2One('calendar.event', 'Event', ondelete='CASCADE',
-            required=True, select=1)
     email = fields.Char('Email', required=True, states={
         'readonly': 'active_id > 0',
         })
@@ -1228,130 +1251,10 @@ class Attendee(ModelSQL, ModelView):
     def default_status(self, cursor, user, context=None):
         return ''
 
-    def create(self, cursor, user, values, context=None):
-        event_obj = self.pool.get('calendar.event')
-
-        if values.get('event'):
-            # Update write_date of event
-            event_obj.write(cursor, user, values['event'], {}, context=context)
-        res = super(Attendee, self).create(cursor, user, values,
-                context=context)
-        attendee = self.browse(cursor, user, res, context=context)
-        event = attendee.event
-        if event.organizer == event.calendar.owner.email \
-                or (event.parent \
-                and event.parent.organizer == event.parent.calendar.owner.email):
-            if event.organizer == event.calendar.owner.email:
-                attendee_emails = [x.email for x in event.attendees]
-            else:
-                attendee_emails = [x.email for x in event.parent.attendees]
-            if attendee_emails:
-                event_ids = self.search(cursor, 0, [
-                    ('event.uuid', '=', event.uuid),
-                    ('event.calendar.owner.email', 'in', attendee_emails),
-                    ('id', '!=', event.id),
-                    ('event.recurrence', '=', event.recurrence or False),
-                    ], context=context)
-                for event_id in event_ids:
-                    self.copy(cursor, 0, res, default={
-                        'event': event_id,
-                        }, context=context)
-        return res
-
     def _attendee2update(self, cursor, user, attendee, context=None):
         res = {}
         res['status'] = attendee.status
         return res
-
-    def write(self, cursor, user, ids, values, context=None):
-        event_obj = self.pool.get('calendar.event')
-
-        if isinstance(ids, (int, long)):
-            ids = [ids]
-        event_ids = [x.event.id for x in self.browse(cursor, user, ids,
-            context=context)]
-        if values.get('event'):
-            event_ids.append(values['event'])
-        if event_ids:
-            # Update write_date of event
-            event_obj.write(cursor, user, event_ids, {}, context=context)
-
-        if 'email' in values:
-            values = values.copy()
-            del values['email']
-
-        res = super(Attendee, self).write(cursor, user, ids, values,
-                context=context)
-        attendees = self.browse(cursor, user, ids, context=context)
-        for attendee in attendees:
-            event = attendee.event
-            if event.organizer == event.calendar.owner.email \
-                    or (event.parent \
-                    and event.parent.organizer == event.calendar.owner.email):
-                if event.organizer == event.calendar.owner.email:
-                    attendee_emails = [x.email for x in event.attendees]
-                else:
-                    attendee_emails = [x.email for x in event.parent.attendees]
-                if attendee_emails:
-                    attendee_ids = self.search(cursor, 0, [
-                        ('event.uuid', '=', event.uuid),
-                        ('event.calendar.owner.email', 'in', attendee_emails),
-                        ('id', '!=', attendee.id),
-                        ('event.recurrence', '=', event.recurrence or False),
-                        ('email', '=', attendee.email),
-                        ], context=context)
-                    self.write(cursor, 0, attendee_ids, self._attendee2update(
-                        cursor, user, attendee, context=context), context=context)
-        return res
-
-    def delete(self, cursor, user, ids, context=None):
-        event_obj = self.pool.get('calendar.event')
-
-        if isinstance(ids, (int, long)):
-            ids = [ids]
-        event_ids = [x.event.id for x in self.browse(cursor, user, ids,
-            context=context)]
-        if event_ids:
-            # Update write_date of event
-            event_obj.write(cursor, user, event_ids, {}, context=context)
-
-        for attendee in self.browse(cursor, user, ids, context=context):
-            event = attendee.event
-            if event.organizer == event.calendar.owner.email \
-                    or (event.parent \
-                    and event.parent.organizer == event.calendar.owner.email):
-                if event.organizer == event.calendar.owner.email:
-                    attendee_emails = [x.email for x in event.attendees]
-                else:
-                    attendee_emails = [x.email for x in event.attendees]
-                if attendee_emails:
-                    attendee_ids = self.search(cursor, 0, [
-                        ('event.uuid', '=', event.uuid),
-                        ('event.calendar.owner.email', 'in', attendee_emails),
-                        ('id', '!=', attendee.id),
-                        ('event.recurrence', '=', event.recurrence or False),
-                        ('email', '=', attendee.email),
-                        ], context=context)
-                    self.delete(cursor, 0, attendee_ids, context=context)
-            elif (event.organizer \
-                    or (event.parent and event.parent.organizer)) \
-                    and attendee.email == event.calendar.owner.email:
-                if event.organizer:
-                    organizer = event.organizer
-                else:
-                    organizer = event.parent.organizer
-                attendee_ids = self.search(cursor, 0, [
-                    ('event.uuid', '=', event.uuid),
-                    ('event.calendar.owner.email', '=', organizer),
-                    ('id', '!=', attendee.id),
-                    ('event.recurrence', '=', event.recurrence or False),
-                    ('email', '=', attendee.email),
-                    ], context=context)
-                if attendee_ids:
-                    self.write(cursor, 0, attendee_ids, {
-                        'status': 'declined',
-                        }, context=context)
-        return super(Attendee, self).delete(cursor, user, ids, context=context)
 
     def attendee2values(self, cursor, user, attendee, context=None):
         '''
@@ -1403,23 +1306,45 @@ class Attendee(ModelSQL, ModelView):
 Attendee()
 
 
-class RDate(ModelSQL, ModelView):
-    'Recurrence Date'
+class EventAttendee(ModelSQL, ModelView):
+    'Attendee'
     _description = __doc__
-    _name = 'calendar.event.rdate'
-    _rec_name = 'datetime'
+    _name = 'calendar.event.attendee'
+    _inherits = {'calendar.attendee': 'calendar_attendee'}
 
+    calendar_attendee = fields.Many2One('calendar.attendee',
+            'Calendar Attendee', required=True, ondelete='CASCADE', select=1)
     event = fields.Many2One('calendar.event', 'Event', ondelete='CASCADE',
-            select=1, required=True)
-    date = fields.Boolean('Date')
-    datetime = fields.DateTime('Date', required=True)
+            required=True, select=1)
 
     def create(self, cursor, user, values, context=None):
         event_obj = self.pool.get('calendar.event')
         if values.get('event'):
             # Update write_date of event
             event_obj.write(cursor, user, values['event'], {}, context=context)
-        return super(RDate, self).create(cursor, user, values, context=context)
+        res = super(EventAttendee, self).create(cursor, user, values,
+                context=context)
+        attendee = self.browse(cursor, user, res, context=context)
+        event = attendee.event
+        if event.organizer == event.calendar.owner.email \
+                or (event.parent \
+                and event.parent.organizer == event.parent.calendar.owner.email):
+            if event.organizer == event.calendar.owner.email:
+                attendee_emails = [x.email for x in event.attendees]
+            else:
+                attendee_emails = [x.email for x in event.parent.attendees]
+            if attendee_emails:
+                event_ids = self.search(cursor, 0, [
+                    ('event.uuid', '=', event.uuid),
+                    ('event.calendar.owner.email', 'in', attendee_emails),
+                    ('id', '!=', event.id),
+                    ('event.recurrence', '=', event.recurrence or False),
+                    ], context=context)
+                for event_id in event_ids:
+                    self.copy(cursor, 0, res, default={
+                        'event': event_id,
+                        }, context=context)
+        return res
 
     def write(self, cursor, user, ids, values, context=None):
         event_obj = self.pool.get('calendar.event')
@@ -1432,19 +1357,117 @@ class RDate(ModelSQL, ModelView):
         if event_ids:
             # Update write_date of event
             event_obj.write(cursor, user, event_ids, {}, context=context)
-        return super(RDate, self).write(cursor, user, ids, values,
+
+        if 'email' in values:
+            values = values.copy()
+            del values['email']
+
+        res = super(EventAttendee, self).write(cursor, user, ids, values,
                 context=context)
+        attendees = self.browse(cursor, user, ids, context=context)
+        for attendee in attendees:
+            event = attendee.event
+            if event.organizer == event.calendar.owner.email \
+                    or (event.parent \
+                    and event.parent.organizer == event.calendar.owner.email):
+                if event.organizer == event.calendar.owner.email:
+                    attendee_emails = [x.email for x in event.attendees]
+                else:
+                    attendee_emails = [x.email for x in event.parent.attendees]
+                if attendee_emails:
+                    attendee_ids = self.search(cursor, 0, [
+                        ('event.uuid', '=', event.uuid),
+                        ('event.calendar.owner.email', 'in', attendee_emails),
+                        ('id', '!=', attendee.id),
+                        ('event.recurrence', '=', event.recurrence or False),
+                        ('email', '=', attendee.email),
+                        ], context=context)
+                    self.write(cursor, 0, attendee_ids, self._attendee2update(
+                        cursor, user, attendee, context=context), context=context)
+        return res
 
     def delete(self, cursor, user, ids, context=None):
         event_obj = self.pool.get('calendar.event')
+        attendee_obj = self.pool.get('calendar.attendee')
+
         if isinstance(ids, (int, long)):
             ids = [ids]
-        event_ids = [x.event.id for x in self.browse(cursor, user, ids,
-            context=context)]
+        event_attendees = self.browse(cursor, user, ids, context=context)
+        calendar_attendee_ids = [a.calendar_attendee.id \
+                for a in event_attendees]
+        event_ids = [x.event.id for x in event_attendees]
         if event_ids:
             # Update write_date of event
             event_obj.write(cursor, user, event_ids, {}, context=context)
-        return super(RDate, self).delete(cursor, user, ids, context=context)
+
+        for attendee in self.browse(cursor, user, ids, context=context):
+            event = attendee.event
+            if event.organizer == event.calendar.owner.email \
+                    or (event.parent \
+                    and event.parent.organizer == event.calendar.owner.email):
+                if event.organizer == event.calendar.owner.email:
+                    attendee_emails = [x.email for x in event.attendees]
+                else:
+                    attendee_emails = [x.email for x in event.attendees]
+                if attendee_emails:
+                    attendee_ids = self.search(cursor, 0, [
+                        ('event.uuid', '=', event.uuid),
+                        ('event.calendar.owner.email', 'in', attendee_emails),
+                        ('id', '!=', attendee.id),
+                        ('event.recurrence', '=', event.recurrence or False),
+                        ('email', '=', attendee.email),
+                        ], context=context)
+                    self.delete(cursor, 0, attendee_ids, context=context)
+            elif (event.organizer \
+                    or (event.parent and event.parent.organizer)) \
+                    and attendee.email == event.calendar.owner.email:
+                if event.organizer:
+                    organizer = event.organizer
+                else:
+                    organizer = event.parent.organizer
+                attendee_ids = self.search(cursor, 0, [
+                    ('event.uuid', '=', event.uuid),
+                    ('event.calendar.owner.email', '=', organizer),
+                    ('id', '!=', attendee.id),
+                    ('event.recurrence', '=', event.recurrence or False),
+                    ('email', '=', attendee.email),
+                    ], context=context)
+                if attendee_ids:
+                    self.write(cursor, 0, attendee_ids, {
+                        'status': 'declined',
+                        }, context=context)
+        res = super(EventAttendee, self).delete(cursor, user, ids, context=context)
+        if calendar_attendee_ids:
+            attendee_obj.delete(cursor, user, calendar_attendee_ids,
+                    context=context)
+        return res
+
+    def _attendee2update(self, cursor, user, attendee, context=None):
+        attendee_obj = self.pool.get('calendar.attendee')
+        return attendee_obj._attendee2update(cursor, user, attendee,
+                context=context)
+
+    def attendee2values(self, cursor, user, attendee, context=None):
+        attendee_obj = self.pool.get('calendar.attendee')
+        return attendee_obj.attendee2values(cursor, user, attendee,
+                context=context)
+
+    def attendee2attendee(self, cursor, user, attendee, context=None):
+        attendee_obj = self.pool.get('calendar.attendee')
+        return attendee_obj.attendee2attendee(cursor, user, attendee,
+                context=context)
+
+EventAttendee()
+
+
+class RDate(ModelSQL, ModelView):
+    'Recurrence Date'
+    _description = __doc__
+    _name = 'calendar.rdate'
+    _rec_name = 'datetime'
+
+    date = fields.Boolean('Date')
+    datetime = fields.DateTime('Date', required=True)
 
     def _date2update(self, cursor, user, date, context=None):
         res = {}
@@ -1478,8 +1501,8 @@ class RDate(ModelSQL, ModelView):
 
         :param cursor: the database cursor
         :param user: the user id
-        :param date: a BrowseRecord of calendar.event.rdate or
-            calendar.event.exdate
+        :param date: a BrowseRecord of calendar.rdate or
+            calendar.exdate
         :param context: the context
         :return: a datetime
         '''
@@ -1493,22 +1516,85 @@ class RDate(ModelSQL, ModelView):
 RDate()
 
 
-class ExDate(RDate):
+class EventRDate(ModelSQL, ModelView):
+    'Recurrence Date'
+    _description = __doc__
+    _name = 'calendar.event.rdate'
+    _inherits = {'calendar.rdate': 'calendar_rdate'}
+    _rec_name = 'datetime'
+
+    calendar_rdate = fields.Many2One('calendar.rdate', 'Calendar RDate',
+            required=True, ondelete='CASCADE', select=1)
+    event = fields.Many2One('calendar.event', 'Event', ondelete='CASCADE',
+            select=1, required=True)
+
+    def create(self, cursor, user, values, context=None):
+        event_obj = self.pool.get('calendar.event')
+        if values.get('event'):
+            # Update write_date of event
+            event_obj.write(cursor, user, values['event'], {}, context=context)
+        return super(EventRDate, self).create(cursor, user, values,
+                context=context)
+
+    def write(self, cursor, user, ids, values, context=None):
+        event_obj = self.pool.get('calendar.event')
+        if isinstance(ids, (int, long)):
+            ids = [ids]
+        event_ids = [x.event.id for x in self.browse(cursor, user, ids,
+            context=context)]
+        if values.get('event'):
+            event_ids.append(values['event'])
+        if event_ids:
+            # Update write_date of event
+            event_obj.write(cursor, user, event_ids, {}, context=context)
+        return super(EventRDate, self).write(cursor, user, ids, values,
+                context=context)
+
+    def delete(self, cursor, user, ids, context=None):
+        event_obj = self.pool.get('calendar.event')
+        rdate_obj = self.pool.get('calendar.rdate')
+        if isinstance(ids, (int, long)):
+            ids = [ids]
+        event_rdates = self.browse(cursor, user, ids, context=context)
+        rdate_ids = [a.calendar_rdate.id for a in event_rdates]
+        event_ids = [x.event.id for x in event_rdates]
+        if event_ids:
+            # Update write_date of event
+            event_obj.write(cursor, user, event_ids, {}, context=context)
+        res = super(EventRDate, self).delete(cursor, user, ids, context=context)
+        if rdate_ids:
+            rdate_obj.delete(cursor, user, rdate_ids, context=context)
+        return res
+
+    def _date2update(self, cursor, user, date, context=None):
+        date_obj = self.pool.get('calendar.rdate')
+        return date_obj._date2update(cursor, user, date, context=context)
+
+    def date2values(self, cursor, user, date, context=None):
+        date_obj = self.pool.get('calendar.rdate')
+        return date_obj.date2values(cursor, user, date, context=context)
+
+    def date2date(self, cursor, user, date, context=None):
+        date_obj = self.pool.get('calendar.rdate')
+        return date_obj.date2date(cursor, user, date, context=context)
+
+EventRDate()
+
+
+class EventExDate(EventRDate):
     'Exception Date'
     _description = __doc__
     _name = 'calendar.event.exdate'
 
-ExDate()
+EventExDate()
 
 
 class RRule(ModelSQL, ModelView):
     'Recurrence Rule'
     _description = __doc__
-    _name = 'calendar.event.rrule'
+    _name = 'calendar.rrule'
     _rec_name = 'freq'
 
-    event = fields.Many2One('calendar.event', 'Event', ondelete='CASCADE',
-            select=1, required=True)
     freq = fields.Selection([
         ('secondly', 'Secondly'),
         ('minutely', 'Minutely'),
@@ -1694,37 +1780,6 @@ class RRule(ModelSQL, ModelView):
                     return False
         return True
 
-    def create(self, cursor, user, values, context=None):
-        event_obj = self.pool.get('calendar.event')
-        if values.get('event'):
-            # Update write_date of event
-            event_obj.write(cursor, user, values['event'], {}, context=context)
-        return super(RRule, self).create(cursor, user, values, context=context)
-
-    def write(self, cursor, user, ids, values, context=None):
-        event_obj = self.pool.get('calendar.event')
-        if isinstance(ids, (int, long)):
-            ids = [ids]
-        event_ids = [x.event.id for x in self.browse(cursor, user, ids,
-            context=context)]
-        if values.get('event'):
-            event_ids.append(values['event'])
-        if event_ids:
-            # Update write_date of event
-            event_obj.write(cursor, user, event_ids, {}, context=context)
-        return super(RRule, self).write(cursor, user, ids, values, context=context)
-
-    def delete(self, cursor, user, ids, context=None):
-        event_obj = self.pool.get('calendar.event')
-        if isinstance(ids, (int, long)):
-            ids = [ids]
-        event_ids = [x.event.id for x in self.browse(cursor, user, ids,
-            context=context)]
-        if event_ids:
-            # Update write_date of event
-            event_obj.write(cursor, user, event_ids, {}, context=context)
-        return super(RRule, self).delete(cursor, user, ids, context=context)
-
     def _rule2update(self, cursor, user, rule, context=None):
         res = {}
         for field in ('freq', 'until_date', 'until', 'count', 'interval',
@@ -1771,8 +1826,8 @@ class RRule(ModelSQL, ModelView):
 
         :param cursor: the database cursor
         :param user: the user id
-        :param rule: a BrowseRecord of calendar.event.rrule or
-            calendar.event.exrule
+        :param rule: a BrowseRecord of calendar.rrule or
+            calendar.exrule
         :param context: the context
         :return: a string
         '''
@@ -1800,9 +1855,73 @@ class RRule(ModelSQL, ModelView):
 RRule()
 
 
-class ExRule(RRule):
+class EventRRule(ModelSQL, ModelView):
+    'Recurrence Rule'
+    _description = __doc__
+    _name = 'calendar.event.rrule'
+    _inherits = {'calendar.rrule': 'calendar_rrule'}
+    _rec_name = 'freq'
+
+    calendar_rrule = fields.Many2One('calendar.rrule', 'Calendar RRule',
+            required=True, ondelete='CASCADE', select=1)
+    event = fields.Many2One('calendar.event', 'Event', ondelete='CASCADE',
+            select=1, required=True)
+
+
+    def create(self, cursor, user, values, context=None):
+        event_obj = self.pool.get('calendar.event')
+        if values.get('event'):
+            # Update write_date of event
+            event_obj.write(cursor, user, values['event'], {}, context=context)
+        return super(EventRRule, self).create(cursor, user, values, context=context)
+
+    def write(self, cursor, user, ids, values, context=None):
+        event_obj = self.pool.get('calendar.event')
+        if isinstance(ids, (int, long)):
+            ids = [ids]
+        event_ids = [x.event.id for x in self.browse(cursor, user, ids,
+            context=context)]
+        if values.get('event'):
+            event_ids.append(values['event'])
+        if event_ids:
+            # Update write_date of event
+            event_obj.write(cursor, user, event_ids, {}, context=context)
+        return super(EventRRule, self).write(cursor, user, ids, values, context=context)
+
+    def delete(self, cursor, user, ids, context=None):
+        event_obj = self.pool.get('calendar.event')
+        rrule_obj = self.pool.get('calendar.rrule')
+        if isinstance(ids, (int, long)):
+            ids = [ids]
+        event_rrules = self.browse(cursor, user, ids, context=context)
+        rrule_ids = [a.calendar_rrule.id for a in event_rrules]
+        event_ids = [x.event.id for x in event_rrules]
+        if event_ids:
+            # Update write_date of event
+            event_obj.write(cursor, user, event_ids, {}, context=context)
+        res = super(EventRRule, self).delete(cursor, user, ids, context=context)
+        if rrule_ids:
+            rrule_obj.delete(cursor, user, rrule_ids, context=context)
+        return res
+
+    def _rule2update(self, cursor, user, rule, context=None):
+        rule_obj = self.pool.get('calendar.rrule')
+        return rule_obj._rule2update(cursor, user, rule, context=context)
+
+    def rule2values(self, cursor, user, rule, context=None):
+        rule_obj = self.pool.get('calendar.rrule')
+        return rule_obj.rule2values(cursor, user, rule, context=context)
+
+    def rule2rule(self, cursor, user, rule, context=None):
+        rule_obj = self.pool.get('calendar.rrule')
+        return rule_obj.rule2rule(cursor, user, rule, context=context)
+
+EventRRule()
+
+
+class EventExRule(EventRRule):
     'Exception Rule'
     _description = __doc__
     _name = 'calendar.event.exrule'
 
-ExRule()
+EventExRule()
