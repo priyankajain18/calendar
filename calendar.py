@@ -653,7 +653,7 @@ class Event(ModelSQL, ModelView):
             sub_ids = ids[i:i + cursor.IN_MAX]
             cursor.execute('UPDATE "' + self._table + '" ' \
                     'SET sequence = sequence + 1 ' \
-                    'WHERE id IN (' + ','.join(['%s' for x in sub_ids]) + ')',
+                    'WHERE id IN (' + ','.join(('%s',) * len(sub_ids)) + ')',
                     sub_ids)
 
         for event in self.browse(cursor, user, ids, context=context):

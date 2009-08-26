@@ -248,7 +248,7 @@ class Collection(ModelSQL, ModelView):
                                 'EXTRACT(epoch FROM create_date) ' \
                             'FROM "' + calendar_obj._table + '" ' \
                             'WHERE id IN (' + \
-                                ','.join(['%s' for x in sub_ids]) + ')',
+                                ','.join(('%s',) * len(sub_ids)) + ')',
                             sub_ids)
                     for calendar_id2, date in cursor.fetchall():
                         if calendar_id2 == calendar_id:
@@ -283,7 +283,7 @@ class Collection(ModelSQL, ModelView):
                                 'EXTRACT(epoch FROM create_date) ' \
                             'FROM "' + event_obj._table + '" ' \
                             'WHERE id IN (' + \
-                                ','.join(['%s' for x in sub_ids]) + ')',
+                                ','.join(('%s',) * len(sub_ids)) + ')',
                             sub_ids)
                         for event_id2, date in cursor.fetchall():
                             if event_id2 == event_id:
@@ -325,7 +325,7 @@ class Collection(ModelSQL, ModelView):
                                 'COALESCE(write_date, create_date)) ' \
                             'FROM "' + calendar_obj._table + '" ' \
                                 'WHERE id IN (' + \
-                                ','.join(['%s' for x in sub_ids]) + ')',
+                                ','.join(('%s',) * len(sub_ids)) + ')',
                             sub_ids)
                     for calendar_id2, date in cursor.fetchall():
                         if calendar_id2 == calendar_id:
@@ -361,9 +361,9 @@ class Collection(ModelSQL, ModelView):
                                     'COALESCE(write_date, create_date))) ' \
                                 'FROM "' + event_obj._table + '" ' \
                                 'WHERE id IN (' + \
-                                    ','.join(['%s' for x in sub_ids]) + ') ' \
+                                    ','.join(('%s',) * len(sub_ids)) + ') ' \
                                     'OR parent IN (' + \
-                                    ','.join(['%s' for x in sub_ids]) + ') ' \
+                                    ','.join(('%s',) * len(sub_ids)) + ') ' \
                                 'GROUP BY parent, id', sub_ids + sub_ids)
                         for event_id2, date in cursor.fetchall():
                             if event_id2 == event_id:
@@ -397,7 +397,7 @@ class Collection(ModelSQL, ModelView):
                             'COALESCE(write_date, create_date))) ' \
                         'FROM "' + event_obj._table + '" ' \
                         'WHERE calendar IN (' + \
-                            ','.join(['%s' for x in sub_ids]) + ') ' \
+                            ','.join(('%s',) * len(sub_ids)) + ') ' \
                         'GROUP BY calendar',
                         sub_ids)
                 for calendar_id2, date in cursor.fetchall():
