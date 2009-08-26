@@ -354,8 +354,8 @@ class Collection(ModelSQL, ModelView):
                     else:
                         ids = [event_id]
                     res = None
-                    for i in range(0, len(ids), cursor.IN_MAX):
-                        sub_ids = ids[i:i + cursor.IN_MAX]
+                    for i in range(0, len(ids), cursor.IN_MAX/2):
+                        sub_ids = ids[i:i + cursor.IN_MAX/2]
                         cursor.execute('SELECT COALESCE(parent, id), ' \
                                     'MAX(EXTRACT(epoch FROM ' \
                                     'COALESCE(write_date, create_date))) ' \
