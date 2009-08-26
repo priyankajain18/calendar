@@ -162,6 +162,11 @@ class Collection(ModelSQL, ModelView):
                     context=context)
             calendars = calendar_obj.browse(cursor, user, calendar_ids,
                     context=context)
+            if cache is not None:
+                cache.setdefault('_calendar', {})
+                cache['_calendar'].setdefault(calendar_obj._name, {})
+                for calendar_id in calendar_ids:
+                    cache['_calendar'][calendar_obj._name][calendar_id] = {}
             return [x.name for x in calendars] + \
                     [x.name + '.ics' for x in calendars]
         if uri and uri.startswith('Calendars/'):
@@ -175,6 +180,11 @@ class Collection(ModelSQL, ModelView):
                     ], context=context)
                 events = event_obj.browse(cursor, user, event_ids,
                         context=context)
+                if cache is not None:
+                    cache.setdefault('_calendar', {})
+                    cache['_calendar'].setdefault(event_obj._name, {})
+                    for event_id in event_ids:
+                        cache['_calendar'][event_obj._name][event_id] = {}
                 return [x.uuid + '.ics' for x in events]
             return []
         res = super(Collection, self).get_childs(cursor, user, uri,
@@ -214,32 +224,77 @@ class Collection(ModelSQL, ModelView):
         event_obj = self.pool.get('calendar.event')
 
         calendar_id = self.calendar(cursor, user, uri, context=context)
+        if not calendar_id:
+            calendar_id = self.calendar(cursor, user, uri, ics=True,
+                    context=context)
         if calendar_id:
             if not (uri[10:].split('/', 1) + [None])[1]:
-                cursor.execute('SELECT EXTRACT(epoch FROM create_date) ' \
-                        'FROM "' + calendar_obj._table + '" ' \
-                            'WHERE id = %s', (calendar_id,))
-                fetchone = cursor.fetchone()
-                if fetchone:
-                    return fetchone[0]
+                if cache is not None:
+                    cache.setdefault('_calendar', {})
+                    cache['_calendar'].setdefault(calendar_obj._name, {})
+                    ids = cache['_calendar'][calendar_obj._name].keys()
+                    if calendar_id not in ids:
+                        ids.append(calendar_id)
+                    elif 'creationdate' in cache['_calendar']\
+                            [calendar_obj._name][calendar_id]:
+                        return cache['_calendar'][calendar_obj._name]\
+                                [calendar_id]['creationdate']
+                else:
+                    ids = [calendar_id]
+                res = None
+                for i in range(0, len(ids), cursor.IN_MAX):
+                    sub_ids = ids[i:i + cursor.IN_MAX]
+                    cursor.execute('SELECT id, ' \
+                                'EXTRACT(epoch FROM create_date) ' \
+                            'FROM "' + calendar_obj._table + '" ' \
+                            'WHERE id IN (' + \
+                                ','.join(['%s' for x in sub_ids]) + ')',
+                            sub_ids)
+                    for calendar_id2, date in cursor.fetchall():
+                        if calendar_id2 == calendar_id:
+                            res = date
+                        if cache is not None:
+                            cache['_calendar'][calendar_obj._name]\
+                                    .setdefault(calendar_id2, {})
+                            cache['_calendar'][calendar_obj._name]\
+                                    [calendar_id2]['creationdate'] = date
+                if res is not None:
+                    return res
             else:
                 event_id = self.event(cursor, user, uri, calendar_id=calendar_id,
                         context=context)
                 if event_id:
-                    cursor.execute('SELECT EXTRACT(epoch FROM create_date) ' \
+                    if cache is not None:
+                        cache.setdefault('_calendar', {})
+                        cache['_calendar'].setdefault(event_obj._name, {})
+                        ids = cache['_calendar'][event_obj._name].keys()
+                        if event_id not in ids:
+                            ids.append(event_id)
+                        elif 'creationdate' in cache['_calendar']\
+                                [event_obj._name][event_id]:
+                            return cache['_calendar'][event_obj._name]\
+                                    [event_id]['creationdate']
+                    else:
+                        ids = [event_id]
+                    res = None
+                    for i in range(0, len(ids), cursor.IN_MAX):
+                        sub_ids = ids[i:i + cursor.IN_MAX]
+                        cursor.execute('SELECT id, ' \
+                                'EXTRACT(epoch FROM create_date) ' \
                             'FROM "' + event_obj._table + '" ' \
-                                'WHERE id = %s', (event_id,))
-                    fetchone = cursor.fetchone()
-                    if fetchone:
-                        return fetchone[0]
-        calendar_ics_id = self.calendar(cursor, user, uri, context=context)
-        if calendar_ics_id:
-            cursor.execute('SELECT EXTRACT(epoch FROM create_date) ' \
-                    'FROM "' + calendar_obj._table + '" ' \
-                        'WHERE id = %s', (calendar_ics_id,))
-            fetchone = cursor.fetchone()
-            if fetchone:
-                return fetchone[0]
+                            'WHERE id IN (' + \
+                                ','.join(['%s' for x in sub_ids]) + ')',
+                            sub_ids)
+                        for event_id2, date in cursor.fetchall():
+                            if event_id2 == event_id:
+                                res = date
+                            if cache is not None:
+                                cache['_calendar'][event_obj._name]\
+                                        .setdefault(event_id2, {})
+                                cache['_calendar'][event_obj._name]\
+                                        [event_id2]['creationdate'] = date
+                    if res is not None:
+                        return res
         return super(Collection, self).get_creationdate(cursor, user, uri,
                 context=context, cache=cache)
 
@@ -250,35 +305,111 @@ class Collection(ModelSQL, ModelView):
         calendar_id = self.calendar(cursor, user, uri, context=context)
         if calendar_id:
             if not (uri[10:].split('/', 1) + [None])[1]:
-                cursor.execute('SELECT EXTRACT(epoch FROM ' \
-                            'COALESCE(write_date, create_date)) ' \
-                        'FROM "' + calendar_obj._table + '" ' \
-                            'WHERE id = %s', (calendar_id,))
-                fetchone = cursor.fetchone()
-                if fetchone:
-                    return fetchone[0]
+                if cache is not None:
+                    cache.setdefault('_calendar', {})
+                    cache['_calendar'].setdefault(calendar_obj._name, {})
+                    ids = cache['_calendar'][calendar_obj._name].keys()
+                    if calendar_id not in ids:
+                        ids.append(calendar_id)
+                    elif 'lastmodified' in cache['_calendar']\
+                            [calendar_obj._name][calendar_id]:
+                        return cache['_calendar'][calendar_obj._name]\
+                                [calendar_id]['lastmodified']
+                else:
+                    ids = [calendar_id]
+                res = None
+                for i in range(0, len(ids), cursor.IN_MAX):
+                    sub_ids = ids[i:i + cursor.IN_MAX]
+                    cursor.execute('SELECT id, ' \
+                                'EXTRACT(epoch FROM ' \
+                                'COALESCE(write_date, create_date)) ' \
+                            'FROM "' + calendar_obj._table + '" ' \
+                                'WHERE id IN (' + \
+                                ','.join(['%s' for x in sub_ids]) + ')',
+                            sub_ids)
+                    for calendar_id2, date in cursor.fetchall():
+                        if calendar_id2 == calendar_id:
+                            res = date
+                        if cache is not None:
+                            cache['_calendar'][calendar_obj._name]\
+                                    .setdefault(calendar_id2, {})
+                            cache['_calendar'][calendar_obj._name]\
+                                    [calendar_id2]['lastmodified'] = date
+                if res is not None:
+                    return res
             else:
                 event_id = self.event(cursor, user, uri, calendar_id=calendar_id,
                         context=context)
                 if event_id:
-                    cursor.execute('SELECT MAX(EXTRACT(epoch FROM ' \
-                                'COALESCE(write_date, create_date))) ' \
-                            'FROM "' + event_obj._table + '" ' \
-                                'WHERE id = %s OR parent = %s',
-                                (event_id, event_id))
-                    fetchone = cursor.fetchone()
-                    if fetchone:
-                        return fetchone[0]
+                    if cache is not None:
+                        cache.setdefault('_calendar', {})
+                        cache['_calendar'].setdefault(event_obj._name, {})
+                        ids = cache['_calendar'][event_obj._name].keys()
+                        if event_id not in ids:
+                            ids.append(event_id)
+                        elif 'lastmodified' in cache['_calendar']\
+                                [event_obj._name][event_id]:
+                            return cache['_calendar'][event_obj._name]\
+                                    [event_id]['lastmodified']
+                    else:
+                        ids = [event_id]
+                    res = None
+                    for i in range(0, len(ids), cursor.IN_MAX):
+                        sub_ids = ids[i:i + cursor.IN_MAX]
+                        cursor.execute('SELECT COALESCE(parent, id), ' \
+                                    'MAX(EXTRACT(epoch FROM ' \
+                                    'COALESCE(write_date, create_date))) ' \
+                                'FROM "' + event_obj._table + '" ' \
+                                'WHERE id IN (' + \
+                                    ','.join(['%s' for x in sub_ids]) + ') ' \
+                                    'OR parent IN (' + \
+                                    ','.join(['%s' for x in sub_ids]) + ') ' \
+                                'GROUP BY parent, id', sub_ids + sub_ids)
+                        for event_id2, date in cursor.fetchall():
+                            if event_id2 == event_id:
+                                res = date
+                            if cache is not None:
+                                cache['_calendar'][event_obj._name]\
+                                        .setdefault(event_id2, {})
+                                cache['_calendar'][event_obj._name]\
+                                        [event_id2]['lastmodified'] = date
+                    if res is not None:
+                        return res
         calendar_ics_id = self.calendar(cursor, user, uri, ics=True,
                 context=context)
         if calendar_ics_id:
-            cursor.execute('SELECT MAX(EXTRACT(epoch FROM ' \
-                        'COALESCE(write_date, create_date))) ' \
-                    'FROM "' + event_obj._table + '" ' \
-                        'WHERE calendar = %s', (calendar_ics_id,))
-            fetchone = cursor.fetchone()
-            if fetchone:
-                return fetchone[0]
+            if cache is not None:
+                cache.setdefault('_calendar', {})
+                cache['_calendar'].setdefault(calendar_obj._name, {})
+                ids = cache['_calendar'][calendar_obj._name].keys()
+                if calendar_ics_id not in ids:
+                    ids.append(calendar_ics_id)
+                elif 'lastmodified ics' in cache['_calendar']\
+                        [calendar_obj._name][calendar_ics_id]:
+                    return cache['_calendar'][calendar_obj._name]\
+                            [calendar_ics_id]['lastmodified ics']
+            else:
+                ids = [calendar_ics_id]
+            res = None
+            for i in range(0, len(ids), cursor.IN_MAX):
+                sub_ids = ids[i:i + cursor.IN_MAX]
+                cursor.execute('SELECT calendar, MAX(EXTRACT(epoch FROM ' \
+                            'COALESCE(write_date, create_date))) ' \
+                        'FROM "' + event_obj._table + '" ' \
+                        'WHERE calendar IN (' + \
+                            ','.join(['%s' for x in sub_ids]) + ') ' \
+                        'GROUP BY calendar',
+                        sub_ids)
+                for calendar_id2, date in cursor.fetchall():
+                    if calendar_id2 == calendar_ics_id:
+                        res = date
+                    if cache is not None:
+                        cache['_calendar'][calendar_obj._name]\
+                                .setdefault(calendar_id2, {})
+                        cache['_calendar'][calendar_obj._name]\
+                                [calendar_id2]['lastmodified ics'] = date
+            if res is not None:
+                return res
         return super(Collection, self).get_lastmodified(cursor, user, uri,
                 context=context, cache=cache)
 
@@ -312,9 +443,31 @@ class Collection(ModelSQL, ModelView):
         calendar_id = self.calendar(cursor, user, uri, context=context)
         if calendar_id:
             if not (uri[10:].split('/', 1) + [None])[1]:
-                calendar = calendar_obj.browse(cursor, user, calendar_id,
-                        context=context)
-                return calendar.description
+                if cache is not None:
+                    cache.setdefault('_calendar', {})
+                    cache['_calendar'].setdefault(calendar_obj._name, {})
+                    ids = cache['_calendar'][calendar_obj._name].keys()
+                    if calendar_id not in ids:
+                        ids.append(calendar_id)
+                    elif 'calendar_description' in cache['_calendar']\
+                            [calendar_obj._name][calendar_id]:
+                        return cache['_calendar'][calendar_obj._name]\
+                                [calendar_id]['calendar_description']
+                else:
+                    ids = [calendar_id]
+                res = None
+                for calendar in calendar_obj.browse(cursor, user, ids,
+                        context=context):
+                    if calendar.id == calendar_id:
+                        res = calendar.description
+                    if cache is not None:
+                        cache['_calendar'][calendar_obj._name]\
+                                .setdefault(calendar.id, {})
+                        cache['_calendar'][calendar_obj._name]\
+                                [calendar.id]['calendar_description'] = \
+                                calendar.description
+                if res is not None:
+                    return res
         raise DAV_NotFound
 
     def get_calendar_data(self, cursor, user, uri, context=None, cache=None):
