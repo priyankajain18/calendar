@@ -4,3 +4,4 @@
 import caldav
 from webdav import *
 from calendar import *
+from res import *
