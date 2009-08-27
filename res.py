@@ -12,6 +12,8 @@ class User(ModelSQL, ModelView):
     def __init__(self):
         super(User, self).__init__()
         self.email = copy.copy(self.email)
+        self.email.states = copy.copy(self.email.states)
+        self.email.depends = copy.copy(self.email.depends)
         if 'required' in self.email.states:
             self.email.states['required'] = '(' + self.email.states['required'] \
                     + ') or bool(calendars)'
