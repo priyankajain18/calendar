@@ -392,7 +392,7 @@ class Event(ModelSQL, ModelView):
             required=True, select=1)
     summary = fields.Char('Summary')
     sequence = fields.Integer('Sequence')
-    comment = fields.Text('Comment')
+    description = fields.Text('Description')
     all_day = fields.Boolean('All Day')
     dtstart = fields.DateTime('Start Date', required=True, select=1)
     dtend = fields.DateTime('End Date', select=1)
@@ -610,7 +610,7 @@ class Event(ModelSQL, ModelView):
 
         res = {}
         res['summary'] = event.summary
-        res['comment'] = event.comment
+        res['description'] = event.description
         res['all_day'] = event.all_day
         res['dtstart'] = event.dtstart
         res['dtend'] = event.dtend
@@ -805,10 +805,10 @@ class Event(ModelSQL, ModelView):
             res['summary'] = vevent.summary.value
         else:
             res['summary'] = False
-        if hasattr(vevent, 'comment'):
-            res['comment'] = vevent.comment.value
+        if hasattr(vevent, 'description'):
+            res['description'] = vevent.description.value
         else:
-            res['comment'] = False
+            res['description'] = False
         if not isinstance(vevent.dtstart.value, datetime.datetime):
             res['all_day'] = True
             res['dtstart'] = datetime.datetime.combine(vevent.dtstart.value,
@@ -1045,12 +1045,12 @@ class Event(ModelSQL, ModelView):
             vevent.summary.value = event.summary
         elif hasattr(vevent, 'summary'):
             del vevent.summary
-        if event.comment:
-            if not hasattr(vevent, 'comment'):
-                vevent.add('comment')
-            vevent.comment.value = event.comment
-        elif hasattr(vevent, 'comment'):
-            del vevent.comment
+        if event.description:
+            if not hasattr(vevent, 'description'):
+                vevent.add('description')
+            vevent.description.value = event.description
+        elif hasattr(vevent, 'description'):
+            del vevent.description
         if not hasattr(vevent, 'dtstart'):
             vevent.add('dtstart')
         if event.all_day:
