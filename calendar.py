@@ -271,11 +271,17 @@ class Calendar(ModelSQL, ModelView):
             if not isinstance(ical.vfreebusy.dtstart.value, datetime.datetime):
                 dtstart = ical.vfreebusy.dtstart.value
             else:
-                dtstart = ical.vfreebusy.dtstart.value.astimezone(tzlocal)
+                if ical.vfreebusy.dtstart.value.tzinfo:
+                    dtstart = ical.vfreebusy.dtstart.value.astimezone(tzlocal)
+                else:
+                    dtstart = ical.vfreebusy.dtstart.value
             if not isinstance(ical.vfreebusy.dtend.value, datetime.datetime):
                 dtend = ical.vfreebusy.dtend.value
             else:
-                dtend = ical.vfreebusy.dtend.value.astimezone(tzlocal)
+                if ical.vfreebusy.dtend.value.tzinfo:
+                    dtend = ical.vfreebusy.dtend.value.astimezone(tzlocal)
+                else:
+                    dtend = ical.vfreebusy.dtend.value
             for attendee in ical.vfreebusy.attendee_list:
                 resp = doc.createElement('C:response')
                 sr.appendChild(resp)
@@ -815,13 +821,19 @@ class Event(ModelSQL, ModelView):
                     datetime.time())
         else:
             res['all_day'] = False
-            res['dtstart'] = vevent.dtstart.value.astimezone(tzlocal)
+            if vevent.dtstart.value.tzinfo:
+                res['dtstart'] = vevent.dtstart.value.astimezone(tzlocal)
+            else:
+                res['dtstart'] = vevent.dtstart.value
         if hasattr(vevent, 'dtend'):
             if not isinstance(vevent.dtend.value, datetime.datetime):
                 res['dtend'] = datetime.datetime.combine(vevent.dtend.value,
                         datetime.time())
             else:
-                res['dtend'] = vevent.dtend.value.astimezone(tzlocal)
+                if vevent.dtend.value.tzinfo:
+                    res['dtend'] = vevent.dtend.value.astimezone(tzlocal)
+                else:
+                    res['dtend'] = vevent.dtend.value
         elif hasattr(vevent, 'duration') and res['dtstart']:
             res['dtend'] = dtstart + vevent.duration
         else:
@@ -831,8 +843,11 @@ class Event(ModelSQL, ModelView):
                 res['recurrence'] = datetime.datetime.combine(
                         vevent.recurrence_id.value, datetime.time())
             else:
-                res['recurrence'] = \
-                        vevent.recurrence_id.value.astimezone(tzlocal)
+                if vevent.recurrence_id.value.tzinfo:
+                    res['recurrence'] = \
+                            vevent.recurrence_id.value.astimezone(tzlocal)
+                else:
+                    res['recurrence'] = vevent.recurrence_id.value
         else:
             res['recurrence'] = False
         if hasattr(vevent, 'status'):
@@ -1541,7 +1556,10 @@ class RDate(ModelSQL, ModelView):
                     datetime.time())
         else:
             res['date'] = False
-            res['datetime'] = date.astimezone(tzlocal)
+            if date.tzinfo:
+                res['datetime'] = date.astimezone(tzlocal)
+            else:
+                res['datetime'] = date
         return res
 
     def date2date(self, cursor, user, date, context=None):
@@ -1862,7 +1880,10 @@ class RRule(ModelSQL, ModelView):
                             datetime.time())
                 else:
                     res['until_date'] = False
-                    res['until'] = value.astimezone(tzlocal)
+                    if value.tzinfo:
+                        res['until'] = value.astimezone(tzlocal)
+                    else:
+                        res['until'] = value
             elif field in ('freq', 'wkst'):
                 res[field] = value.lower()
             else:
