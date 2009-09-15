@@ -226,13 +226,13 @@ this repository contains the full copyright notices and license terms. -->
                             <field name="organizer"/>
                             <field name="attendees" colspan="4"/>
                         </page>
-                        <page string="Recurrences" id="recurrences"
+                        <page string="Occurences" id="occurences"
                             states="{'invisible': '''bool(parent)'''}">
                             <field name="rrules" colspan="2"/>
                             <field name="rdates" colspan="2"/>
                             <field name="exrules" colspan="2"/>
                             <field name="exdates" colspan="2"/>
-                            <field name="recurrences" colspan="4">
+                            <field name="occurences" colspan="4">
                                 <tree string="Events">
                                     <field name="summary" select="1"/>
                                     <field name="recurrence" select="1"/>

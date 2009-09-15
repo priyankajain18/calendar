@@ -176,7 +176,7 @@ class Calendar(ModelSQL, ModelView):
             ('rrules', '=', False),
             ('exdates', '=', False),
             ('exrules', '=', False),
-            ('recurrences', '=', False),
+            ('occurences', '=', False),
             ('calendar', '=', calendar_id),
             ], context=context)
 
@@ -199,7 +199,7 @@ class Calendar(ModelSQL, ModelView):
                 ('rrules', '!=', False),
                 ('exdates', '!=', False),
                 ('exrules', '!=', False),
-                ('recurrences', '!=', False),
+                ('occurences', '!=', False),
             ],
             ('calendar', '=', calendar_id),
             ], context=context)
@@ -215,15 +215,15 @@ class Calendar(ModelSQL, ModelView):
                     freebusy_fbtype = self._fbtype(cursor, user, event.transp,
                             event.status, context=context)
                     all_day = event.all_day
-                    for recurrence in event.recurrences:
-                        if recurrence.recurrence.replace(tzinfo=tzlocal) == \
+                    for occurence in event.occurences:
+                        if occurence.recurrence.replace(tzinfo=tzlocal) == \
                                 freebusy_dtstart:
-                            if recurrence.dtend:
-                                freebusy_dtend = recurrence.dtend\
+                            if occurence.dtend:
+                                freebusy_dtend = occurence.dtend\
                                         .replace(tzinfo=tzlocal)
-                                all_day = recurrence.all_day
+                                all_day = occurence.all_day
                             freebusy_fbtype = self._fbtype(cursor, user,
-                                    recurrence.transp, recurrence.status,
+                                    occurence.transp, occurence.status,
                                     context=context)
                             break
                     freebusy = ical.vfreebusy.add('freebusy')
@@ -443,7 +443,7 @@ class Event(ModelSQL, ModelView):
             states={
                 'invisible': "bool(parent)",
             }, depends=['parent'])
-    recurrences = fields.One2Many('calendar.event', 'parent', 'Recurrences',
+    occurences = fields.One2Many('calendar.event', 'parent', 'Occurences',
             domain=["('uuid', '=', uuid)",
                 "('calendar', '=', calendar)"],
             states={
@@ -557,7 +557,7 @@ class Event(ModelSQL, ModelView):
                     or event.rrules \
                     or event.exdates \
                     or event.exrules \
-                    or event.recurrences:
+                    or event.occurences:
                 return False
         return True
 
@@ -584,10 +584,10 @@ class Event(ModelSQL, ModelView):
                     for calendar_id in calendar_ids:
                         new_id = self.copy(cursor, 0, event.id, default={
                             'calendar': calendar_id,
-                            'recurrences': False,
+                            'occurences': False,
                             }, context=context)
-                        for recurrence in event.recurrences:
-                            self.copy(cursor, 0, recurrence.id, default={
+                        for occurence in event.occurences:
+                            self.copy(cursor, 0, occurence.id, default={
                                 'calendar': calendar_id,
                                 'parent': new_id,
                                 }, context=context)
@@ -693,10 +693,10 @@ class Event(ModelSQL, ModelView):
                         for calendar_id in calendar_ids:
                             new_id = self.copy(cursor, 0, event.id, default={
                                 'calendar': calendar_id,
-                                'recurrences': False,
+                                'occurences': False,
                                 }, context=context)
-                            for recurrence in event.recurrences:
-                                self.copy(cursor, 0, recurrence.id, default={
+                            for occurence in event.occurences:
+                                self.copy(cursor, 0, occurence.id, default={
                                     'calendar': calendar_id,
                                     'parent': new_id,
                                     }, context=context)
@@ -989,31 +989,31 @@ class Event(ModelSQL, ModelView):
 
         res['vevent'] = vevent.serialize()
 
-        recurrences_todel = []
+        occurences_todel = []
         if event:
-            recurrences_todel = [x.id for x in event.recurrences]
+            occurences_todel = [x.id for x in event.occurences]
         for vevent in vevents:
             event_id = None
             if event:
-                for recurrence in event.recurrences:
-                    if recurrence.recurrence.replace(tzinfo=tzlocal) \
+                for occurence in event.occurences:
+                    if occurence.recurrence.replace(tzinfo=tzlocal) \
                             == vevent.recurrence_id.value:
-                        event_id = recurrence.id
-                        recurrences_todel.remove(recurrence.id)
+                        event_id = occurence.id
+                        occurences_todel.remove(occurence.id)
             vals = self.ical2values(cursor, user, event_id, ical,
                     calendar_id, vevent=vevent, context=context)
             if event:
                 vals['uuid'] = event.uuid
             else:
                 vals['uuid'] = res['uuid']
-            res.setdefault('recurrences', [])
+            res.setdefault('occurences', [])
             if event_id:
-                res['recurrences'].append(('write', event_id, vals))
+                res['occurences'].append(('write', event_id, vals))
             else:
-                res['recurrences'].append(('create', vals))
-        if recurrences_todel:
-            res.setdefault('recurrences', [])
-            res['recurrences'].append(('delete', recurrences_todel))
+                res['occurences'].append(('create', vals))
+        if occurences_todel:
+            res.setdefault('occurences', [])
+            res['occurences'].append(('delete', occurences_todel))
         return res
 
     def event2ical(self, cursor, user, event, context=None):
@@ -1175,9 +1175,9 @@ class Event(ModelSQL, ModelView):
             if valarm:
                 vevent.valarm_list.append(valarm)
 
-        for recurrence in event.recurrences:
-            rical = self.event2ical(cursor, user, recurrence, context=context)
-            ical.vevent_list.append(rical.vevent)
+        for occurence in event.occurences:
+            oical = self.event2ical(cursor, user, occurence, context=context)
+            ical.vevent_list.append(oical.vevent)
         return ical
 
 Event()
