@@ -25,6 +25,22 @@ error,calendar.event.rrule,0,"Invalid ""By Week Number""","Ungültig ""Für Woch
 error,calendar.event.rrule,0,"Invalid ""By Year Day""","Ungültig ""Für Tag des Jahres""",0
 error,calendar.event.rrule,0,"Only one of ""until"" and ""count"" can be set!","Es kann nur entweder ""Bis"" oder ""Anzahl"" gesetzt werden!",0
 error,calendar.location,0,The name of calendar location must be unique!,Name für Kalenderort kann nicht mehrfach vergeben werden!,0
+error,calendar.rrule,0,"Invalid ""By Day""","Ungültig ""Für Tag""",0
+error,calendar.rrule,0,"Invalid ""By Hour""","Ungültig ""Für Stunde""",0
+error,calendar.rrule,0,"Invalid ""By Minute""","Ungültig ""Für Minute""",0
+error,calendar.rrule,0,"Invalid ""By Month""","Ungültig ""Für Monat""",0
+error,calendar.rrule,0,"Invalid ""By Month Day""","Ungültig ""Für Tag des Monats""",0
+error,calendar.rrule,0,"Invalid ""By Position""","Ungültig ""Für Position""",0
+error,calendar.rrule,0,"Invalid ""By Second""","Ungültig ""Für Sekunde""",0
+error,calendar.rrule,0,"Invalid ""By Week Number""","Ungültig ""Für Woche Nummer""",0
+error,calendar.rrule,0,"Invalid ""By Year Day""","Ungültig ""Für Tag des Jahres""",0
+error,calendar.rrule,0,"Only one of ""until"" and ""count"" can be set!","Es kann nur entweder ""Bis"" oder ""Anzahl"" gesetzt werden!",0
+field,"calendar.alarm,rec_name",0,Name,Name,0
+field,"calendar.alarm,valarm",0,valarm,valarm,0
+field,"calendar.attendee,attendee",0,attendee,Teilnehmer,0
+field,"calendar.attendee,email",0,Email,E-Mail,0
+field,"calendar.attendee,rec_name",0,Name,Name,0
+field,"calendar.attendee,status",0,Participation Status,Teilnahmestatus,0
 field,"calendar.calendar,description",0,Description,Bezeichnung,0
 field,"calendar.calendar,name",0,Name,Name,0
 field,"calendar.calendar,owner",0,Owner,Besitzer,0
@@ -39,12 +55,14 @@ field,"calendar.calendar-write-res.user,user",0,User,Benutzer,0
 field,"calendar.calendar,write_users",0,Write Users,Benutzer mit Schreibberechtigung,0
 field,"calendar.category,name",0,Name,Name,0
 field,"calendar.category,rec_name",0,Name,Name,0
+field,"calendar.event.alarm,calendar_alarm",0,Calendar Alarm,Kalender Alarm,0
 field,"calendar.event.alarm,event",0,Event,Termin,0
 field,"calendar.event.alarm,rec_name",0,Name,Name,0
 field,"calendar.event,alarms",0,Alarms,Alarm,0
 field,"calendar.event.alarm,valarm",0,valarm,valarm,0
 field,"calendar.event,all_day",0,All Day,Ganztägig,0
 field,"calendar.event.attendee,attendee",0,attendee,Teilnehmer,0
+field,"calendar.event.attendee,calendar_attendee",0,Calendar Attendee,Kalender Teilnehmer,0
 field,"calendar.event.attendee,email",0,Email,E-Mail,0
 field,"calendar.event.attendee,event",0,Event,Termin,0
 field,"calendar.event.attendee,rec_name",0,Name,Name,0
@@ -61,8 +79,10 @@ field,"calendar.event,categories",0,Categories,Kategorien,0
 field,"calendar.event,classification",0,Classification,Klassifizierung,0
 field,"calendar.event,classification_public",0,Classification Public,Öffentliche Klassifizierung,0
 field,"calendar.event,comment",0,Comment,Kommentar,0
+field,"calendar.event,description",0,Description,Bezeichnung,0
 field,"calendar.event,dtend",0,End Date,Enddatum,0
 field,"calendar.event,dtstart",0,Start Date,Anfangsdatum,0
+field,"calendar.event.exdate,calendar_rdate",0,Calendar RDate,Kalender WDatum,0
 field,"calendar.event.exdate,date",0,Date,Datum,0
 field,"calendar.event.exdate,datetime",0,Date,Datum,0
 field,"calendar.event.exdate,event",0,Event,Termin,0
@@ -77,6 +97,7 @@ field,"calendar.event.exrule,bysecond",0,By Second,Für Sekunde,0
 field,"calendar.event.exrule,bysetpos",0,By Position,Für Position,0
 field,"calendar.event.exrule,byweekno",0,By Week Number,Für Woche Nummer,0
 field,"calendar.event.exrule,byyearday",0,By Year Day,Für Tag des Jahres,0
+field,"calendar.event.exrule,calendar_rrule",0,Calendar RRule,Kalender WRegel,0
 field,"calendar.event.exrule,count",0,Count,Anzahl,0
 field,"calendar.event.exrule,event",0,Event,Termin,0
 field,"calendar.event.exrule,freq",0,Frequency,Häufigkeit,0
@@ -87,8 +108,10 @@ field,"calendar.event.exrule,until",0,Until,Bis,0
 field,"calendar.event.exrule,until_date",0,Until Date,Bis Datum,0
 field,"calendar.event.exrule,wkst",0,Week Day,Wochentag,0
 field,"calendar.event,location",0,Location,Ort,0
+field,"calendar.event,occurences",0,Occurences,Ereignisse,0
 field,"calendar.event,organizer",0,Organizer,Organisator,0
 field,"calendar.event,parent",0,Parent,Übergeordnet (Termin),0
+field,"calendar.event.rdate,calendar_rdate",0,Calendar RDate,Kalender WDatum,0
 field,"calendar.event.rdate,date",0,Date,Datum,0
 field,"calendar.event.rdate,datetime",0,Date,Datum,0
 field,"calendar.event.rdate,event",0,Event,Termin,0
@@ -106,6 +129,7 @@ field,"calendar.event.rrule,bysecond",0,By Second,Für Sekunde,0
 field,"calendar.event.rrule,bysetpos",0,By Position,Für Position,0
 field,"calendar.event.rrule,byweekno",0,By Week Number,Für Woche Nummer,0
 field,"calendar.event.rrule,byyearday",0,By Year Day,Für Tag des Jahres,0
+field,"calendar.event.rrule,calendar_rrule",0,Calendar RRule,Kalender WRegel,0
 field,"calendar.event.rrule,count",0,Count,Anzahl,0
 field,"calendar.event.rrule,event",0,Event,Termin,0
 field,"calendar.event.rrule,freq",0,Frequency,Häufigkeit,0
@@ -124,7 +148,29 @@ field,"calendar.event,uuid",0,UUID,UUID,0
 field,"calendar.event,vevent",0,vevent,vevent,0
 field,"calendar.location,name",0,Name,Name,0
 field,"calendar.location,rec_name",0,Name,Name,0
+field,"calendar.rdate,date",0,Date,Datum,0
+field,"calendar.rdate,datetime",0,Date,Datum,0
+field,"calendar.rdate,rec_name",0,Name,Name,0
+field,"calendar.rrule,byday",0,By Day,Für Tag,0
+field,"calendar.rrule,byhour",0,By Hour,Für Stunde,0
+field,"calendar.rrule,byminute",0,By Minute,Für Minute,0
+field,"calendar.rrule,bymonth",0,By Month,Für Monat,0
+field,"calendar.rrule,bymonthday",0,By Month Day,Für Tag des Monats,0
+field,"calendar.rrule,bysecond",0,By Second,Für Sekunde,0
+field,"calendar.rrule,bysetpos",0,By Position,Für Position,0
+field,"calendar.rrule,byweekno",0,By Week Number,Für Woche Nummer,0
+field,"calendar.rrule,byyearday",0,By Year Day,Für Tag des Jahres,0
+field,"calendar.rrule,count",0,Count,Anzahl,0
+field,"calendar.rrule,freq",0,Frequency,Häufigkeit,0
+field,"calendar.rrule,interval",0,Interval,Intervall,0
+field,"calendar.rrule,rec_name",0,Name,Name,0
+field,"calendar.rrule,until",0,Until,Bis,0
+field,"calendar.rrule,until_date",0,Until Date,Bis Datum,0
+field,"calendar.rrule,wkst",0,Week Day,Wochentag,0
+field,"res.user,calendars",0,Calendars,Kalender,0
 help,"calendar.event,uuid",0,Universally Unique Identifier,Universally Unique Identifier,0
+model,"calendar.alarm,name",0,Alarm,Alarm,0
+model,"calendar.attendee,name",0,Attendee,Teilnehmer,0
 model,"calendar.calendar,name",0,Calendar,Kalender,0
 model,"calendar.calendar-read-res.user,name",0,Calendar - read - User,Kalender - Schreiben - Benutzer,0
 model,"calendar.calendar-write-res.user,name",0,Calendar - write - User,Kalender - Lesen - Benutzer,0
@@ -138,12 +184,20 @@ model,"calendar.event,name",0,Event,Termin,0
 model,"calendar.event.rdate,name",0,Recurrence Date,Wiederholungsdatum,0
 model,"calendar.event.rrule,name",0,Recurrence Rule,Wiederholungsregel,0
 model,"calendar.location,name",0,Location,Ort,0
+model,"calendar.rdate,name",0,Recurrence Date,Wiederholungsdatum,0
+model,"calendar.rrule,name",0,Recurrence Rule,Wiederholungsregel,0
 model,"ir.action,name",act_calendar_form,Calendars,Kalender,0
 model,"ir.action,name",act_event_form,Events,Termine,0
 model,"ir.ui.menu,name",menu_calendar,Calendar Management,Kalender,0
 model,"ir.ui.menu,name",menu_calendar_form,Calendars,Kalender,0
 model,"ir.ui.menu,name",menu_event_form,Events,Termine,0
 model,"res.group,name",group_calendar_admin,Calendar Administration,Administration Kalender ,0
+selection,"calendar.attendee,status",0,,,0
+selection,"calendar.attendee,status",0,Accepted,Angenommen,0
+selection,"calendar.attendee,status",0,Declined,Abgelehnt,0
+selection,"calendar.attendee,status",0,Delegated,Delegiert,0
+selection,"calendar.attendee,status",0,Needs Action,Aktion erforderlich,0
+selection,"calendar.attendee,status",0,Tentative,Unter Vorbehalt,0
 selection,"calendar.event.attendee,status",0,,,0
 selection,"calendar.event.attendee,status",0,Accepted,Angenommen,0
 selection,"calendar.event.attendee,status",0,Declined,Abgelehnt,0
@@ -187,6 +241,20 @@ selection,"calendar.event,status",0,Confirmed,Bestätigt,0
 selection,"calendar.event,status",0,Tentative,Unter Vorbehalt,0
 selection,"calendar.event,transp",0,Opaque,Opak,0
 selection,"calendar.event,transp",0,Transparent,Transparent,0
+selection,"calendar.rrule,freq",0,Daily,Täglich,0
+selection,"calendar.rrule,freq",0,Hourly,Stündlich,0
+selection,"calendar.rrule,freq",0,Minutely,Minütlich,0
+selection,"calendar.rrule,freq",0,Monthly,Monatlich,0
+selection,"calendar.rrule,freq",0,Secondly,Sekündlich,0
+selection,"calendar.rrule,freq",0,Weekly,Wöchentlich,0
+selection,"calendar.rrule,freq",0,Yearly,Jährlich,0
+selection,"calendar.rrule,wkst",0,Friday,Freitag,0
+selection,"calendar.rrule,wkst",0,Monday,Montag,0
+selection,"calendar.rrule,wkst",0,Saturday,Samstag,0
+selection,"calendar.rrule,wkst",0,Sunday,Sonntag,0
+selection,"calendar.rrule,wkst",0,Thursday,Donnerstag,0
+selection,"calendar.rrule,wkst",0,Tuesday,Dienstag,0
+selection,"calendar.rrule,wkst",0,Wednesday,Mittwoch,0
 view,calendar.calendar,0,Calendar,Kalender,0
 view,calendar.calendar,0,Calendars,Kalender,0
 view,calendar.calendar,0,General,Allgemein,0
@@ -198,6 +266,7 @@ view,calendar.event,0,Categories,Kategorien,0
 view,calendar.event,0,Event,Termin,0
 view,calendar.event,0,Events,Termine,0
 view,calendar.event,0,General,Allgemein,0
+view,calendar.event,0,Occurences,Ereignisse,0
 view,calendar.event,0,Recurrences,Wiederholungen,0
 view,calendar.event.attendee,0,Attendee,Teilnehmer,0
 view,calendar.event.attendee,0,Attendees,Teilnehmer,0
