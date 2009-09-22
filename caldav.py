@@ -58,9 +58,11 @@ def _get_caldav_calendar_description(self, uri):
     try:
         res = collection_obj.get_calendar_description(cursor, int(USER_ID), dburi,
                 cache=CACHE)
-    except (DAV_Error, DAV_NotFound, DAV_Secret, DAV_Forbidden):
+    except (DAV_Error, DAV_NotFound, DAV_Secret, DAV_Forbidden), exception:
+        self._log_exception(exception)
         raise
-    except:
+    except Exception, exception:
+        self._log_exception(exception)
         raise DAV_Error(500)
     return res
 
@@ -74,9 +76,11 @@ def _get_caldav_calendar_data(self, uri):
     try:
         res = collection_obj.get_calendar_data(cursor, int(USER_ID), dburi,
                 cache=CACHE)
-    except (DAV_Error, DAV_NotFound, DAV_Secret, DAV_Forbidden):
+    except (DAV_Error, DAV_NotFound, DAV_Secret, DAV_Forbidden), exception:
+        self._log_exception(exception)
         raise
-    except:
+    except Exception, exception:
+        self._log_exception(exception)
         raise DAV_Error(500)
     return res
 
@@ -90,9 +94,11 @@ def _get_caldav_calendar_home_set(self, uri):
     try:
         res = collection_obj.get_calendar_home_set(cursor, int(USER_ID), dburi,
                 cache=CACHE)
-    except (DAV_Error, DAV_NotFound, DAV_Secret, DAV_Forbidden):
+    except (DAV_Error, DAV_NotFound, DAV_Secret, DAV_Forbidden), exception:
+        self._log_exception(exception)
         raise
-    except:
+    except Exception, exception:
+        self._log_exception(exception)
         raise DAV_Error(500)
     uparts = list(urlparse.urlsplit(uri))
     uparts[2] = urllib.quote(dbname + res)
@@ -113,9 +119,11 @@ def _get_caldav_calendar_user_address_set(self, uri):
     try:
         res = collection_obj.get_calendar_user_address_set(cursor,
                 int(USER_ID), dburi, cache=CACHE)
-    except (DAV_Error, DAV_NotFound, DAV_Secret, DAV_Forbidden):
+    except (DAV_Error, DAV_NotFound, DAV_Secret, DAV_Forbidden), exception:
+        self._log_exception(exception)
         raise
-    except:
+    except Exception, exception:
+        self._log_exception(exception)
         raise DAV_Error(500)
     doc = domimpl.createDocument(None, 'href', None)
     href = doc.documentElement
@@ -134,9 +142,11 @@ def _get_caldav_schedule_inbox_URL(self, uri):
     try:
         res = collection_obj.get_schedule_inbox_URL(cursor, int(USER_ID), dburi,
                 cache=CACHE)
-    except (DAV_Error, DAV_NotFound, DAV_Secret, DAV_Forbidden):
+    except (DAV_Error, DAV_NotFound, DAV_Secret, DAV_Forbidden), exception:
+        self._log_exception(exception)
         raise
-    except:
+    except Exception, exception:
+        self._log_exception(exception)
         raise DAV_Error(500)
     uparts = list(urlparse.urlsplit(uri))
     uparts[2] = urllib.quote(dbname + res)
@@ -157,9 +167,11 @@ def _get_caldav_schedule_outbox_URL(self, uri):
     try:
         res = collection_obj.get_schedule_outbox_URL(cursor, int(USER_ID), dburi,
                 cache=CACHE)
-    except (DAV_Error, DAV_NotFound, DAV_Secret, DAV_Forbidden):
+    except (DAV_Error, DAV_NotFound, DAV_Secret, DAV_Forbidden), exception:
+        self._log_exception(exception)
         raise
-    except:
+    except Exception, exception:
+        self._log_exception(exception)
         raise DAV_Error(500)
     uparts = list(urlparse.urlsplit(uri))
     uparts[2] = urllib.quote(dbname + res)
@@ -198,9 +210,11 @@ def _get_caldav_post(self, uri, body, contenttype=''):
     calendar_obj = pool.get('calendar.calendar')
     try:
         res = calendar_obj.post(cursor, int(USER_ID), dburi, body)
-    except (DAV_Error, DAV_NotFound, DAV_Secret, DAV_Forbidden):
+    except (DAV_Error, DAV_NotFound, DAV_Secret, DAV_Forbidden), exception:
+        self._log_exception(exception)
         raise
-    except Exception, e:
+    except Exception, exception:
+        self._log_exception(exception)
         raise DAV_Error(500)
     return res
 
