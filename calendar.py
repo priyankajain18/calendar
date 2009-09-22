@@ -113,23 +113,22 @@ class Calendar(ModelSQL, ModelView):
             ical.vevent_list.extend(ical2.vevent_list)
         return ical
 
-    def _fbtype(self, cursor, user, transp, status, context=None):
+    def _fbtype(self, cursor, user, event, context=None):
         '''
         Return the freebusy type for give transparent and status
 
         :param cursor: the database cursor
         :param user: the user id
-        :param transp: the transparent value
-        :param status: the status value
+        :param event: a BrowseRecord of calendar.event
         :param context: the context
         :return: a freebusy type ('FREE', 'BUSY', 'BUSY-TENTATIVE')
         '''
-        if transp == 'opaque':
-            if not status or status == 'confirmed':
+        if event.transp == 'opaque':
+            if not event.status or event.status == 'confirmed':
                 fbtype = 'BUSY'
-            elif status == 'cancelled':
+            elif event.status == 'cancelled':
                 fbtype = 'FREE'
-            elif status == 'tentative':
+            elif event.status == 'tentative':
                 fbtype = 'BUSY-TENTATIVE'
             else:
                 fbtype = 'BUSY'
@@ -183,8 +182,8 @@ class Calendar(ModelSQL, ModelView):
         for event in event_obj.browse(cursor, 0, event_ids, context=context):
             # Don't group freebusy as sunbird doesn't handle it
             freebusy = ical.vfreebusy.add('freebusy')
-            freebusy.fbtype_param = self._fbtype(cursor, user, event.transp,
-                    event.status, context=context)
+            freebusy.fbtype_param = self._fbtype(cursor, user, event,
+                    context=context)
             if event.all_day:
                 freebusy.value = [(event.dtstart, event.dtend)]
             else:
@@ -212,8 +211,8 @@ class Calendar(ModelSQL, ModelView):
                     freebusy_dtend = event.dtend.replace(tzinfo=tzlocal)\
                             - event.dtstart.replace(tzinfo=tzlocal) \
                             + freebusy_dtstart
-                    freebusy_fbtype = self._fbtype(cursor, user, event.transp,
-                            event.status, context=context)
+                    freebusy_fbtype = self._fbtype(cursor, user, event,
+                            context=context)
                     all_day = event.all_day
                     for occurence in event.occurences:
                         if occurence.recurrence.replace(tzinfo=tzlocal) == \
@@ -223,8 +222,7 @@ class Calendar(ModelSQL, ModelView):
                                         .replace(tzinfo=tzlocal)
                                 all_day = occurence.all_day
                             freebusy_fbtype = self._fbtype(cursor, user,
-                                    occurence.transp, occurence.status,
-                                    context=context)
+                                    occurence, context=context)
                             break
                     freebusy = ical.vfreebusy.add('freebusy')
                     freebusy.fbtype_param = freebusy_fbtype
