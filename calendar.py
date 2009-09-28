@@ -21,7 +21,8 @@ class Calendar(ModelSQL, ModelView):
     name = fields.Char('Name', required=True, select=1)
     description = fields.Text('Description')
     owner = fields.Many2One('res.user', 'Owner', select=1,
-            domain=[('email', '!=', False)])
+            domain=[('email', '!=', False)],
+            help='The user must have an email')
     read_users = fields.Many2Many('calendar.calendar-read-res.user',
             'calendar', 'user', 'Read Users')
     write_users = fields.Many2Many('calendar.calendar-write-res.user',
