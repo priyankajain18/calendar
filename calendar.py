@@ -1370,12 +1370,16 @@ class Attendee(ModelSQL, ModelView):
                     attendee.attendee.replace('\r\n ', ''))
         else:
             res = vobject.base.ContentLine('ATTENDEE', [], '')
+
         if attendee.status:
+            if not hasattr(res, 'partstat_param'):
+                res.add('partstat_param')
             if res.partstat_param.lower() in dict(self.status.selection):
                 res.partstat_param = attendee.status.upper()
-        else:
+        elif hasattr(res, 'partstat_param'):
             if res.partstat_param.lower() in dict(self.status.selection):
                 del res.partstat_param
+
         res.value = 'MAILTO:' + attendee.email
         return res
 
