@@ -793,6 +793,9 @@ class Event(ModelSQL, ModelView):
         rrule_obj = self.pool.get('calendar.event.rrule')
         exrule_obj = self.pool.get('calendar.event.exrule')
 
+        if context is None:
+            context = {}
+
         vevents = []
         if not vevent:
             vevent = ical.vevent
@@ -860,6 +863,8 @@ class Event(ModelSQL, ModelView):
         else:
             res['status'] = ''
         if hasattr(vevent, 'categories'):
+            ctx = context.copy()
+            ctx['active_test'] = False
             category_ids = category_obj.search(cursor, user, [
                 ('name', 'in', [x for x in vevent.categories.value]),
                 ], context=context)
@@ -885,9 +890,11 @@ class Event(ModelSQL, ModelView):
         else:
             res['classification'] = 'public'
         if hasattr(vevent, 'location'):
+            ctx = context.copy()
+            ctx['active_test'] = False
             location_ids = location_obj.search(cursor, user, [
                 ('name', '=', vevent.location.value),
-                ], limit=1, context=context)
+                ], limit=1, context=ctx)
             if not location_ids:
                 location_id = location_obj.create(cursor, user, {
                     'name': vevent.location.value,
