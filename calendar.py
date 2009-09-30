@@ -566,9 +566,10 @@ class Event(ModelSQL, ModelView):
 
         res = super(Event, self).create(cursor, user, values, context=context)
         event = self.browse(cursor, user, res, context=context)
-        if event.organizer == event.calendar.owner.email \
+        if event.calendar.owner \
+                and (event.organizer == event.calendar.owner.email \
                 or (event.parent \
-                and event.parent.organizer == event.parent.calendar.owner.email):
+                and event.parent.organizer == event.parent.calendar.owner.email)):
             if event.organizer == event.calendar.owner.email:
                 attendee_emails = [x.email for x in event.attendees
                         if x.status != 'declined']
@@ -662,9 +663,10 @@ class Event(ModelSQL, ModelView):
                     'WHERE ' + red_sql, red_ids)
 
         for event in self.browse(cursor, user, ids, context=context):
-            if event.organizer == event.calendar.owner.email \
+            if event.calendar.owner \
+                    and (event.organizer == event.calendar.owner.email \
                     or (event.parent \
-                    and event.parent.organizer == event.calendar.owner.email):
+                    and event.parent.organizer == event.calendar.owner.email)):
                 if event.organizer == event.calendar.owner.email:
                     attendee_emails = [x.email for x in event.attendees
                             if x.status != 'declined']
@@ -723,9 +725,10 @@ class Event(ModelSQL, ModelView):
         if isinstance(ids, (int, long)):
             ids = [ids]
         for event in self.browse(cursor, user, ids, context=context):
-            if event.organizer == event.calendar.owner.email \
+            if event.calendar.owner \
+                    and (event.organizer == event.calendar.owner.email \
                     or (event.parent \
-                    and event.parent.organizer == event.calendar.owner.email):
+                    and event.parent.organizer == event.calendar.owner.email)):
                 if event.organizer == event.calendar.owner.email:
                     attendee_emails = [x.email for x in event.attendees]
                 else:
