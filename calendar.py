@@ -1546,7 +1546,8 @@ class RDate(ModelSQL, ModelView):
     _name = 'calendar.rdate'
     _rec_name = 'datetime'
 
-    date = fields.Boolean('Date')
+    date = fields.Boolean('Is Date', help='Ignore time of field "Date", ' \
+            'but handle as date only.')
     datetime = fields.DateTime('Date', required=True)
 
     def _date2update(self, cursor, user, date, context=None):
@@ -1687,8 +1688,9 @@ class RRule(ModelSQL, ModelView):
         ('monthly', 'Monthly'),
         ('yearly', 'Yearly'),
         ], 'Frequency', required=True)
-    until_date = fields.Boolean('Until Date')
-    until = fields.DateTime('Until')
+    until_date = fields.Boolean('Is Date', help='Ignore time of field ' \
+            '"Until Date", but handle as date only.')
+    until = fields.DateTime('Until Date')
     count = fields.Integer('Count')
     interval = fields.Integer('Interval')
     bysecond = fields.Char('By Second')
