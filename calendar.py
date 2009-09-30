@@ -185,12 +185,9 @@ class Calendar(ModelSQL, ModelView):
             freebusy = ical.vfreebusy.add('freebusy')
             freebusy.fbtype_param = self._fbtype(cursor, user, event,
                     context=context)
-            if event.all_day:
-                freebusy.value = [(event.dtstart, event.dtend)]
-            else:
-                freebusy.value = [(
-                    event.dtstart.replace(tzinfo=tzlocal).astimezone(tzutc),
-                    event.dtend.replace(tzinfo=tzlocal).astimezone(tzutc))]
+            freebusy.value = [(
+                event.dtstart.replace(tzinfo=tzlocal).astimezone(tzutc),
+                event.dtend.replace(tzinfo=tzlocal).astimezone(tzutc))]
 
         event_ids = event_obj.search(cursor, 0, [
             ('parent', '=', False),
@@ -207,8 +204,12 @@ class Calendar(ModelSQL, ModelView):
             event_ical = event_obj.event2ical(cursor, user, event,
                     context=context)
             if event_ical.vevent.rruleset:
+                between_dtstart, between_dtend = dtstart, dtend
+                if event.all_day:
+                    between_dtstart = dtstart.replace(tzinfo=None)
+                    between_dtend = dtend.replace(tzinfo=None)
                 for freebusy_dtstart in event_ical.vevent.rruleset.between(
-                        dtstart, dtend, inc=True):
+                        between_dtstart, between_dtend, inc=True):
                     freebusy_dtend = event.dtend.replace(tzinfo=tzlocal)\
                             - event.dtstart.replace(tzinfo=tzlocal) \
                             + freebusy_dtstart
@@ -229,8 +230,10 @@ class Calendar(ModelSQL, ModelView):
                     freebusy.fbtype_param = freebusy_fbtype
                     if all_day:
                         freebusy.value = [(
-                            freebusy_dtstart.date(),
-                            freebusy_dtend.date())]
+                            freebusy_dtstart.replace(tzinfo=tzlocal)\
+                                    .astimezone(tzutc),
+                            freebusy_dtend.replace(tzinfo=tzlocal)\
+                                    .astimezone(tzutc))]
                     else:
                         freebusy.value = [(
                             freebusy_dtstart.astimezone(tzutc),
