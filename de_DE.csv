@@ -88,8 +88,8 @@ field,"calendar.event,uuid",0,UUID,UUID,0
 field,"calendar.event,vevent",0,vevent,vevent,0
 field,"calendar.location,name",0,Name,Name,0
 field,"calendar.location,rec_name",0,Name,Name,0
-field,"calendar.rdate,date",0,Date,Datum,0
-field,"calendar.rdate,datetime",0,Date,Datum,0
+field,"calendar.rdate,date",0,Is Date,Als Datum,0
+field,"calendar.rdate,datetime",0,Date,Zeitpunkt,0
 field,"calendar.rdate,rec_name",0,Name,Name,0
 field,"calendar.rrule,byday",0,By Day,Für Tag,0
 field,"calendar.rrule,byhour",0,By Hour,Für Stunde,0
@@ -104,12 +104,14 @@ field,"calendar.rrule,count",0,Count,Anzahl,0
 field,"calendar.rrule,freq",0,Frequency,Häufigkeit,0
 field,"calendar.rrule,interval",0,Interval,Intervall,0
 field,"calendar.rrule,rec_name",0,Name,Name,0
-field,"calendar.rrule,until",0,Until,Bis,0
-field,"calendar.rrule,until_date",0,Until Date,Bis Datum,0
+field,"calendar.rrule,until",0,Until Date,Bis Zeitpunkt,0
+field,"calendar.rrule,until_date",0,Is Date,Als Datum,0
 field,"calendar.rrule,wkst",0,Week Day,Wochentag,0
 field,"res.user,calendars",0,Calendars,Kalender,0
 help,"calendar.calendar,owner",0,The user must have an email,Dem Benutzer muss eine E-Mail-Adresse zugeordnet sein!,0
 help,"calendar.event,uuid",0,Universally Unique Identifier,Universally Unique Identifier,0
+help,"calendar.rdate,date",0,"Ignore time of field ""Date"", but handle as date only.","Verwende von Feld ""Zeitpunkt"" nur das Datum ohne den Zeitanteil.",0
+help,"calendar.rrule,until_date",0,"Ignore time of field ""Until Date"", but handle as date only.","Verwende von Feld ""Bis Zeitpunkt"" nur das Datum ohne den Zeitanteil.",0
 model,"calendar.alarm,name",0,Alarm,Alarm,0
 model,"calendar.attendee,name",0,Attendee,Teilnehmer,0
 model,"calendar.calendar,name",0,Calendar,Kalender,0
