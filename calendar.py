@@ -1372,9 +1372,10 @@ class Attendee(ModelSQL, ModelView):
             res = vobject.base.ContentLine('ATTENDEE', [], '')
 
         if attendee.status:
-            if not hasattr(res, 'partstat_param'):
-                res.add('partstat_param')
-            if res.partstat_param.lower() in dict(self.status.selection):
+            if hasattr(res, 'partstat_param'):
+                if res.partstat_param.lower() in dict(self.status.selection):
+                    res.partstat_param = attendee.status.upper()
+            else:
                 res.partstat_param = attendee.status.upper()
         elif hasattr(res, 'partstat_param'):
             if res.partstat_param.lower() in dict(self.status.selection):
