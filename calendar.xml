@@ -244,6 +244,7 @@ this repository contains the full copyright notices and license terms. -->
                             </field>
                         </page>
                     </notebook>
+                    <field name="parent" colspan="4" invisible="1"/>
                 </form>
                 ]]>
             </field>
