@@ -171,6 +171,7 @@ class Calendar(ModelSQL, ModelView):
         event_ids = event_obj.search(cursor, 0, [
             ('dtstart', '>=', dtstart),
             ('dtend', '<=', dtend),
+            ('dtend', '!=', False),
             ('parent', '=', False),
             ('rdates', '=', False),
             ('rrules', '=', False),
@@ -210,6 +211,8 @@ class Calendar(ModelSQL, ModelView):
                     between_dtend = dtend.replace(tzinfo=None)
                 for freebusy_dtstart in event_ical.vevent.rruleset.between(
                         between_dtstart, between_dtend, inc=True):
+                    if not event.dtend:
+                        continue
                     freebusy_dtend = event.dtend.replace(tzinfo=tzlocal)\
                             - event.dtstart.replace(tzinfo=tzlocal) \
                             + freebusy_dtstart
