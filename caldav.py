@@ -26,8 +26,8 @@ TrytonDAVInterface.PROPS['urn:ietf:params:xml:ns:caldav'] = (
 TrytonDAVInterface.PROPS['DAV:'] = tuple(list(TrytonDAVInterface.PROPS['DAV:']) \
         + ['principal-collection-set'])
 TrytonDAVInterface.M_NS['urn:ietf:params:xml:ns:caldav'] = '_get_caldav'
-DAV_VERSION_1['version'] += ',calendar-access,calendar-schedule'#,calendar-auto-schedule'
-DAV_VERSION_2['version'] += ',calendar-access,calendar-schedule'#,calendar-auto-schedule'
+DAV_VERSION_1['version'] += ', calendar-access, calendar-schedule'#,calendar-auto-schedule'
+DAV_VERSION_2['version'] += ', calendar-access, calendar-schedule'#,calendar-auto-schedule'
 
 _mk_prop_response = propfind.PROPFIND.mk_prop_response
 
