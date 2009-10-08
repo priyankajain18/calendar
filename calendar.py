@@ -1410,9 +1410,10 @@ class EventAttendee(ModelSQL, ModelView):
                 context=context)
         attendee = self.browse(cursor, user, res, context=context)
         event = attendee.event
-        if event.organizer == event.calendar.owner.email \
+        if event.calendar.owner \
+                and (event.organizer == event.calendar.owner.email \
                 or (event.parent \
-                and event.parent.organizer == event.parent.calendar.owner.email):
+                and event.parent.organizer == event.parent.calendar.owner.email)):
             if event.organizer == event.calendar.owner.email:
                 attendee_emails = [x.email for x in event.attendees]
             else:
@@ -1451,9 +1452,10 @@ class EventAttendee(ModelSQL, ModelView):
         attendees = self.browse(cursor, user, ids, context=context)
         for attendee in attendees:
             event = attendee.event
-            if event.organizer == event.calendar.owner.email \
+            if event.calendar.owner \
+                    and (event.organizer == event.calendar.owner.email \
                     or (event.parent \
-                    and event.parent.organizer == event.calendar.owner.email):
+                    and event.parent.organizer == event.calendar.owner.email)):
                 if event.organizer == event.calendar.owner.email:
                     attendee_emails = [x.email for x in event.attendees]
                 else:
@@ -1486,9 +1488,10 @@ class EventAttendee(ModelSQL, ModelView):
 
         for attendee in self.browse(cursor, user, ids, context=context):
             event = attendee.event
-            if event.organizer == event.calendar.owner.email \
+            if event.calendar.owner \
+                    and (event.organizer == event.calendar.owner.email \
                     or (event.parent \
-                    and event.parent.organizer == event.calendar.owner.email):
+                    and event.parent.organizer == event.calendar.owner.email)):
                 if event.organizer == event.calendar.owner.email:
                     attendee_emails = [x.email for x in event.attendees]
                 else:
