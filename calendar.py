@@ -1418,11 +1418,11 @@ class EventAttendee(ModelSQL, ModelView):
             else:
                 attendee_emails = [x.email for x in event.parent.attendees]
             if attendee_emails:
-                event_ids = self.search(cursor, 0, [
-                    ('event.uuid', '=', event.uuid),
-                    ('event.calendar.owner.email', 'in', attendee_emails),
+                event_ids = event_obj.search(cursor, 0, [
+                    ('uuid', '=', event.uuid),
+                    ('calendar.owner.email', 'in', attendee_emails),
                     ('id', '!=', event.id),
-                    ('event.recurrence', '=', event.recurrence or False),
+                    ('recurrence', '=', event.recurrence or False),
                     ], context=context)
                 for event_id in event_ids:
                     self.copy(cursor, 0, res, default={
