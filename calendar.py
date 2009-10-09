@@ -169,9 +169,16 @@ class Calendar(ModelSQL, ModelView):
             ical.vfreebusy.add('dtend').value = dtend.astimezone(tzutc)
 
         event_ids = event_obj.search(cursor, 0, [
-            ('dtstart', '>=', dtstart),
-            ('dtend', '<=', dtend),
-            ('dtend', '!=', False),
+            ['OR',
+                [('dtstart', '<=', dtstart),
+                    ('dtend', '>=', dtstart)],
+                [('dtstart', '<=', dtend),
+                    ('dtend', '>=', dtend)],
+                [('dtstart', '>=', dtstart),
+                    ('dtend', '<=', dtend)],
+                [('dtstart', '>=', dtstart),
+                    ('dtstart', '<=', dtend),
+                    ('dtend', '=', False)]],
             ('parent', '=', False),
             ('rdates', '=', False),
             ('rrules', '=', False),
@@ -186,9 +193,17 @@ class Calendar(ModelSQL, ModelView):
             freebusy = ical.vfreebusy.add('freebusy')
             freebusy.fbtype_param = self._fbtype(cursor, user, event,
                     context=context)
+            if event.dtstart.replace(tzinfo=tzlocal) >= dtstart:
+                freebusy_dtstart = event.dtstart.replace(tzinfo=tzlocal)
+            else:
+                freebusy_dtstart = dtstart
+            if event.dtend.replace(tzinfo=tzlocal) <= dtend:
+                freebusy_dtend = event.dtend.replace(tzinfo=tzlocal)
+            else:
+                freebusy_dtend = dtend
             freebusy.value = [(
-                event.dtstart.replace(tzinfo=tzlocal).astimezone(tzutc),
-                event.dtend.replace(tzinfo=tzlocal).astimezone(tzutc))]
+                freebusy_dtstart.astimezone(tzutc),
+                freebusy_dtend.astimezone(tzutc))]
 
         event_ids = event_obj.search(cursor, 0, [
             ('parent', '=', False),
@@ -209,13 +224,20 @@ class Calendar(ModelSQL, ModelView):
                 if event.all_day:
                     between_dtstart = dtstart.replace(tzinfo=None)
                     between_dtend = dtend.replace(tzinfo=None)
-                for freebusy_dtstart in event_ical.vevent.rruleset.between(
-                        between_dtstart, between_dtend, inc=True):
+                for freebusy_dtstart in event_ical.vevent.rruleset:
                     if not event.dtend:
+                        freebusy_dtend = freebusy_dtstart
+                    else:
+                        freebusy_dtend = event.dtend.replace(tzinfo=tzlocal)\
+                                - event.dtstart.replace(tzinfo=tzlocal) \
+                                + freebusy_dtstart
+                    if not ((freebusy_dtstart.replace(tzinfo=tzlocal) <= dtstart
+                        and freebusy_dtend.replace(tzinfo=tzlocal) >= dtstart)
+                        or (freebusy_dtstart.replace(tzinfo=tzlocal) <= dtend
+                        and freebusy_dtend.replace(tzinfo=tzlocal) >= dtend)
+                        or (freebusy_dtstart.replace(tzinfo=tzlocal) >= dtstart
+                        and freebusy_dtend.replace(tzinfo=tzlocal) <= dtend)):
                         continue
-                    freebusy_dtend = event.dtend.replace(tzinfo=tzlocal)\
-                            - event.dtstart.replace(tzinfo=tzlocal) \
-                            + freebusy_dtstart
                     freebusy_fbtype = self._fbtype(cursor, user, event,
                             context=context)
                     all_day = event.all_day
@@ -225,12 +247,18 @@ class Calendar(ModelSQL, ModelView):
                             if occurence.dtend:
                                 freebusy_dtend = occurence.dtend\
                                         .replace(tzinfo=tzlocal)
-                                all_day = occurence.all_day
+                            else:
+                                freebusy_dtend = freebusy_dtstart
+                            all_day = occurence.all_day
                             freebusy_fbtype = self._fbtype(cursor, user,
                                     occurence, context=context)
                             break
                     freebusy = ical.vfreebusy.add('freebusy')
                     freebusy.fbtype_param = freebusy_fbtype
+                    if freebusy_dtstart.replace(tzinfo=tzlocal) <= dtstart:
+                        freebusy_dtstart = dtstart
+                    if freebusy_dtend.replace(tzinfo=tzlocal) >= dtend:
+                        freebusy_dtend = dtend
                     if all_day:
                         freebusy.value = [(
                             freebusy_dtstart.replace(tzinfo=tzlocal)\
