@@ -606,10 +606,12 @@ class Event(ModelSQL, ModelView):
                 and event.parent.organizer == event.parent.calendar.owner.email)):
             if event.organizer == event.calendar.owner.email:
                 attendee_emails = [x.email for x in event.attendees
-                        if x.status != 'declined']
+                        if x.status != 'declined'
+                        and x.email != event.organizer]
             else:
                 attendee_emails = [x.email for x in event.parent.attendees
-                        if x.status != 'declined']
+                        if x.status != 'declined'
+                        and x.email != event.parent.organizer]
             if attendee_emails:
                 calendar_ids = calendar_obj.search(cursor, 0, [
                     ('owner.email', 'in', attendee_emails),
@@ -703,10 +705,12 @@ class Event(ModelSQL, ModelView):
                     and event.parent.organizer == event.calendar.owner.email)):
                 if event.organizer == event.calendar.owner.email:
                     attendee_emails = [x.email for x in event.attendees
-                            if x.status != 'declined']
+                            if x.status != 'declined'
+                            and x.email != event.organizer]
                 else:
                     attendee_emails = [x.email for x in event.parent.attendees
-                            if x.status != 'declined']
+                            if x.status != 'declined'
+                            and x.email != event.parent.organizer]
                 if attendee_emails:
                     event_ids = self.search(cursor, 0, [
                         ('uuid', '=', event.uuid),
@@ -764,9 +768,11 @@ class Event(ModelSQL, ModelView):
                     or (event.parent \
                     and event.parent.organizer == event.calendar.owner.email)):
                 if event.organizer == event.calendar.owner.email:
-                    attendee_emails = [x.email for x in event.attendees]
+                    attendee_emails = [x.email for x in event.attendees
+                            if x.email != event.organizer]
                 else:
-                    attendee_emails = [x.email for x in event.parent.attendees]
+                    attendee_emails = [x.email for x in event.parent.attendees
+                            if x.email != event.parent.organizer]
                 if attendee_emails:
                     event_ids = self.search(cursor, 0, [
                         ('uuid', '=', event.uuid),
@@ -1443,9 +1449,11 @@ class EventAttendee(ModelSQL, ModelView):
                 or (event.parent \
                 and event.parent.organizer == event.parent.calendar.owner.email)):
             if event.organizer == event.calendar.owner.email:
-                attendee_emails = [x.email for x in event.attendees]
+                attendee_emails = [x.email for x in event.attendees
+                        if x.email != event.organizer]
             else:
-                attendee_emails = [x.email for x in event.parent.attendees]
+                attendee_emails = [x.email for x in event.parent.attendees
+                        if x.email != event.parent.organizer]
             if attendee_emails:
                 event_ids = event_obj.search(cursor, 0, [
                     ('uuid', '=', event.uuid),
@@ -1485,9 +1493,11 @@ class EventAttendee(ModelSQL, ModelView):
                     or (event.parent \
                     and event.parent.organizer == event.calendar.owner.email)):
                 if event.organizer == event.calendar.owner.email:
-                    attendee_emails = [x.email for x in event.attendees]
+                    attendee_emails = [x.email for x in event.attendees
+                            if x.email != event.organizer]
                 else:
-                    attendee_emails = [x.email for x in event.parent.attendees]
+                    attendee_emails = [x.email for x in event.parent.attendees
+                            if x.email != event.parent.organizer]
                 if attendee_emails:
                     attendee_ids = self.search(cursor, 0, [
                         ('event.uuid', '=', event.uuid),
@@ -1521,9 +1531,11 @@ class EventAttendee(ModelSQL, ModelView):
                     or (event.parent \
                     and event.parent.organizer == event.calendar.owner.email)):
                 if event.organizer == event.calendar.owner.email:
-                    attendee_emails = [x.email for x in event.attendees]
+                    attendee_emails = [x.email for x in event.attendees
+                            if x.email != event.organizer]
                 else:
-                    attendee_emails = [x.email for x in event.attendees]
+                    attendee_emails = [x.email for x in event.parent.attendees
+                            if x.email != event.parent.organizer]
                 if attendee_emails:
                     attendee_ids = self.search(cursor, 0, [
                         ('event.uuid', '=', event.uuid),
@@ -1533,9 +1545,10 @@ class EventAttendee(ModelSQL, ModelView):
                         ('email', '=', attendee.email),
                         ], context=context)
                     self.delete(cursor, 0, attendee_ids, context=context)
-            elif (event.organizer \
+            elif event.calendar.owner \
+                    and ((event.organizer \
                     or (event.parent and event.parent.organizer)) \
-                    and attendee.email == event.calendar.owner.email:
+                    and attendee.email == event.calendar.owner.email):
                 if event.organizer:
                     organizer = event.organizer
                 else:
