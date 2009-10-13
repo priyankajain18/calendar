@@ -58,6 +58,8 @@ def _get_caldav_calendar_description(self, uri):
     try:
         res = collection_obj.get_calendar_description(cursor, int(USER_ID), dburi,
                 cache=CACHE)
+    except AttributeError:
+        return ''
     except (DAV_Error, DAV_NotFound, DAV_Secret, DAV_Forbidden), exception:
         self._log_exception(exception)
         raise
