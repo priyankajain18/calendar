@@ -75,7 +75,7 @@ field,"calendar.event.rdate,rec_name",0,Name,Nombre,0
 field,"calendar.event,rdates",0,Recurrence Dates,Fechas de recurrencia,0
 field,"calendar.event,rec_name",0,Name,Nombre,0
 field,"calendar.event,recurrence",0,Recurrence,Recurrencia,0
-field,"calendar.event.rrule,calendar_rrule",0,Calendar RRule,Rule recurrence,0
+field,"calendar.event.rrule,calendar_rrule",0,Calendar RRule,Regla de recurrencia,0
 field,"calendar.event.rrule,event",0,Event,Evento,0
 field,"calendar.event.rrule,rec_name",0,Name,Nombre,0
 field,"calendar.event,rrules",0,Recurrence Rules,Reglas de recurrencia,0
