@@ -134,7 +134,7 @@ model,"ir.action,name",act_event_form,Events,Termine,0
 model,"ir.ui.menu,name",menu_calendar,Calendar Management,Kalender,0
 model,"ir.ui.menu,name",menu_calendar_form,Calendars,Kalender,0
 model,"ir.ui.menu,name",menu_event_form,Events,Termine,0
-model,"res.group,name",group_calendar_admin,Calendar Administration,Administration Kalender ,0
+model,"res.group,name",group_calendar_admin,Calendar Administration,Kalender Administration,0
 selection,"calendar.attendee,status",0,,,0
 selection,"calendar.attendee,status",0,Accepted,Angenommen,0
 selection,"calendar.attendee,status",0,Declined,Abgelehnt,0
