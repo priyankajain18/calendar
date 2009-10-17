@@ -5,6 +5,7 @@
     'name' : 'Calendar',
     'name_de_DE' : 'Kalender',
     'name_es_CO' : 'Calendario',
+    'name_es_ES' : 'Calendario',
     'name_fr_FR' : 'Calendrier',
     'version' : '0.0.1',
     'author' : 'B2CK',
@@ -13,6 +14,7 @@
     'description': 'Add CalDAV support',
     'description_de_DE' : 'Fügt Unterstützung für CalDAV hinzu',
     'description_es_CO' : 'Añade soporte para CalDAV',
+    'description_es_ES' : 'Añade soporte para CalDAV',
     'description_fr_FR': 'Ajoute le support CalDAV',
     'depends' : [
         'ir',
@@ -25,5 +27,6 @@
     'translation': [
         'de_DE.csv',
         'es_CO.csv',
+        'es_ES.csv',
     ],
 }
