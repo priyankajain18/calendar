@@ -68,6 +68,23 @@ this repository contains the full copyright notices and license terms. -->
         </record>
         <menuitem parent="menu_calendar" sequence="1"
             action="act_calendar_form" id="menu_calendar_form"/>
+        <record model="ir.action.act_window" id="act_calendar_form2">
+            <field name="name">Calendars</field>
+            <field name="res_model">calendar.calendar</field>
+            <field name="view_type">form</field>
+        </record>
+        <record model="ir.action.act_window.view" id="act_calendar_form2_view1">
+            <field name="sequence" eval="10"/>
+            <field name="view" ref="calendar_view_form"/>
+            <field name="act_window" ref="act_calendar_form2"/>
+        </record>
+        <record model="ir.action.act_window.view" id="act_calendar_form2_view2">
+            <field name="sequence" eval="20"/>
+            <field name="view" ref="calendar_view_tree"/>
+            <field name="act_window" ref="act_calendar_form2"/>
+        </record>
+        <menuitem name="New Calendar" parent="menu_calendar_form" sequence="10"
+            action="act_calendar_form2" id="menu_calendar_form2"/>
 
         <record model="ir.rule.group" id="rule_group_read_calendar">
             <field name="model" search="[('model', '=', 'calendar.event')]"/>
@@ -266,8 +283,49 @@ this repository contains the full copyright notices and license terms. -->
             <field name="view" ref="event_view_form"/>
             <field name="act_window" ref="act_event_form"/>
         </record>
-        <menuitem parent="menu_calendar_form" sequence="1"
+        <menuitem parent="menu_calendar_form" sequence="20"
             action="act_event_form" id="menu_event_form"/>
+        <record model="ir.action.act_window" id="act_event_form2">
+            <field name="name">Events</field>
+            <field name="res_model">calendar.event</field>
+            <field name="view_type">form</field>
+            <field name="domain">[('parent', '=', False)]</field>
+        </record>
+        <record model="ir.action.act_window.view" id="act_event_form2_view1">
+            <field name="sequence" eval="10"/>
+            <field name="view" ref="event_view_form"/>
+            <field name="act_window" ref="act_event_form2"/>
+        </record>
+        <record model="ir.action.act_window.view" id="act_event_form2_view2">
+            <field name="sequence" eval="20"/>
+            <field name="view" ref="event_view_tree"/>
+            <field name="act_window" ref="act_event_form2"/>
+        </record>
+        <menuitem name="New Event" parent="menu_event_form" sequence="10"
+            action="act_event_form2" id="menu_event_form2"/>
+
+        <record model="ir.action.act_window" id="act_event_form3">
+            <field name="name">Events</field>
+            <field name="res_model">calendar.event</field>
+            <field name="view_type">form</field>
+            <field name="domain">[('parent', '=', False), ('calendar', '=', active_id)]</field>
+        </record>
+        <record model="ir.action.act_window.view" id="act_event_form3_view1">
+            <field name="sequence" eval="10"/>
+            <field name="view" ref="event_view_tree"/>
+            <field name="act_window" ref="act_event_form3"/>
+        </record>
+        <record model="ir.action.act_window.view" id="act_event_form3_view2">
+            <field name="sequence" eval="20"/>
+            <field name="view" ref="event_view_form"/>
+            <field name="act_window" ref="act_event_form3"/>
+        </record>
+        <record model="ir.action.keyword"
+                id="act_open_event_keyword1">
+            <field name="keyword">form_relate</field>
+            <field name="model">calendar.calendar,0</field>
+            <field name="action" ref="act_event_form3"/>
+        </record>
 
         <record model="ir.ui.view" id="attendee_view_tree">
             <field name="model">calendar.event.attendee</field>
