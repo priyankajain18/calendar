@@ -1570,6 +1570,27 @@ class EventAttendee(ModelSQL, ModelView):
                     context=context)
         return res
 
+    def copy(self, cursor, user, ids, default=None, context=None):
+        attendee_obj = self.pool.get('calendar.attendee')
+
+        int_id = False
+        if isinstance(ids, (int, long)):
+            int_id = True
+            ids = [ids]
+        if default is None:
+            default = {}
+        default = default.copy()
+        new_ids = []
+        for attendee in self.browse(cursor, user, ids, context=context):
+            default['calendar_attendee'] = attendee_obj.copy(cursor, user,
+                    attendee.calendar_attendee.id, context=context)
+            new_id = super(EventAttendee, self).copy(cursor, user, attendee.id,
+                    default=default, context=context)
+            new_ids.append(new_id)
+        if int_id:
+            return new_ids[0]
+        return new_ids
+
     def _attendee2update(self, cursor, user, attendee, context=None):
         attendee_obj = self.pool.get('calendar.attendee')
         return attendee_obj._attendee2update(cursor, user, attendee,
