@@ -492,7 +492,8 @@ class Collection(ModelSQL, ModelView):
             ('owner', '=', user),
             ], limit=1, context=context)
         if not calendar_ids:
-            raise DAV_NotFound
+            # Sunbird failed with no value
+            return '/Calendars'
         calendar = calendar_obj.browse(cursor, user, calendar_ids[0],
                 context=context)
         return '/Calendars/' + calendar.name
