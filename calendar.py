@@ -879,8 +879,8 @@ class Event(ModelSQL, ModelView):
                     res['dtend'] = vevent.dtend.value.astimezone(tzlocal)
                 else:
                     res['dtend'] = vevent.dtend.value
-        elif hasattr(vevent, 'duration') and res['dtstart']:
-            res['dtend'] = dtstart + vevent.duration
+        elif hasattr(vevent, 'duration') and hasattr(vevent, 'dtstart'):
+            res['dtend'] = vevent.dtstart.value + vevent.duration.value
         else:
             res['dtend'] = False
         if hasattr(vevent, 'recurrence-id'):
