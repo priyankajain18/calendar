@@ -52,14 +52,19 @@ propfind.PROPFIND.mk_prop_response = mk_prop_response
 
 def _get_caldav_calendar_description(self, uri):
     dbname, dburi = self._get_dburi(uri)
+    if not dbname:
+        raise DAV_NotFound
     cursor = DATABASE['cursor']
     pool = Pool(DATABASE['dbname'])
-    collection_obj = pool.get('webdav.collection')
+    try:
+        collection_obj = pool.get('webdav.collection')
+    except KeyError:
+        raise DAV_NotFound
     try:
         res = collection_obj.get_calendar_description(cursor, int(USER_ID), dburi,
                 cache=CACHE)
     except AttributeError:
-        return ''
+        raise DAV_NotFound
     except (DAV_Error, DAV_NotFound, DAV_Secret, DAV_Forbidden), exception:
         self._log_exception(exception)
         raise
@@ -72,12 +77,19 @@ TrytonDAVInterface._get_caldav_calendar_description = _get_caldav_calendar_descr
 
 def _get_caldav_calendar_data(self, uri):
     dbname, dburi = self._get_dburi(uri)
+    if not dbname:
+        raise DAV_NotFound
     cursor = DATABASE['cursor']
     pool = Pool(DATABASE['dbname'])
-    collection_obj = pool.get('webdav.collection')
+    try:
+        collection_obj = pool.get('webdav.collection')
+    except KeyError:
+        raise DAV_NotFound
     try:
         res = collection_obj.get_calendar_data(cursor, int(USER_ID), dburi,
                 cache=CACHE)
+    except AttributeError:
+        raise DAV_NotFound
     except (DAV_Error, DAV_NotFound, DAV_Secret, DAV_Forbidden), exception:
         self._log_exception(exception)
         raise
@@ -90,12 +102,19 @@ TrytonDAVInterface._get_caldav_calendar_data = _get_caldav_calendar_data
 
 def _get_caldav_calendar_home_set(self, uri):
     dbname, dburi = self._get_dburi(uri)
+    if not dbname:
+        raise DAV_NotFound
     cursor = DATABASE['cursor']
     pool = Pool(DATABASE['dbname'])
-    collection_obj = pool.get('webdav.collection')
+    try:
+        collection_obj = pool.get('webdav.collection')
+    except KeyError:
+        raise DAV_NotFound
     try:
         res = collection_obj.get_calendar_home_set(cursor, int(USER_ID), dburi,
                 cache=CACHE)
+    except AttributeError:
+        raise DAV_NotFound
     except (DAV_Error, DAV_NotFound, DAV_Secret, DAV_Forbidden), exception:
         self._log_exception(exception)
         raise
@@ -115,12 +134,19 @@ TrytonDAVInterface._get_caldav_calendar_home_set = _get_caldav_calendar_home_set
 
 def _get_caldav_calendar_user_address_set(self, uri):
     dbname, dburi = self._get_dburi(uri)
+    if not dbname:
+        raise DAV_NotFound
     cursor = DATABASE['cursor']
     pool = Pool(DATABASE['dbname'])
-    collection_obj = pool.get('webdav.collection')
+    try:
+        collection_obj = pool.get('webdav.collection')
+    except KeyError:
+        raise DAV_NotFound
     try:
         res = collection_obj.get_calendar_user_address_set(cursor,
                 int(USER_ID), dburi, cache=CACHE)
+    except AttributeError:
+        raise DAV_NotFound
     except (DAV_Error, DAV_NotFound, DAV_Secret, DAV_Forbidden), exception:
         self._log_exception(exception)
         raise
@@ -138,12 +164,19 @@ TrytonDAVInterface._get_caldav_calendar_user_address_set = _get_caldav_calendar_
 
 def _get_caldav_schedule_inbox_URL(self, uri):
     dbname, dburi = self._get_dburi(uri)
+    if not dbname:
+        raise DAV_NotFound
     cursor = DATABASE['cursor']
     pool = Pool(DATABASE['dbname'])
-    collection_obj = pool.get('webdav.collection')
+    try:
+        collection_obj = pool.get('webdav.collection')
+    except KeyError:
+        raise DAV_NotFound
     try:
         res = collection_obj.get_schedule_inbox_URL(cursor, int(USER_ID), dburi,
                 cache=CACHE)
+    except AttributeError:
+        raise DAV_NotFound
     except (DAV_Error, DAV_NotFound, DAV_Secret, DAV_Forbidden), exception:
         self._log_exception(exception)
         raise
@@ -163,12 +196,19 @@ TrytonDAVInterface._get_caldav_schedule_inbox_URL = _get_caldav_schedule_inbox_U
 
 def _get_caldav_schedule_outbox_URL(self, uri):
     dbname, dburi = self._get_dburi(uri)
+    if not dbname:
+        raise DAV_NotFound
     cursor = DATABASE['cursor']
     pool = Pool(DATABASE['dbname'])
-    collection_obj = pool.get('webdav.collection')
+    try:
+        collection_obj = pool.get('webdav.collection')
+    except KeyError:
+        raise DAV_NotFound
     try:
         res = collection_obj.get_schedule_outbox_URL(cursor, int(USER_ID), dburi,
                 cache=CACHE)
+    except AttributeError:
+        raise DAV_NotFound
     except (DAV_Error, DAV_NotFound, DAV_Secret, DAV_Forbidden), exception:
         self._log_exception(exception)
         raise
@@ -201,17 +241,23 @@ def _get_dav_principal_collection_set(self, uri):
         huri = doc.createTextNode(urlparse.urlunsplit(uparts))
         href.appendChild(huri)
         return href
-    return _prev_get_dav_principal_collection_set(self, uri)
+    if _prev_get_dav_principal_collection_set:
+        return _prev_get_dav_principal_collection_set(self, uri)
+    raise DAV_NotFound
 
 TrytonDAVInterface._get_dav_principal_collection_set = _get_dav_principal_collection_set
 
 def _get_caldav_post(self, uri, body, contenttype=''):
     dbname, dburi = self._get_dburi(uri)
+    if not dbname:
+        raise DAV_Forbidden
     cursor = DATABASE['cursor']
     pool = Pool(DATABASE['dbname'])
     calendar_obj = pool.get('calendar.calendar')
     try:
         res = calendar_obj.post(cursor, int(USER_ID), dburi, body)
+    except AttributeError:
+        raise DAV_NotFound
     except (DAV_Error, DAV_NotFound, DAV_Secret, DAV_Forbidden), exception:
         self._log_exception(exception)
         raise
