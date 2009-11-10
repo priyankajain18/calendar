@@ -204,9 +204,7 @@ class Collection(ModelSQL, ModelView):
         if calendar_id:
             if not (uri[10:].split('/', 1) + [None])[1]:
                 return COLLECTION
-            if self.event(cursor, user, uri, calendar_id=calendar_id,
-                    context=context):
-                return OBJECT
+            return OBJECT
         elif self.calendar(cursor, user, uri, ics=True, context=context):
             return OBJECT
         return super(Collection, self).get_resourcetype(cursor, user, uri,
@@ -449,8 +447,10 @@ class Collection(ModelSQL, ModelView):
                         ids.append(calendar_id)
                     elif 'calendar_description' in cache['_calendar']\
                             [calendar_obj._name][calendar_id]:
-                        return cache['_calendar'][calendar_obj._name]\
+                        res = cache['_calendar'][calendar_obj._name]\
                                 [calendar_id]['calendar_description']
+                        if res is not None:
+                            return res
                 else:
                     ids = [calendar_id]
                 res = None
@@ -568,19 +568,20 @@ class Collection(ModelSQL, ModelView):
         calendar_id = self.calendar(cursor, user, uri, context=context)
         if calendar_id:
             if not (uri[10:].split('/', 1) + [None])[1]:
-                raise DAV_Forbidden
+                return 403
             event_id = self.event(cursor, user, uri, calendar_id=calendar_id,
                     context=context)
             if event_id:
                 try:
                     event_obj.delete(cursor, user, event_id, context=context)
                 except:
-                    raise DAV_Forbidden
+                    return 403
                 return 200
+            return 404
         calendar_ics_id = self.calendar(cursor, user, uri, ics=True,
                 context=context)
         if calendar_ics_id:
-            raise DAV_Forbidden
+            return 403
         return super(Collection, self).rm(cursor, user, uri, context=context,
                 cache=cache)
 
