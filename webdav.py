@@ -212,6 +212,21 @@ class Collection(ModelSQL, ModelView):
         return super(Collection, self).get_resourcetype(cursor, user, uri,
                 context=context, cache=cache)
 
+    def get_displayname(self, cursor, user, uri, context=None, cache=None):
+        calendar_obj = self.pool.get('calendar.calendar')
+        if uri in ('Calendars', 'Calendars/'):
+            return 'Calendars'
+        calendar_id = self.calendar(cursor, user, uri, context=context)
+        if calendar_id:
+            if not (uri[10:].split('/', 1) + [None])[1]:
+                return calendar_obj.browse(cursor, user, calendar_id,
+                        context=context).rec_name
+            return uri.split('/')[-1]
+        elif self.calendar(cursor, user, uri, ics=True, context=context):
+            return uri.split('/')[-1]
+        return super(Collection, self).get_displayname(cursor, user, uri,
+                context=context, cache=cache)
+
     def get_contenttype(self, cursor, user, uri, context=None, cache=None):
         if self.event(cursor, user, uri, context=context) \
                 or self.calendar(cursor, user, uri, ics=True, context=context):
