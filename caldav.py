@@ -40,12 +40,13 @@ def mk_prop_response(self, uri, good_props, bad_props, doc):
     if  parent_uri in ('Calendars', 'Calendars/'):
         ad = doc.createElement('calendar')
         ad.setAttribute('xmlns', 'urn:ietf:params:xml:ns:caldav')
-        vc = doc.createElement('vevent-collection')
-        vc.setAttribute('xmlns', 'http://groupdav.org/')
+        #Disable groupdav attribute for iPhone
+        #vc = doc.createElement('vevent-collection')
+        #vc.setAttribute('xmlns', 'http://groupdav.org/')
         cols = res.getElementsByTagName('D:collection')
         if cols:
             cols[0].parentNode.appendChild(ad)
-            cols[0].parentNode.appendChild(vc)
+            #cols[0].parentNode.appendChild(vc)
     return res
 
 propfind.PROPFIND.mk_prop_response = mk_prop_response
@@ -126,7 +127,9 @@ def _get_caldav_calendar_home_set(self, uri):
     doc = domimpl.createDocument(None, 'href', None)
     href = doc.documentElement
     href.tagName = 'D:href'
-    huri = doc.createTextNode(urlparse.urlunsplit(uparts))
+    #iPhone doesn't handle "http" in href
+    #huri = doc.createTextNode(urlparse.urlunsplit(uparts))
+    huri = doc.createTextNode(urllib.quote('/' + dbname + res))
     href.appendChild(huri)
     return href
 
