@@ -158,6 +158,8 @@ class Collection(ModelSQL, ModelView):
         if uri in ('Calendars', 'Calendars/'):
             domain = self._caldav_filter_domain_calendar(cursor, user,
                     filter, context=context)
+            domain = [['OR', ('owner', '=', user), ('read_users', '=', user)],
+                    domain]
             calendar_ids = calendar_obj.search(cursor, user, domain,
                     context=context)
             calendars = calendar_obj.browse(cursor, user, calendar_ids,
