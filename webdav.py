@@ -604,4 +604,38 @@ class Collection(ModelSQL, ModelView):
         return super(Collection, self).exists(cursor, user, uri, context=context,
                 cache=cache)
 
+    def current_user_privilege_set(self, cursor, user, uri, context=None,
+            cache=None):
+        '''
+        Return the privileges of the current user for uri
+        Privileges ares: create, read, write, delete
+
+        :param cursor: the database cursor
+        :param user: the user id
+        :param uri: the uri
+        :param context: the context
+        :param cache: the cache
+        :return: a list of privileges
+        '''
+        calendar_obj = self.pool.get('calendar.calendar')
+
+        if uri in ('Calendars', 'Calendars/'):
+            return ['create', 'read', 'write', 'delete']
+        if uri and uri.startswith('Calendars/'):
+            calendar_id = self.calendar(cursor, user, uri, context=context)
+            if calendar_id:
+                calendar = calendar_obj.browse(cursor, user, calendar_id,
+                        context=context)
+                if user == calendar.owner.id:
+                    return ['create', 'read', 'write', 'delete']
+                res = []
+                if user in (x.id for x in calendar.read_users):
+                    res.append('read')
+                if user in (x.id for x in calendar.write_users):
+                    res.extend(['read', 'write', 'delete'])
+                return res
+            return []
+        return super(Collection, self).current_user_privilege_set(cursor, user,
+                uri, context=context, cache=cache)
+
 Collection()
