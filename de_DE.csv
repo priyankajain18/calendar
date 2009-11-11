@@ -130,10 +130,15 @@ model,"calendar.location,name",0,Location,Ort,0
 model,"calendar.rdate,name",0,Recurrence Date,Wiederholungsdatum,0
 model,"calendar.rrule,name",0,Recurrence Rule,Wiederholungsregel,0
 model,"ir.action,name",act_calendar_form,Calendars,Kalender,0
+model,"ir.action,name",act_calendar_form2,Calendars,Kalender,0
 model,"ir.action,name",act_event_form,Events,Termine,0
+model,"ir.action,name",act_event_form2,Events,Termine,0
+model,"ir.action,name",act_event_form3,Events,Termine,0
 model,"ir.ui.menu,name",menu_calendar,Calendar Management,Kalender,0
 model,"ir.ui.menu,name",menu_calendar_form,Calendars,Kalender,0
 model,"ir.ui.menu,name",menu_event_form,Events,Termine,0
+model,"ir.ui.menu,name",menu_calendar_form2,New Calendar,Neuer Kalender,0
+model,"ir.ui.menu,name",menu_event_form2,New Event,Neuer Termin,0
 model,"res.group,name",group_calendar_admin,Calendar Administration,Kalender Administration,0
 selection,"calendar.attendee,status",0,,,0
 selection,"calendar.attendee,status",0,Accepted,Angenommen,0
