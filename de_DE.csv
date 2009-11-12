@@ -79,7 +79,7 @@ field,"calendar.event.rrule,calendar_rrule",0,Calendar RRule,Kalender WRegel,0
 field,"calendar.event.rrule,event",0,Event,Termin,0
 field,"calendar.event.rrule,rec_name",0,Name,Name,0
 field,"calendar.event,rrules",0,Recurrence Rules,Wiederholungsregeln,0
-field,"calendar.event,sequence",0,Sequence,Sequenz,0
+field,"calendar.event,sequence",0,Sequence,Revision,0
 field,"calendar.event,status",0,Status,Status,0
 field,"calendar.event,summary",0,Summary,Zusammenfassung,0
 field,"calendar.event,timezone",0,Timezone,Zeitzone,0
