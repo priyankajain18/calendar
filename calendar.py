@@ -2,6 +2,7 @@
 #this repository contains the full copyright notices and license terms.
 from trytond.model import ModelSQL, ModelView, fields
 from trytond.tools import Cache, reduce_ids
+from trytond.backend import TableHandler
 import uuid
 import vobject
 import dateutil.tz
@@ -1784,8 +1785,8 @@ class RRule(ModelSQL, ModelView):
     def __init__(self):
         super(RRule, self).__init__()
         self._sql_constraints += [
-            ('until_count',
-                'CHECK(until IS NULL OR count IS NULL)',
+            ('until_count_only_one',
+                'CHECK(until IS NULL OR count IS NULL OR count = 0)',
                 'Only one of "until" and "count" can be set!'),
         ]
         self._constraints += [
@@ -1810,6 +1811,12 @@ class RRule(ModelSQL, ModelView):
             'invalid_bymonth': 'Invalid "By Month"',
             'invalid_bysetpos': 'Invalid "By Position"',
         })
+
+    def init(self, cursor, module_name):
+        # Migrate from 1.4: unit_count replaced by until_count_only_one
+        table  = TableHandler(cursor, self, module_name)
+        table.drop_constraint('until_count')
+        return super(RRule, self).init(cursor, module_name)
 
     def check_bysecond(self, cursor, user, ids):
         for rule in self.browse(cursor, user, ids):
