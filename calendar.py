@@ -429,7 +429,7 @@ class Event(ModelSQL, ModelView):
     uuid = fields.Char('UUID', required=True,
             help='Universally Unique Identifier', select=1)
     calendar = fields.Many2One('calendar.calendar', 'Calendar',
-            required=True, select=1)
+            required=True, select=1, ondelete="CASCADE")
     summary = fields.Char('Summary')
     sequence = fields.Integer('Sequence')
     description = fields.Text('Description')
