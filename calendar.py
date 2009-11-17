@@ -1995,7 +1995,7 @@ class RRule(ModelSQL, ModelView):
                 res += vobject.icalendar.dateToString(rule.until.date())
             else:
                 res += vobject.icalendar.dateTimeToString(rule.until\
-                        .replace(tzinfo=tzlocal).astimezone(utc),
+                        .replace(tzinfo=tzlocal).astimezone(tzutc),
                         convertToUTC=True)
         elif rule.count:
             res += ';COUNT=' + str(rule.count)
