@@ -244,7 +244,8 @@ class Calendar(ModelSQL, ModelView):
                     all_day = event.all_day
                     for occurence in event.occurences:
                         if occurence.recurrence.replace(tzinfo=tzlocal) == \
-                                freebusy_dtstart:
+                                freebusy_dtstart.replace(tzinfo=tzlocal):
+                            freebusy_dtstart = occurence.dtstart.replace(tzinfo=tzlocal)
                             if occurence.dtend:
                                 freebusy_dtend = occurence.dtend\
                                         .replace(tzinfo=tzlocal)
