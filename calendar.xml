@@ -244,7 +244,7 @@ this repository contains the full copyright notices and license terms. -->
                             <field name="attendees" colspan="4"/>
                         </page>
                         <page string="Occurences" id="occurences"
-                            states="{'invisible': '''bool(parent)'''}">
+                            states="{'invisible': '''bool(globals().get('_parent_parent'))'''}">
                             <field name="rrules" colspan="2"/>
                             <field name="rdates" colspan="2"/>
                             <field name="exrules" colspan="2"/>

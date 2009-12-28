@@ -493,7 +493,8 @@ class Event(ModelSQL, ModelView):
                 "('calendar', '=', calendar)"],
             ondelete='CASCADE', depends=['uuid', 'calendar'])
     recurrence = fields.DateTime('Recurrence', select=1, states={
-                'invisible': "not bool(parent)",
+                'invisible': "not bool(globals().get('_parent_parent'))",
+                'required': "bool(globals().get('_parent_parent'))",
                 }, depends=['parent'])
     calendar_owner = fields.Function('get_calendar_field',
             type='many2one', relation='res.user', string='Owner',
@@ -1147,7 +1148,7 @@ class Event(ModelSQL, ModelView):
         if not hasattr(vevent, 'last-modified'):
             vevent.add('last-modified')
         vevent.last_modified.value = date.replace(tzinfo=tzlocal)
-        if event.recurrence:
+        if event.recurrence and event.parent:
             if not hasattr(vevent, 'recurrence-id'):
                 vevent.add('recurrence-id')
             if event.all_day:
@@ -1155,6 +1156,8 @@ class Event(ModelSQL, ModelView):
             else:
                 vevent.recurrence_id.value = event.recurrence\
                         .replace(tzinfo=tzlocal).astimezone(tzevent)
+        elif hasattr(vevent, 'recurrence-id'):
+            del vevent.recurrence_id
         if event.status:
             if not hasattr(vevent, 'status'):
                 vevent.add('status')
