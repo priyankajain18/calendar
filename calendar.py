@@ -1188,6 +1188,10 @@ class Event(ModelSQL, ModelView):
         elif hasattr(vevent, 'location'):
             del vevent.location
 
+        if not hasattr(vevent, 'transp'):
+            vevent.add('transp')
+        vevent.transp.value = event.transp.upper()
+
         if event.organizer:
             if not hasattr(vevent, 'organizer'):
                 vevent.add('organizer')
