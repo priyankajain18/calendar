@@ -107,12 +107,6 @@ this repository contains the full copyright notices and license terms. -->
             <field name="operand">User</field>
             <field name="rule_group" ref="rule_group_read_calendar"/>
         </record>
-        <record model="ir.rule" id="rule_group_read_calendar_line3">
-            <field name="field" search="[('name', '=', 'classification_public'), ('model.model', '=', 'calendar.event')]"/>
-            <field name="operator">=</field>
-            <field name="operand">True</field>
-            <field name="rule_group" ref="rule_group_read_calendar"/>
-        </record>
 
         <record model="ir.rule.group" id="rule_group_write_calendar">
             <field name="model" search="[('model', '=', 'calendar.event')]"/>

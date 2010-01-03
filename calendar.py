@@ -505,9 +505,6 @@ class Event(ModelSQL, ModelView):
     calendar_write_users = fields.Function('get_calendar_field',
             type='many2many', relation='res.user', string='Write Users',
             fnct_search='search_calendar_field')
-    classification_public = fields.Function('get_classification_public',
-            type='boolean', string='Classification Public',
-            fnct_search='search_classification_public')
     vevent = fields.Binary('vevent')
 
     def __init__(self):
@@ -522,6 +519,20 @@ class Event(ModelSQL, ModelView):
         self._error_messages.update({
             'invalid_recurrence': 'Recurrence can not be recurrent!',
         })
+
+    def init(self, cursor, module_name):
+        # Migrate from 1.4: remove classification_public
+        model_data_obj = self.pool.get('ir.model.data')
+        rule_obj = self.pool.get('ir.rule')
+        model_data_ids = model_data_obj.search(cursor, 0, [
+            ('fs_id', '=', 'rule_group_read_calendar_line3'),
+            ('module', '=', module_name),
+            ('inherit', '=', False),
+            ], limit=1)
+        if model_data_ids:
+            model_data = model_data_obj.browse(cursor, 0, model_data_ids[0])
+            rule_obj.delete(cursor, 0, model_data.db_id)
+        return super(Event, self).init(cursor, module_name)
 
     def default_uuid(self, cursor, user, context=None):
         return str(uuid.uuid4())
@@ -561,27 +572,6 @@ class Event(ModelSQL, ModelView):
         while i < len(args):
             field = args[i][0][9:]
             args2.append(tuple(['calendar.' + field] + list(args[i])[1:]))
-            i += 1
-        return args2
-
-    def get_classification_public(self, cursor, user, ids, name, arg,
-            context=None):
-        res = {}
-        for event in self.browse(cursor, user, ids, context=context):
-            res[event.id] = False
-            if event.classification == 'public':
-                res[event.id] = True
-        return res
-
-    def search_classification_public(self, cursor, user, name, args,
-            context=None):
-        args2 = []
-        i = 0
-        while i < len(args):
-            if args[i][2]:
-                args2.append(('classification', '=', 'public'))
-            else:
-                args2.append(('classification', '!=', 'public'))
             i += 1
         return args2
 
