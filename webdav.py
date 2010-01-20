@@ -36,6 +36,7 @@ class Collection(ModelSQL, ModelView):
             return calendar_obj.get_name(cursor, user, calendar, context=context)
         return False
 
+    @Cache('webdav_collection.event')
     def event(self, cursor, user, uri, calendar_id=False, context=None):
         '''
         Return the event id in the uri or False
@@ -64,8 +65,6 @@ class Collection(ModelSQL, ModelView):
             if event_ids:
                 return event_ids[0]
         return False
-
-    event = Cache('webdav_collection.event')(event)
 
     def _caldav_filter_domain_calendar(self, cursor, user, filter, context=None):
         '''

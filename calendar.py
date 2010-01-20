@@ -71,6 +71,7 @@ class Calendar(ModelSQL, ModelView):
                 return False
         return True
 
+    @Cache('calendar_calendar.get_name')
     def get_name(self, cursor, user, name, context=None):
         '''
         Return the calendar id of the name
@@ -87,8 +88,6 @@ class Calendar(ModelSQL, ModelView):
         if calendar_ids:
             return calendar_ids[0]
         return False
-
-    get_name = Cache('calendar_calendar.get_name')(get_name)
 
     def calendar2ical(self, cursor, user, calendar_id, context=None):
         '''
