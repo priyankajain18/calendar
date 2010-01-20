@@ -1,6 +1,7 @@
 #This file is part of Tryton.  The COPYRIGHT file at the top level of
 #this repository contains the full copyright notices and license terms.
 from trytond.model import ModelView, ModelSQL, fields
+from trytond.pyson import Bool, Eval, Or
 import copy
 
 
@@ -14,11 +15,13 @@ class User(ModelSQL, ModelView):
         self.email = copy.copy(self.email)
         self.email.states = copy.copy(self.email.states)
         self.email.depends = copy.copy(self.email.depends)
-        if 'required' in self.email.states:
-            self.email.states['required'] = '(' + self.email.states['required'] \
-                    + ') or bool(calendars)'
+        required = Bool(Eval('calendars'))
+        if not self.email.states.get('required'):
+            self.email.states['required'] = required
         else:
-            self.email.states['required'] = 'bool(calendars)'
+            self.email.states['required'] = \
+                    Or(self.email.states['required'],
+                            required)
         if 'calendars' not in self.email.depends:
             self.email.depends.append('calendars')
 

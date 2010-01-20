@@ -238,7 +238,7 @@ this repository contains the full copyright notices and license terms. -->
                             <field name="attendees" colspan="4"/>
                         </page>
                         <page string="Occurences" id="occurences"
-                            states="{'invisible': '''bool(globals().get('_parent_parent'))'''}">
+                            states="{'invisible': Bool(Eval('_parent_parent'))}">
                             <field name="rrules" colspan="2"/>
                             <field name="rdates" colspan="2"/>
                             <field name="exrules" colspan="2"/>
@@ -302,7 +302,7 @@ this repository contains the full copyright notices and license terms. -->
             <field name="name">Events</field>
             <field name="res_model">calendar.event</field>
             <field name="view_type">form</field>
-            <field name="domain">[('parent', '=', False), ('calendar', '=', active_id)]</field>
+            <field name="domain">[('parent', '=', False), ('calendar', '=', Eval('active_id'))]</field>
         </record>
         <record model="ir.action.act_window.view" id="act_event_form3_view1">
             <field name="sequence" eval="10"/>

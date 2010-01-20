@@ -3,6 +3,7 @@
 from trytond.model import ModelSQL, ModelView, fields
 from trytond.tools import Cache, reduce_ids
 from trytond.backend import TableHandler
+from trytond.pyson import If, Bool, Not, Eval, Greater
 import uuid
 import vobject
 import dateutil.tz
@@ -456,7 +457,7 @@ class Event(ModelSQL, ModelView):
         ('cancelled', 'Cancelled'),
         ], 'Status')
     organizer = fields.Char('Organizer', states={
-        'required': "bool(attendees) and not bool(parent)",
+        'required': If(Bool(Eval('attendees')), Not(Bool(Eval('parent'))), False),
         }, depends=['attendees', 'parent'])
     attendees = fields.One2Many('calendar.event.attendee', 'event',
             'Attendees')
@@ -467,34 +468,38 @@ class Event(ModelSQL, ModelView):
     alarms = fields.One2Many('calendar.event.alarm', 'event', 'Alarms')
     rdates = fields.One2Many('calendar.event.rdate', 'event', 'Recurrence Dates',
             states={
-                'invisible': "bool(parent)",
+                'invisible': Bool(Eval('parent')),
             }, depends=['parent'])
     rrules = fields.One2Many('calendar.event.rrule', 'event', 'Recurrence Rules',
             states={
-                'invisible': "bool(parent)",
+                'invisible': Bool(Eval('parent')),
             }, depends=['parent'])
     exdates = fields.One2Many('calendar.event.exdate', 'event', 'Exception Dates',
             states={
-                'invisible': "bool(parent)",
+                'invisible': Bool(Eval('parent')),
             }, depends=['parent'])
     exrules = fields.One2Many('calendar.event.exrule', 'event', 'Exception Rules',
             states={
-                'invisible': "bool(parent)",
+                'invisible': Bool(Eval('parent')),
             }, depends=['parent'])
     occurences = fields.One2Many('calendar.event', 'parent', 'Occurences',
-            domain=["('uuid', '=', uuid)",
-                "('calendar', '=', calendar)"],
+            domain=[
+                ('uuid', '=', Eval('uuid')),
+                ('calendar', '=', Eval('calendar')),
+            ],
             states={
-                'invisible': "bool(parent)",
+                'invisible': Bool(Eval('parent')),
             }, depends=['uuid', 'calendar', 'parent'])
     parent = fields.Many2One('calendar.event', 'Parent',
-            domain=["('uuid', '=', uuid)",
-                "('parent', '=', False)",
-                "('calendar', '=', calendar)"],
+            domain=[
+                ('uuid', '=', Eval('uuid')),
+                ('parent', '=', False),
+                ('calendar', '=', Eval('calendar')),
+            ],
             ondelete='CASCADE', depends=['uuid', 'calendar'])
     recurrence = fields.DateTime('Recurrence', select=1, states={
-                'invisible': "not bool(globals().get('_parent_parent'))",
-                'required': "bool(globals().get('_parent_parent'))",
+                'invisible': Not(Bool(Eval('_parent_parent'))),
+                'required': Bool(Eval('_parent_parent')),
                 }, depends=['parent'])
     calendar_owner = fields.Function('get_calendar_field',
             type='many2one', relation='res.user', string='Owner',
@@ -1351,7 +1356,7 @@ class Attendee(ModelSQL, ModelView):
     _name = 'calendar.attendee'
 
     email = fields.Char('Email', required=True, states={
-        'readonly': 'active_id > 0',
+        'readonly': Greater(Eval('active_id', 0), 0),
         })
     status = fields.Selection([
         ('', ''),
