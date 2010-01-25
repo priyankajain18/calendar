@@ -891,7 +891,8 @@ class Event(ModelSQL, ModelView):
         if hasattr(vevent, 'recurrence-id'):
             if not isinstance(vevent.recurrence_id.value, datetime.datetime):
                 res['recurrence'] = datetime.datetime.combine(
-                        vevent.recurrence_id.value, datetime.time())
+                        vevent.recurrence_id.value, datetime.time()
+                        ).replace(tzinfo=tzlocal)
             else:
                 if vevent.recurrence_id.value.tzinfo:
                     res['recurrence'] = \
@@ -1048,14 +1049,14 @@ class Event(ModelSQL, ModelView):
             occurences_todel = [x.id for x in event.occurences]
         for vevent in vevents:
             event_id = None
-            if event:
-                for occurence in event.occurences:
-                    if occurence.recurrence.replace(tzinfo=tzlocal) \
-                            == vevent.recurrence_id.value:
-                        event_id = occurence.id
-                        occurences_todel.remove(occurence.id)
             vals = self.ical2values(cursor, user, event_id, ical,
                     calendar_id, vevent=vevent, context=context)
+            if event:
+                for occurence in event.occurences:
+                    if vals['recurrence'] == \
+                            occurence.recurrence.replace(tzinfo=tzlocal):
+                        event_id = occurence.id
+                        occurences_todel.remove(occurence.id)
             if event:
                 vals['uuid'] = event.uuid
             else:
@@ -1067,7 +1068,7 @@ class Event(ModelSQL, ModelView):
                 res['occurences'].append(('create', vals))
         if occurences_todel:
             res.setdefault('occurences', [])
-            res['occurences'].append(('delete', occurences_todel))
+            res['occurences'].insert(0, ('delete', occurences_todel))
         return res
 
     def event2ical(self, cursor, user, event, context=None):
