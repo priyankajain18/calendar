@@ -1616,15 +1616,21 @@ class EventAttendee(ModelSQL, ModelView):
 EventAttendee()
 
 
-class RDate(ModelSQL, ModelView):
-    'Recurrence Date'
+class Date(ModelSQL, ModelView):
+    'Calendar Date'
     _description = __doc__
-    _name = 'calendar.rdate'
+    _name = 'calendar.date'
     _rec_name = 'datetime'
 
     date = fields.Boolean('Is Date', help='Ignore time of field "Date", ' \
             'but handle as date only.')
     datetime = fields.DateTime('Date', required=True)
+
+    def init(self, cursor, module_name):
+        # Migration from 1.4: calendar.rdate renamed to calendar.name
+        old_table = 'calendar_rdate'
+        if TableHandler.table_exist(cursor, old_table):
+            TableHandler.table_rename(cursor, old_table, self._table)
 
     def _date2update(self, cursor, user, date, context=None):
         res = {}
@@ -1661,7 +1667,7 @@ class RDate(ModelSQL, ModelView):
 
         :param cursor: the database cursor
         :param user: the user id
-        :param date: a BrowseRecord of calendar.rdate or
+        :param date: a BrowseRecord of calendar.date or
             calendar.exdate
         :param context: the context
         :return: a datetime
@@ -1673,20 +1679,27 @@ class RDate(ModelSQL, ModelView):
             res = date.datetime.replace(tzinfo=tzlocal).astimezone(tzutc)
         return res
 
-RDate()
+Date()
 
 
 class EventRDate(ModelSQL, ModelView):
     'Recurrence Date'
     _description = __doc__
     _name = 'calendar.event.rdate'
-    _inherits = {'calendar.rdate': 'calendar_rdate'}
+    _inherits = {'calendar.date': 'calendar_date'}
     _rec_name = 'datetime'
 
-    calendar_rdate = fields.Many2One('calendar.rdate', 'Calendar RDate',
+    calendar_date = fields.Many2One('calendar.date', 'Calendar Date',
             required=True, ondelete='CASCADE', select=1)
     event = fields.Many2One('calendar.event', 'Event', ondelete='CASCADE',
             select=1, required=True)
+
+    def init(self, cursor, module_name):
+        # Migration from 1.4: calendar_rdate renamed to calendar_name
+        table = TableHandler(cursor, self, module_name)
+        old_column = 'calendar_rdate'
+        if table.column_exist(old_column):
+            table.column_rename(old_column, 'calendar_date')
 
     def create(self, cursor, user, values, context=None):
         event_obj = self.pool.get('calendar.event')
@@ -1712,11 +1725,11 @@ class EventRDate(ModelSQL, ModelView):
 
     def delete(self, cursor, user, ids, context=None):
         event_obj = self.pool.get('calendar.event')
-        rdate_obj = self.pool.get('calendar.rdate')
+        rdate_obj = self.pool.get('calendar.date')
         if isinstance(ids, (int, long)):
             ids = [ids]
         event_rdates = self.browse(cursor, user, ids, context=context)
-        rdate_ids = [a.calendar_rdate.id for a in event_rdates]
+        rdate_ids = [a.calendar_date.id for a in event_rdates]
         event_ids = [x.event.id for x in event_rdates]
         if event_ids:
             # Update write_date of event
@@ -1727,15 +1740,15 @@ class EventRDate(ModelSQL, ModelView):
         return res
 
     def _date2update(self, cursor, user, date, context=None):
-        date_obj = self.pool.get('calendar.rdate')
+        date_obj = self.pool.get('calendar.date')
         return date_obj._date2update(cursor, user, date, context=context)
 
     def date2values(self, cursor, user, date, context=None):
-        date_obj = self.pool.get('calendar.rdate')
+        date_obj = self.pool.get('calendar.date')
         return date_obj.date2values(cursor, user, date, context=context)
 
     def date2date(self, cursor, user, date, context=None):
-        date_obj = self.pool.get('calendar.rdate')
+        date_obj = self.pool.get('calendar.date')
         return date_obj.date2date(cursor, user, date, context=context)
 
 EventRDate()
