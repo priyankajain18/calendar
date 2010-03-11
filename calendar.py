@@ -500,15 +500,12 @@ class Event(ModelSQL, ModelView):
                 'invisible': Not(Bool(Eval('_parent_parent'))),
                 'required': Bool(Eval('_parent_parent')),
                 }, depends=['parent'])
-    calendar_owner = fields.Function('get_calendar_field',
-            type='many2one', relation='res.user', string='Owner',
-            fnct_search='search_calendar_field')
-    calendar_read_users = fields.Function('get_calendar_field',
-            type='many2many', relation='res.user', string='Read Users',
-            fnct_search='search_calendar_field')
-    calendar_write_users = fields.Function('get_calendar_field',
-            type='many2many', relation='res.user', string='Write Users',
-            fnct_search='search_calendar_field')
+    calendar_owner = fields.Function(fields.Many2One('res.user', 'Owner'),
+            'get_calendar_field', searcher='search_calendar_field')
+    calendar_read_users = fields.Function(fields.Many2One('res.user',
+        'Read Users'), 'get_calendar_field', searcher='search_calendar_field')
+    calendar_write_users = fields.Function(fields.One2Many('res.user', None,
+        'Write Users'), 'get_calendar_field', searcher='search_calendar_field')
     vevent = fields.Binary('vevent')
 
     def __init__(self):
@@ -558,7 +555,7 @@ class Event(ModelSQL, ModelView):
     def timezones(self, cursor, user, context=None):
         return [(x, x) for x in pytz.common_timezones] + [('', '')]
 
-    def get_calendar_field(self, cursor, user, ids, name, arg, context=None):
+    def get_calendar_field(self, cursor, user, ids, name, context=None):
         assert name in ('calendar_owner', 'calendar_read_users',
                 'calendar_write_users'), 'Invalid name'
         res = {}
