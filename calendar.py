@@ -1629,6 +1629,8 @@ class Date(ModelSQL, ModelView):
         if TableHandler.table_exist(cursor, old_table):
             TableHandler.table_rename(cursor, old_table, self._table)
 
+        return super(Date, self).init(cursor, module_name)
+
     def _date2update(self, cursor, user, date, context=None):
         res = {}
         res['date'] = date.date
@@ -1697,6 +1699,8 @@ class EventRDate(ModelSQL, ModelView):
         old_column = 'calendar_rdate'
         if table.column_exist(old_column):
             table.column_rename(old_column, 'calendar_date')
+
+        return super(EventRDate, self).init(cursor, module_name)
 
     def create(self, cursor, user, values, context=None):
         event_obj = self.pool.get('calendar.event')
