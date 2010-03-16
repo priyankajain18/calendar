@@ -1624,7 +1624,7 @@ class Date(ModelSQL, ModelView):
     datetime = fields.DateTime('Date', required=True)
 
     def init(self, cursor, module_name):
-        # Migration from 1.4: calendar.rdate renamed to calendar.name
+        # Migration from 1.4: calendar.rdate renamed to calendar.date
         old_table = 'calendar_rdate'
         if TableHandler.table_exist(cursor, old_table):
             TableHandler.table_rename(cursor, old_table, self._table)
@@ -1692,7 +1692,7 @@ class EventRDate(ModelSQL, ModelView):
             select=1, required=True)
 
     def init(self, cursor, module_name):
-        # Migration from 1.4: calendar_rdate renamed to calendar_name
+        # Migration from 1.4: calendar_rdate renamed to calendar_date
         table = TableHandler(cursor, self, module_name)
         old_column = 'calendar_rdate'
         if table.column_exist(old_column):
