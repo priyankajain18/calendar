@@ -35,6 +35,9 @@ field,"calendar.calendar-write-res.user,user",0,User,Benutzer,0
 field,"calendar.calendar,write_users",0,Write Users,Benutzer mit Schreibberechtigung,0
 field,"calendar.category,name",0,Name,Name,0
 field,"calendar.category,rec_name",0,Name,Name,0
+field,"calendar.date,date",0,Is Date,Als Datum,0
+field,"calendar.date,datetime",0,Date,Zeitpunkt,0
+field,"calendar.date,rec_name",0,Name,Name,0
 field,"calendar.event.alarm,calendar_alarm",0,Calendar Alarm,Kalender Alarm,0
 field,"calendar.event.alarm,event",0,Event,Termin,0
 field,"calendar.event.alarm,rec_name",0,Name,Name,0
@@ -53,11 +56,10 @@ field,"calendar.event,calendar_read_users",0,Read Users,Benutzer mit Leseberecht
 field,"calendar.event,calendar_write_users",0,Write Users,Benutzer mit Schreibberechtigung,0
 field,"calendar.event,categories",0,Categories,Kategorien,0
 field,"calendar.event,classification",0,Classification,Klassifizierung,0
-field,"calendar.event,classification_public",0,Classification Public,Öffentliche Klassifizierung,0
 field,"calendar.event,description",0,Description,Bezeichnung,0
 field,"calendar.event,dtend",0,End Date,Enddatum,0
 field,"calendar.event,dtstart",0,Start Date,Anfangsdatum,0
-field,"calendar.event.exdate,calendar_rdate",0,Calendar RDate,Kalender WDatum,0
+field,"calendar.event.exdate,calendar_date",0,Calendar Date,Kalender Datum,0
 field,"calendar.event.exdate,event",0,Event,Termin,0
 field,"calendar.event.exdate,rec_name",0,Name,Name,0
 field,"calendar.event,exdates",0,Exception Dates,Ausnahmedaten,0
@@ -69,7 +71,7 @@ field,"calendar.event,location",0,Location,Ort,0
 field,"calendar.event,occurences",0,Occurences,Ereignisse,0
 field,"calendar.event,organizer",0,Organizer,Organisator,0
 field,"calendar.event,parent",0,Parent,Übergeordnet (Termin),0
-field,"calendar.event.rdate,calendar_rdate",0,Calendar RDate,Kalender WDatum,0
+field,"calendar.event.rdate,calendar_date",0,Calendar Date,Kalender Datum,0
 field,"calendar.event.rdate,event",0,Event,Termin,0
 field,"calendar.event.rdate,rec_name",0,Name,Name,0
 field,"calendar.event,rdates",0,Recurrence Dates,Wiederholungsdaten,0
@@ -88,9 +90,6 @@ field,"calendar.event,uuid",0,UUID,UUID,0
 field,"calendar.event,vevent",0,vevent,vevent,0
 field,"calendar.location,name",0,Name,Name,0
 field,"calendar.location,rec_name",0,Name,Name,0
-field,"calendar.rdate,date",0,Is Date,Als Datum,0
-field,"calendar.rdate,datetime",0,Date,Zeitpunkt,0
-field,"calendar.rdate,rec_name",0,Name,Name,0
 field,"calendar.rrule,byday",0,By Day,Für Tag,0
 field,"calendar.rrule,byhour",0,By Hour,Für Stunde,0
 field,"calendar.rrule,byminute",0,By Minute,Für Minute,0
@@ -109,8 +108,8 @@ field,"calendar.rrule,until_date",0,Is Date,Als Datum,0
 field,"calendar.rrule,wkst",0,Week Day,Wochentag,0
 field,"res.user,calendars",0,Calendars,Kalender,0
 help,"calendar.calendar,owner",0,The user must have an email,Dem Benutzer muss eine E-Mail-Adresse zugeordnet sein!,0
+help,"calendar.date,date",0,"Ignore time of field ""Date"", but handle as date only.","Verwende von Feld ""Zeitpunkt"" nur das Datum ohne den Zeitanteil.",0
 help,"calendar.event,uuid",0,Universally Unique Identifier,Universally Unique Identifier,0
-help,"calendar.rdate,date",0,"Ignore time of field ""Date"", but handle as date only.","Verwende von Feld ""Zeitpunkt"" nur das Datum ohne den Zeitanteil.",0
 help,"calendar.rrule,until_date",0,"Ignore time of field ""Until Date"", but handle as date only.","Verwende von Feld ""Bis Zeitpunkt"" nur das Datum ohne den Zeitanteil.",0
 model,"calendar.alarm,name",0,Alarm,Alarm,0
 model,"calendar.attendee,name",0,Attendee,Teilnehmer,0
@@ -118,6 +117,7 @@ model,"calendar.calendar,name",0,Calendar,Kalender,0
 model,"calendar.calendar-read-res.user,name",0,Calendar - read - User,Kalender - Schreiben - Benutzer,0
 model,"calendar.calendar-write-res.user,name",0,Calendar - write - User,Kalender - Lesen - Benutzer,0
 model,"calendar.category,name",0,Category,Kategorie,0
+model,"calendar.date,name",0,Calendar Date,Kalender Datum,0
 model,"calendar.event.alarm,name",0,Alarm,Alarm,0
 model,"calendar.event.attendee,name",0,Attendee,Teilnehmer,0
 model,"calendar.event-calendar.category,name",0,Event - Category,Termin - Kategorie,0
@@ -127,7 +127,6 @@ model,"calendar.event,name",0,Event,Termin,0
 model,"calendar.event.rdate,name",0,Recurrence Date,Wiederholungsdatum,0
 model,"calendar.event.rrule,name",0,Recurrence Rule,Wiederholungsregel,0
 model,"calendar.location,name",0,Location,Ort,0
-model,"calendar.rdate,name",0,Recurrence Date,Wiederholungsdatum,0
 model,"calendar.rrule,name",0,Recurrence Rule,Wiederholungsregel,0
 model,"ir.action,name",act_calendar_form,Calendars,Kalender,0
 model,"ir.action,name",act_calendar_form2,Calendars,Kalender,0
