@@ -287,6 +287,7 @@ class Calendar(ModelSQL, ModelView):
         :param context: the context
         :return: the xml with schedule-response
         '''
+        from DAV.errors import DAV_Forbidden
         collection_obj = self.pool.get('webdav.collection')
 
         calendar_id = collection_obj.calendar(cursor, user, uri,
