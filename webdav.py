@@ -571,7 +571,7 @@ class Collection(ModelSQL, ModelView):
                 try:
                     calendar_obj.delete(cursor, user, calendar_id,
                             context=context)
-                except:
+                except Exception:
                     raise DAV_Forbidden
                 return 200
             raise DAV_Forbidden
@@ -590,7 +590,7 @@ class Collection(ModelSQL, ModelView):
             if event_id:
                 try:
                     event_obj.delete(cursor, user, event_id, context=context)
-                except:
+                except Exception:
                     return 403
                 return 200
             return 404

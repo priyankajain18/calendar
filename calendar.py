@@ -1840,7 +1840,7 @@ class RRule(ModelSQL, ModelView):
             for second in rule.bysecond.split(','):
                 try:
                     second = int(second)
-                except:
+                except Exception:
                     return False
                 if not (second >= 0 and second <= 59):
                     return False
@@ -1853,7 +1853,7 @@ class RRule(ModelSQL, ModelView):
             for minute in rule.byminute.split(','):
                 try:
                     minute = int(minute)
-                except:
+                except Exception:
                     return False
                 if not (minute >= 0 and minute <= 59):
                     return False
@@ -1866,7 +1866,7 @@ class RRule(ModelSQL, ModelView):
             for hour in rule.byhour.split(','):
                 try:
                     hour = int(hour)
-                except:
+                except Exception:
                     return False
                 if not (hour >= 0 and hour <= 23):
                     return False
@@ -1885,7 +1885,7 @@ class RRule(ModelSQL, ModelView):
                     continue
                 try:
                     ordwk = int(ordwk)
-                except:
+                except Exception:
                     return False
                 if not (abs(ordwk) >= 1 and abs(ordwk) <= 53):
                     return False
@@ -1898,7 +1898,7 @@ class RRule(ModelSQL, ModelView):
             for monthdaynum in rule.bymonthday.split(','):
                 try:
                     monthdaynum = int(monthdaynum)
-                except:
+                except Exception:
                     return False
                 if not (abs(monthdaynum) >= 1 and abs(monthdaynum) <= 31):
                     return False
@@ -1911,7 +1911,7 @@ class RRule(ModelSQL, ModelView):
             for yeardaynum in rule.byyearday.split(','):
                 try:
                     yeardaynum = int(yeardaynum)
-                except:
+                except Exception:
                     return False
                 if not (abs(yeardaynum) >= 1 and abs(yeardaynum) <= 366):
                     return False
@@ -1924,7 +1924,7 @@ class RRule(ModelSQL, ModelView):
             for weeknum in rule.byweekno.split(','):
                 try:
                     weeknum = int(weeknum)
-                except:
+                except Exception:
                     return False
                 if not (abs(weeknum) >= 1 and abs(weeknum) <= 53):
                     return False
@@ -1937,7 +1937,7 @@ class RRule(ModelSQL, ModelView):
             for monthnum in rule.bymonth.split(','):
                 try:
                     monthnum = int(monthnum)
-                except:
+                except Exception:
                     return False
                 if not (monthnum >= 1 and monthnum <= 12):
                     return False
@@ -1950,7 +1950,7 @@ class RRule(ModelSQL, ModelView):
             for setposday in rule.bysetpos.split(','):
                 try:
                     setposday = int(setposday)
-                except:
+                except Exception:
                     return False
                 if not (abs(setposday) >= 1 and abs(setposday) <= 366):
                     return False
@@ -1981,7 +1981,7 @@ class RRule(ModelSQL, ModelView):
             if field == 'until':
                 try:
                     value = vobject.icalendar.stringToDateTime(value)
-                except:
+                except Exception:
                     value = vobject.icalendar.stringToDate(value)
                 if not isinstance(value, datetime.datetime):
                     res['until_date'] = True
