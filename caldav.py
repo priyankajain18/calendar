@@ -1,18 +1,17 @@
 #This file is part of Tryton.  The COPYRIGHT file at the top level of
 #this repository contains the full copyright notices and license terms.
-_TRYTON_RELOAD = False
-
-from DAV import propfind
-from DAV.errors import *
-from DAV.utils import get_uriparentpath
-from DAV.constants import DAV_VERSION_1, DAV_VERSION_2
-from trytond.protocols.webdav import TrytonDAVInterface, USER_ID, CACHE, \
-        DATABASE, WebDAVAuthRequestHandler
-from trytond.pool import Pool
 import urlparse
 import urllib
 from string import atoi
 import xml.dom.minidom
+from DAV import propfind
+from DAV.errors import *
+from DAV.utils import get_uriparentpath
+from DAV.constants import DAV_VERSION_1, DAV_VERSION_2
+from trytond.protocols.webdav import TrytonDAVInterface, CACHE, \
+        WebDAVAuthRequestHandler
+from trytond.pool import Pool
+_TRYTON_RELOAD = False
 domimpl = xml.dom.minidom.getDOMImplementation()
 
 TrytonDAVInterface.PROPS['urn:ietf:params:xml:ns:caldav'] = (
@@ -55,15 +54,13 @@ def _get_caldav_calendar_description(self, uri):
     dbname, dburi = self._get_dburi(uri)
     if not dbname:
         raise DAV_NotFound
-    cursor = DATABASE['cursor']
-    pool = Pool(DATABASE['dbname'])
+    pool = Pool(Transaction().cursor.database_name)
     try:
         collection_obj = pool.get('webdav.collection')
     except KeyError:
         raise DAV_NotFound
     try:
-        res = collection_obj.get_calendar_description(cursor, int(USER_ID), dburi,
-                cache=CACHE)
+        res = collection_obj.get_calendar_description(dburi, cache=CACHE)
     except AttributeError:
         raise DAV_NotFound
     except (DAV_Error, DAV_NotFound, DAV_Secret, DAV_Forbidden), exception:
@@ -80,15 +77,13 @@ def _get_caldav_calendar_data(self, uri):
     dbname, dburi = self._get_dburi(uri)
     if not dbname:
         raise DAV_NotFound
-    cursor = DATABASE['cursor']
-    pool = Pool(DATABASE['dbname'])
+    pool = Pool(Transaction().cursor.database_name)
     try:
         collection_obj = pool.get('webdav.collection')
     except KeyError:
         raise DAV_NotFound
     try:
-        res = collection_obj.get_calendar_data(cursor, int(USER_ID), dburi,
-                cache=CACHE)
+        res = collection_obj.get_calendar_data(dburi, cache=CACHE)
     except AttributeError:
         raise DAV_NotFound
     except (DAV_Error, DAV_NotFound, DAV_Secret, DAV_Forbidden), exception:
@@ -105,15 +100,13 @@ def _get_caldav_calendar_home_set(self, uri):
     dbname, dburi = self._get_dburi(uri)
     if not dbname:
         raise DAV_NotFound
-    cursor = DATABASE['cursor']
-    pool = Pool(DATABASE['dbname'])
+    pool = Pool(Transaction().cursor.database_name)
     try:
         collection_obj = pool.get('webdav.collection')
     except KeyError:
         raise DAV_NotFound
     try:
-        res = collection_obj.get_calendar_home_set(cursor, int(USER_ID), dburi,
-                cache=CACHE)
+        res = collection_obj.get_calendar_home_set(dburi, cache=CACHE)
     except AttributeError:
         raise DAV_NotFound
     except (DAV_Error, DAV_NotFound, DAV_Secret, DAV_Forbidden), exception:
@@ -139,15 +132,13 @@ def _get_caldav_calendar_user_address_set(self, uri):
     dbname, dburi = self._get_dburi(uri)
     if not dbname:
         raise DAV_NotFound
-    cursor = DATABASE['cursor']
-    pool = Pool(DATABASE['dbname'])
+    pool = Pool(Transaction().cursor.database_name)
     try:
         collection_obj = pool.get('webdav.collection')
     except KeyError:
         raise DAV_NotFound
     try:
-        res = collection_obj.get_calendar_user_address_set(cursor,
-                int(USER_ID), dburi, cache=CACHE)
+        res = collection_obj.get_calendar_user_address_set(dburi, cache=CACHE)
     except AttributeError:
         raise DAV_NotFound
     except (DAV_Error, DAV_NotFound, DAV_Secret, DAV_Forbidden), exception:
@@ -169,15 +160,13 @@ def _get_caldav_schedule_inbox_URL(self, uri):
     dbname, dburi = self._get_dburi(uri)
     if not dbname:
         raise DAV_NotFound
-    cursor = DATABASE['cursor']
-    pool = Pool(DATABASE['dbname'])
+    pool = Pool(Transaction().cursor.database_name)
     try:
         collection_obj = pool.get('webdav.collection')
     except KeyError:
         raise DAV_NotFound
     try:
-        res = collection_obj.get_schedule_inbox_URL(cursor, int(USER_ID), dburi,
-                cache=CACHE)
+        res = collection_obj.get_schedule_inbox_URL(dburi, cache=CACHE)
     except AttributeError:
         raise DAV_NotFound
     except (DAV_Error, DAV_NotFound, DAV_Secret, DAV_Forbidden), exception:
@@ -201,15 +190,13 @@ def _get_caldav_schedule_outbox_URL(self, uri):
     dbname, dburi = self._get_dburi(uri)
     if not dbname:
         raise DAV_NotFound
-    cursor = DATABASE['cursor']
-    pool = Pool(DATABASE['dbname'])
+    pool = Pool(Transaction().cursor.database_name)
     try:
         collection_obj = pool.get('webdav.collection')
     except KeyError:
         raise DAV_NotFound
     try:
-        res = collection_obj.get_schedule_outbox_URL(cursor, int(USER_ID), dburi,
-                cache=CACHE)
+        res = collection_obj.get_schedule_outbox_URL(dburi, cache=CACHE)
     except AttributeError:
         raise DAV_NotFound
     except (DAV_Error, DAV_NotFound, DAV_Secret, DAV_Forbidden), exception:
@@ -254,11 +241,10 @@ def _get_caldav_post(self, uri, body, contenttype=''):
     dbname, dburi = self._get_dburi(uri)
     if not dbname:
         raise DAV_Forbidden
-    cursor = DATABASE['cursor']
-    pool = Pool(DATABASE['dbname'])
+    pool = Pool(Transaction().cursor.database_name)
     calendar_obj = pool.get('calendar.calendar')
     try:
-        res = calendar_obj.post(cursor, int(USER_ID), dburi, body)
+        res = calendar_obj.post(dburi, body)
     except AttributeError:
         raise DAV_NotFound
     except (DAV_Error, DAV_NotFound, DAV_Secret, DAV_Forbidden), exception:

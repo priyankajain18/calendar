@@ -1,10 +1,10 @@
 #This file is part of Tryton.  The COPYRIGHT file at the top level of
 #this repository contains the full copyright notices and license terms.
-from trytond.model import ModelView, ModelSQL
-from trytond.tools import Cache, reduce_ids
-from DAV.errors import DAV_NotFound, DAV_Forbidden
 import vobject
 import urllib
+from DAV.errors import DAV_NotFound, DAV_Forbidden
+from trytond.model import ModelView, ModelSQL
+from trytond.tools import Cache, reduce_ids
 
 CALDAV_NS = 'urn:ietf:params:xml:ns:caldav'
 
@@ -13,14 +13,11 @@ class Collection(ModelSQL, ModelView):
 
     _name = "webdav.collection"
 
-    def calendar(self, cursor, user, uri, ics=False, context=None):
+    def calendar(self, uri, ics=False):
         '''
         Return the calendar id in the uri or False
 
-        :param cursor: the database cursor
-        :param user: the user id
         :param uri: the uri
-        :param context: the context
         :return: calendar id
             or False if there is no calendar
         '''
@@ -33,19 +30,16 @@ class Collection(ModelSQL, ModelView):
                     calendar = calendar[:-4]
                 else:
                     return False
-            return calendar_obj.get_name(cursor, user, calendar, context=context)
+            return calendar_obj.get_name(calendar)
         return False
 
     @Cache('webdav_collection.event')
-    def event(self, cursor, user, uri, calendar_id=False, context=None):
+    def event(self, uri, calendar_id=False):
         '''
         Return the event id in the uri or False
 
-        :param cursor: the database cursor
-        :param user: the user id
         :param uri: the uri
         :param calendar_id: the calendar id
-        :param context: the context
         :return: event id
             or False if there is no event
         '''
@@ -54,26 +48,23 @@ class Collection(ModelSQL, ModelView):
         if uri and uri.startswith('Calendars/'):
             calendar, event_uri = (uri[10:].split('/', 1) + [None])[0:2]
             if not calendar_id:
-                calendar_id = self.calendar(cursor, user, uri, context=context)
+                calendar_id = self.calendar(uri)
                 if not calendar_id:
                     return False
-            event_ids = event_obj.search(cursor, user, [
+            event_ids = event_obj.search([
                 ('calendar', '=', calendar_id),
                 ('uuid', '=', event_uri[:-4]),
                 ('parent', '=', False),
-                ], limit=1, context=context)
+                ], limit=1)
             if event_ids:
                 return event_ids[0]
         return False
 
-    def _caldav_filter_domain_calendar(self, cursor, user, filter, context=None):
+    def _caldav_filter_domain_calendar(self, filter):
         '''
         Return a domain for caldav filter on calendar
 
-        :param cursor: the database cursor
-        :param user: the user id
         :param filter: the DOM Element of filter
-        :param context: the context
         :return: a list for domain
         '''
         if not filter:
@@ -82,14 +73,11 @@ class Collection(ModelSQL, ModelView):
             return [('id', '=', 0)]
         return [('id', '=', 0)]
 
-    def _caldav_filter_domain_event(self, cursor, user, filter, context=None):
+    def _caldav_filter_domain_event(self, filter):
         '''
         Return a domain for caldav filter on event
 
-        :param cursor: the database cursor
-        :param user: the user id
         :param filter: the DOM Element of filter
-        :param context: the context
         :return: a list for domain
         '''
         res = []
@@ -139,30 +127,26 @@ class Collection(ModelSQL, ModelView):
                     if not dbname:
                         continue
                     dbname == urllib.unquote_plus(dbname)
-                    if dbname != cursor.database_name:
+                    if dbname != Transaction().cursor.database_name:
                         continue
                     if uri:
                         uri = urllib.unquote_plus(uri)
-                    event_id = self.event(cursor, user, uri, context=context)
+                    event_id = self.event(uri)
                     if event_id:
                         ids.append(event_id)
             return [('id', 'in', ids)]
         return res
 
-    def get_childs(self, cursor, user, uri, filter=None, context=None,
-            cache=None):
+    def get_childs(self, uri, filter=None, cache=None):
         calendar_obj = self.pool.get('calendar.calendar')
         event_obj = self.pool.get('calendar.event')
 
         if uri in ('Calendars', 'Calendars/'):
-            domain = self._caldav_filter_domain_calendar(cursor, user,
-                    filter, context=context)
+            domain = self._caldav_filter_domain_calendar(filter)
             domain = [['OR', ('owner', '=', user), ('read_users', '=', user)],
                     domain]
-            calendar_ids = calendar_obj.search(cursor, user, domain,
-                    context=context)
-            calendars = calendar_obj.browse(cursor, user, calendar_ids,
-                    context=context)
+            calendar_ids = calendar_obj.search(domain)
+            calendars = calendar_obj.browse(calendar_ids)
             if cache is not None:
                 cache.setdefault('_calendar', {})
                 cache['_calendar'].setdefault(calendar_obj._name, {})
@@ -171,16 +155,14 @@ class Collection(ModelSQL, ModelView):
             return [x.name for x in calendars] + \
                     [x.name + '.ics' for x in calendars]
         if uri and uri.startswith('Calendars/'):
-            calendar_id = self.calendar(cursor, user, uri, context=context)
+            calendar_id = self.calendar(uri)
             if  calendar_id and not (uri[10:].split('/', 1) + [None])[1]:
-                domain = self._caldav_filter_domain_event(cursor, user, filter,
-                        context=context)
-                event_ids = event_obj.search(cursor, user, [
+                domain = self._caldav_filter_domain_event(filter)
+                event_ids = event_obj.search([
                     ('calendar', '=', calendar_id),
                     domain,
-                    ], context=context)
-                events = event_obj.browse(cursor, user, event_ids,
-                        context=context)
+                    ])
+                events = event_obj.browse(event_ids)
                 if cache is not None:
                     cache.setdefault('_calendar', {})
                     cache['_calendar'].setdefault(event_obj._name, {})
@@ -188,8 +170,8 @@ class Collection(ModelSQL, ModelView):
                         cache['_calendar'][event_obj._name][event_id] = {}
                 return [x.uuid + '.ics' for x in events]
             return []
-        res = super(Collection, self).get_childs(cursor, user, uri,
-                filter=filter, context=context, cache=cache)
+        res = super(Collection, self).get_childs(uri, filter=filter,
+                cache=cache)
         if not uri and not filter:
             res.append('Calendars')
         elif not uri and filter:
@@ -197,50 +179,45 @@ class Collection(ModelSQL, ModelView):
                 res.append('Calendars')
         return res
 
-    def get_resourcetype(self, cursor, user, uri, context=None, cache=None):
+    def get_resourcetype(self, uri, cache=None):
         from DAV.constants import COLLECTION, OBJECT
         if uri in ('Calendars', 'Calendars/'):
             return COLLECTION
-        calendar_id = self.calendar(cursor, user, uri, context=context)
+        calendar_id = self.calendar(uri)
         if calendar_id:
             if not (uri[10:].split('/', 1) + [None])[1]:
                 return COLLECTION
             return OBJECT
-        elif self.calendar(cursor, user, uri, ics=True, context=context):
+        elif self.calendar(uri, ics=True):
             return OBJECT
-        return super(Collection, self).get_resourcetype(cursor, user, uri,
-                context=context, cache=cache)
+        return super(Collection, self).get_resourcetype(uri, cache=cache)
 
-    def get_displayname(self, cursor, user, uri, context=None, cache=None):
+    def get_displayname(self, uri, cache=None):
         calendar_obj = self.pool.get('calendar.calendar')
         if uri in ('Calendars', 'Calendars/'):
             return 'Calendars'
-        calendar_id = self.calendar(cursor, user, uri, context=context)
+        calendar_id = self.calendar(uri)
         if calendar_id:
             if not (uri[10:].split('/', 1) + [None])[1]:
-                return calendar_obj.browse(cursor, user, calendar_id,
-                        context=context).rec_name
+                return calendar_obj.browse(calendar_id).rec_name
             return uri.split('/')[-1]
-        elif self.calendar(cursor, user, uri, ics=True, context=context):
+        elif self.calendar(uri, ics=True):
             return uri.split('/')[-1]
-        return super(Collection, self).get_displayname(cursor, user, uri,
-                context=context, cache=cache)
+        return super(Collection, self).get_displayname(uri, cache=cache)
 
-    def get_contenttype(self, cursor, user, uri, context=None, cache=None):
-        if self.event(cursor, user, uri, context=context) \
-                or self.calendar(cursor, user, uri, ics=True, context=context):
+    def get_contenttype(self, uri, cache=None):
+        if self.event(uri) \
+                or self.calendar(uri, ics=True):
             return 'text/calendar'
-        return super(Collection, self).get_contenttype(cursor, user, uri,
-                context=context, cache=cache)
+        return super(Collection, self).get_contenttype(uri, cache=cache)
 
-    def get_creationdate(self, cursor, user, uri, context=None, cache=None):
+    def get_creationdate(self, uri, cache=None):
         calendar_obj = self.pool.get('calendar.calendar')
         event_obj = self.pool.get('calendar.event')
 
-        calendar_id = self.calendar(cursor, user, uri, context=context)
+        calendar_id = self.calendar(uri)
         if not calendar_id:
-            calendar_id = self.calendar(cursor, user, uri, ics=True,
-                    context=context)
+            calendar_id = self.calendar(uri, ics=True)
         if calendar_id:
             if not (uri[10:].split('/', 1) + [None])[1]:
                 if cache is not None:
@@ -256,6 +233,7 @@ class Collection(ModelSQL, ModelView):
                 else:
                     ids = [calendar_id]
                 res = None
+                cursor = Transaction().cursor
                 for i in range(0, len(ids), cursor.IN_MAX):
                     sub_ids = ids[i:i + cursor.IN_MAX]
                     red_sql, red_ids = reduce_ids('id', sub_ids)
@@ -274,8 +252,7 @@ class Collection(ModelSQL, ModelView):
                 if res is not None:
                     return res
             else:
-                event_id = self.event(cursor, user, uri, calendar_id=calendar_id,
-                        context=context)
+                event_id = self.event(uri, calendar_id=calendar_id)
                 if event_id:
                     if cache is not None:
                         cache.setdefault('_calendar', {})
@@ -290,6 +267,7 @@ class Collection(ModelSQL, ModelView):
                     else:
                         ids = [event_id]
                     res = None
+                    cursor = Transaction().cursor
                     for i in range(0, len(ids), cursor.IN_MAX):
                         sub_ids = ids[i:i + cursor.IN_MAX]
                         red_sql, red_ids = reduce_ids('id', sub_ids)
@@ -307,14 +285,13 @@ class Collection(ModelSQL, ModelView):
                                         [event_id2]['creationdate'] = date
                     if res is not None:
                         return res
-        return super(Collection, self).get_creationdate(cursor, user, uri,
-                context=context, cache=cache)
+        return super(Collection, self).get_creationdate(uri, cache=cache)
 
-    def get_lastmodified(self, cursor, user, uri, context=None, cache=None):
+    def get_lastmodified(self, uri, cache=None):
         calendar_obj = self.pool.get('calendar.calendar')
         event_obj = self.pool.get('calendar.event')
 
-        calendar_id = self.calendar(cursor, user, uri, context=context)
+        calendar_id = self.calendar(uri)
         if calendar_id:
             if not (uri[10:].split('/', 1) + [None])[1]:
                 if cache is not None:
@@ -349,8 +326,7 @@ class Collection(ModelSQL, ModelView):
                 if res is not None:
                     return res
             else:
-                event_id = self.event(cursor, user, uri, calendar_id=calendar_id,
-                        context=context)
+                event_id = self.event(uri, calendar_id=calendar_id)
                 if event_id:
                     if cache is not None:
                         cache.setdefault('_calendar', {})
@@ -365,6 +341,7 @@ class Collection(ModelSQL, ModelView):
                     else:
                         ids = [event_id]
                     res = None
+                    cursor = Transaction().cursor
                     for i in range(0, len(ids), cursor.IN_MAX/2):
                         sub_ids = ids[i:i + cursor.IN_MAX/2]
                         red_id_sql, red_id_ids = reduce_ids('id', sub_ids)
@@ -388,8 +365,7 @@ class Collection(ModelSQL, ModelView):
                                         [event_id2]['lastmodified'] = date
                     if res is not None:
                         return res
-        calendar_ics_id = self.calendar(cursor, user, uri, ics=True,
-                context=context)
+        calendar_ics_id = self.calendar(uri, ics=True)
         if calendar_ics_id:
             if cache is not None:
                 cache.setdefault('_calendar', {})
@@ -404,6 +380,7 @@ class Collection(ModelSQL, ModelView):
             else:
                 ids = [calendar_ics_id]
             res = None
+            cursor = Transaction().cursor
             for i in range(0, len(ids), cursor.IN_MAX):
                 sub_ids = ids[i:i + cursor.IN_MAX]
                 red_sql, red_ids = reduce_ids('calendar', sub_ids)
@@ -422,37 +399,31 @@ class Collection(ModelSQL, ModelView):
                                 [calendar_id2]['lastmodified ics'] = date
             if res is not None:
                 return res
-        return super(Collection, self).get_lastmodified(cursor, user, uri,
-                context=context, cache=cache)
+        return super(Collection, self).get_lastmodified(uri, cache=cache)
 
-    def get_data(self, cursor, user, uri, context=None, cache=None):
+    def get_data(self, uri, cache=None):
         event_obj = self.pool.get('calendar.event')
         calendar_obj = self.pool.get('calendar.calendar')
 
-        calendar_id = self.calendar(cursor, user, uri, context=context)
+        calendar_id = self.calendar(uri)
         if calendar_id:
             if not (uri[10:].split('/', 1) + [None])[1]:
                 raise DAV_NotFound
-            event_id = self.event(cursor, user, uri, calendar_id=calendar_id,
-                    context=context)
+            event_id = self.event(uri, calendar_id=calendar_id)
             if not event_id:
                 raise DAV_NotFound
-            ical = event_obj.event2ical(cursor, user, event_id, context=context)
+            ical = event_obj.event2ical(event_id)
             return ical.serialize()
-        calendar_ics_id = self.calendar(cursor, user, uri, ics=True,
-                context=context)
+        calendar_ics_id = self.calendar(uri, ics=True)
         if calendar_ics_id:
-            ical = calendar_obj.calendar2ical(cursor, user, calendar_ics_id,
-                    context=context)
+            ical = calendar_obj.calendar2ical(calendar_ics_id)
             return ical.serialize()
-        return super(Collection, self).get_data(cursor, user, uri,
-                context=context, cache=cache)
+        return super(Collection, self).get_data(uri, cache=cache)
 
-    def get_calendar_description(self, cursor, user, uri, context=None,
-            cache=None):
+    def get_calendar_description(self, uri, cache=None):
         calendar_obj = self.pool.get('calendar.calendar')
 
-        calendar_id = self.calendar(cursor, user, uri, context=context)
+        calendar_id = self.calendar(uri)
         if calendar_id:
             if not (uri[10:].split('/', 1) + [None])[1]:
                 if cache is not None:
@@ -470,8 +441,7 @@ class Collection(ModelSQL, ModelView):
                 else:
                     ids = [calendar_id]
                 res = None
-                for calendar in calendar_obj.browse(cursor, user, ids,
-                        context=context):
+                for calendar in calendar_obj.browse(ids):
                     if calendar.id == calendar_id:
                         res = calendar.description
                     if cache is not None:
@@ -484,150 +454,120 @@ class Collection(ModelSQL, ModelView):
                     return res
         raise DAV_NotFound
 
-    def get_calendar_data(self, cursor, user, uri, context=None, cache=None):
-        return self.get_data(cursor, user, uri, context=context, cache=cache)\
-                .decode('utf-8')
+    def get_calendar_data(self, uri, cache=None):
+        return self.get_data(uri, cache=cache).decode('utf-8')
 
-    def get_calendar_home_set(self, cursor, user, uri, context=None,
-            cache=None):
+    def get_calendar_home_set(self, uri, cache=None):
         return '/Calendars'
 
-    def get_calendar_user_address_set(self, cursor, user_id, uri, context=None,
-            cache=None):
+    def get_calendar_user_address_set(self, uri, cache=None):
         user_obj = self.pool.get('res.user')
-        user = user_obj.browse(cursor, user_id, user_id, context=context)
+        user = user_obj.browse(Transaction().user)
         if user.email:
             return user.email
         raise DAV_NotFound
 
-    def get_schedule_inbox_URL(self, cursor, user, uri, context=None,
-            cache=None):
+    def get_schedule_inbox_URL(self, uri, cache=None):
         calendar_obj = self.pool.get('calendar.calendar')
 
-        calendar_ids = calendar_obj.search(cursor, user, [
+        calendar_ids = calendar_obj.search([
             ('owner', '=', user),
-            ], limit=1, context=context)
+            ], limit=1)
         if not calendar_ids:
             # Sunbird failed with no value
             return '/Calendars'
-        calendar = calendar_obj.browse(cursor, user, calendar_ids[0],
-                context=context)
+        calendar = calendar_obj.browse(calendar_ids[0])
         return '/Calendars/' + calendar.name
 
-    def get_schedule_outbox_URL(self, cursor, user, uri, context=None,
-            cache=None):
-        return self.get_schedule_inbox_URL(cursor, user, uri, context=context,
-                cache=cache)
+    def get_schedule_outbox_URL(self, uri, cache=None):
+        return self.get_schedule_inbox_URL(uri, cache=cache)
 
-    def put(self, cursor, user, uri, data, content_type, context=None,
-            cache=None):
+    def put(self, uri, data, content_type, cache=None):
         event_obj = self.pool.get('calendar.event')
         calendar_obj = self.pool.get('calendar.calendar')
 
-        calendar_id = self.calendar(cursor, user, uri, context=context)
+        calendar_id = self.calendar(uri)
         if calendar_id:
             if not (uri[10:].split('/', 1) + [None])[1]:
                 raise DAV_Forbidden
-            event_id = self.event(cursor, user, uri, calendar_id=calendar_id,
-                    context=context)
+            event_id = self.event(uri, calendar_id=calendar_id)
             if not event_id:
                 ical = vobject.readOne(data)
-                values = event_obj.ical2values(cursor, user, None, ical,
-                        calendar_id, context=context)
-                event_id = event_obj.create(cursor, user, values,
-                        context=context)
-                event = event_obj.browse(cursor, user, event_id,
-                        context=context)
-                calendar = calendar_obj.browse(cursor, user, calendar_id,
-                        context=context)
-                return cursor.database_name + '/Calendars/' + calendar.name + \
-                        '/' + event.uuid + '.ics'
+                values = event_obj.ical2values(None, ical, calendar_id)
+                event_id = event_obj.create(values)
+                event = event_obj.browse(event_id)
+                calendar = calendar_obj.browse(calendar_id)
+                return (Transaction().cursor.database_name + '/Calendars/' +
+                        calendar.name + '/' + event.uuid + '.ics')
             else:
                 ical = vobject.readOne(data)
-                values = event_obj.ical2values(cursor, user, event_id, ical,
-                        calendar_id, context=context)
-                event_obj.write(cursor, user, event_id, values,
-                        context=context)
+                values = event_obj.ical2values(event_id, ical, calendar_id)
+                event_obj.write(event_id, values)
                 return
-        calendar_ics_id = self.calendar(cursor, user, uri, ics=True,
-                context=context)
+        calendar_ics_id = self.calendar(uri, ics=True)
         if calendar_ics_id:
             raise DAV_Forbidden
-        return super(Collection, self).put(cursor, user, uri, data,
-                content_type, context=context)
+        return super(Collection, self).put(uri, data, content_type)
 
-    def mkcol(self, cursor, user, uri, context=None, cache=None):
+    def mkcol(self, uri, cache=None):
         if uri and uri.startswith('Calendars/'):
             raise DAV_Forbidden
-        return super(Collection, self).mkcol(cursor, user, uri, context=context,
-                cache=cache)
+        return super(Collection, self).mkcol(uri, cache=cache)
 
-    def rmcol(self, cursor, user, uri, context=None, cache=None):
+    def rmcol(self, uri, cache=None):
         calendar_obj = self.pool.get('calendar.calendar')
 
-        calendar_id = self.calendar(cursor, user, uri, context=context)
+        calendar_id = self.calendar(uri)
         if calendar_id:
             if not (uri[10:].split('/', 1) + [None])[1]:
                 try:
-                    calendar_obj.delete(cursor, user, calendar_id,
-                            context=context)
+                    calendar_obj.delete(calendar_id)
                 except Exception:
                     raise DAV_Forbidden
                 return 200
             raise DAV_Forbidden
-        return super(Collection, self).rmcol(cursor, user, uri, context=context,
-                cache=cache)
+        return super(Collection, self).rmcol(uri, cache=cache)
 
-    def rm(self, cursor, user, uri, context=None, cache=None):
+    def rm(self, uri, cache=None):
         event_obj = self.pool.get('calendar.event')
 
-        calendar_id = self.calendar(cursor, user, uri, context=context)
+        calendar_id = self.calendar(uri)
         if calendar_id:
             if not (uri[10:].split('/', 1) + [None])[1]:
                 return 403
-            event_id = self.event(cursor, user, uri, calendar_id=calendar_id,
-                    context=context)
+            event_id = self.event(uri, calendar_id=calendar_id)
             if event_id:
                 try:
-                    event_obj.delete(cursor, user, event_id, context=context)
+                    event_obj.delete(event_id)
                 except Exception:
                     return 403
                 return 200
             return 404
-        calendar_ics_id = self.calendar(cursor, user, uri, ics=True,
-                context=context)
+        calendar_ics_id = self.calendar(uri, ics=True)
         if calendar_ics_id:
             return 403
-        return super(Collection, self).rm(cursor, user, uri, context=context,
-                cache=cache)
+        return super(Collection, self).rm(uri, cache=cache)
 
-    def exists(self, cursor, user, uri, context=None, cache=None):
+    def exists(self, uri, cache=None):
         if uri in ('Calendars', 'Calendars/'):
             return 1
-        calendar_id = self.calendar(cursor, user, uri, context=context)
+        calendar_id = self.calendar(uri)
         if calendar_id:
             if not (uri[10:].split('/', 1) + [None])[1]:
                 return 1
-            if self.event(cursor, user, uri, calendar_id=calendar_id,
-                    context=context):
+            if self.event(uri, calendar_id=calendar_id):
                 return 1
-        calendar_ics_id = self.calendar(cursor, user, uri, ics=True,
-                context=context)
+        calendar_ics_id = self.calendar(uri, ics=True)
         if calendar_ics_id:
             return 1
-        return super(Collection, self).exists(cursor, user, uri, context=context,
-                cache=cache)
+        return super(Collection, self).exists(uri, cache=cache)
 
-    def current_user_privilege_set(self, cursor, user, uri, context=None,
-            cache=None):
+    def current_user_privilege_set(self, uri, cache=None):
         '''
         Return the privileges of the current user for uri
         Privileges ares: create, read, write, delete
 
-        :param cursor: the database cursor
-        :param user: the user id
         :param uri: the uri
-        :param context: the context
         :param cache: the cache
         :return: a list of privileges
         '''
@@ -636,10 +576,9 @@ class Collection(ModelSQL, ModelView):
         if uri in ('Calendars', 'Calendars/'):
             return ['create', 'read', 'write', 'delete']
         if uri and uri.startswith('Calendars/'):
-            calendar_id = self.calendar(cursor, user, uri, context=context)
+            calendar_id = self.calendar(uri)
             if calendar_id:
-                calendar = calendar_obj.browse(cursor, user, calendar_id,
-                        context=context)
+                calendar = calendar_obj.browse(calendar_id)
                 if user == calendar.owner.id:
                     return ['create', 'read', 'write', 'delete']
                 res = []
@@ -649,7 +588,7 @@ class Collection(ModelSQL, ModelView):
                     res.extend(['read', 'write', 'delete'])
                 return res
             return []
-        return super(Collection, self).current_user_privilege_set(cursor, user,
-                uri, context=context, cache=cache)
+        return super(Collection, self).current_user_privilege_set(uri,
+                cache=cache)
 
 Collection()
