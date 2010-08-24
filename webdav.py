@@ -4,7 +4,8 @@ import vobject
 import urllib
 from DAV.errors import DAV_NotFound, DAV_Forbidden
 from trytond.model import ModelView, ModelSQL
-from trytond.tools import Cache, reduce_ids
+from trytond.tools import reduce_ids
+from trytond.cache import Cache
 
 CALDAV_NS = 'urn:ietf:params:xml:ns:caldav'
 

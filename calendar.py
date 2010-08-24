@@ -8,10 +8,11 @@ import pytz
 import datetime
 import xml.dom.minidom
 from trytond.model import ModelSQL, ModelView, fields
-from trytond.tools import Cache, reduce_ids
+from trytond.tools import reduce_ids
 from trytond.backend import TableHandler
 from trytond.pyson import If, Bool, Not, Eval, Greater
 from trytond.transaction import Transaction
+from trytond.cache import Cache
 tzlocal = dateutil.tz.tzlocal()
 tzutc = dateutil.tz.tzutc()
 domimpl = xml.dom.minidom.getDOMImplementation()
