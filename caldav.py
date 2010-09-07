@@ -11,6 +11,8 @@ from DAV.constants import DAV_VERSION_1, DAV_VERSION_2
 from trytond.protocols.webdav import TrytonDAVInterface, CACHE, \
         WebDAVAuthRequestHandler
 from trytond.pool import Pool
+from trytond.transaction import Transaction
+
 _TRYTON_RELOAD = False
 domimpl = xml.dom.minidom.getDOMImplementation()
 
