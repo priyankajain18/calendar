@@ -293,6 +293,7 @@ class Collection(ModelSQL, ModelView):
         calendar_obj = self.pool.get('calendar.calendar')
         event_obj = self.pool.get('calendar.event')
 
+        cursor = Transaction().cursor
         calendar_id = self.calendar(uri)
         if calendar_id:
             if not (uri[10:].split('/', 1) + [None])[1]:
@@ -343,7 +344,6 @@ class Collection(ModelSQL, ModelView):
                     else:
                         ids = [event_id]
                     res = None
-                    cursor = Transaction().cursor
                     for i in range(0, len(ids), cursor.IN_MAX/2):
                         sub_ids = ids[i:i + cursor.IN_MAX/2]
                         red_id_sql, red_id_ids = reduce_ids('id', sub_ids)
@@ -382,7 +382,6 @@ class Collection(ModelSQL, ModelView):
             else:
                 ids = [calendar_ics_id]
             res = None
-            cursor = Transaction().cursor
             for i in range(0, len(ids), cursor.IN_MAX):
                 sub_ids = ids[i:i + cursor.IN_MAX]
                 red_sql, red_ids = reduce_ids('calendar', sub_ids)
@@ -471,6 +470,7 @@ class Collection(ModelSQL, ModelView):
 
     def get_schedule_inbox_URL(self, uri, cache=None):
         calendar_obj = self.pool.get('calendar.calendar')
+        user = Transaction().user
 
         calendar_ids = calendar_obj.search([
             ('owner', '=', user),
