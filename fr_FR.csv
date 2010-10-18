@@ -8,8 +8,8 @@ error,calendar.location,0,The name of calendar location must be unique!,Le nom d
 error,calendar.rrule,0,"Invalid ""By Day""","""Par jour"" invalide",0
 error,calendar.rrule,0,"Invalid ""By Hour""","""Par heure"" invalide",0
 error,calendar.rrule,0,"Invalid ""By Minute""","""Par minute"" invalide",0
-error,calendar.rrule,0,"Invalid ""By Month""","""Par mois"" invalide",0
 error,calendar.rrule,0,"Invalid ""By Month Day""","""Par jour du mois"" invalide",0
+error,calendar.rrule,0,"Invalid ""By Month""","""Par mois"" invalide",0
 error,calendar.rrule,0,"Invalid ""By Position""","""Par position"" invalide",0
 error,calendar.rrule,0,"Invalid ""By Second""","""Par seconde"" invalide",0
 error,calendar.rrule,0,"Invalid ""By Week Number""","""Par jour de la semaine"" invalide",0
@@ -24,33 +24,24 @@ field,"calendar.attendee,status",0,Participation Status,Statut de participation,
 field,"calendar.calendar,description",0,Description,Description,0
 field,"calendar.calendar,name",0,Name,Nom,0
 field,"calendar.calendar,owner",0,Owner,Propriétaire,0
+field,"calendar.calendar,read_users",0,Read Users,Utilisateurs en lecture,0
+field,"calendar.calendar,rec_name",0,Name,Nom,0
+field,"calendar.calendar,write_users",0,Write Users,Utilisateurs en écriture,0
 field,"calendar.calendar-read-res.user,calendar",0,Calendar,Calendrier,0
 field,"calendar.calendar-read-res.user,rec_name",0,Name,Nom,0
 field,"calendar.calendar-read-res.user,user",0,User,Utilisateur,0
-field,"calendar.calendar,read_users",0,Read Users,Utilisateurs en lecture,0
-field,"calendar.calendar,rec_name",0,Name,Nom,0
 field,"calendar.calendar-write-res.user,calendar",0,Calendar,Calendrier,0
 field,"calendar.calendar-write-res.user,rec_name",0,Name,Nom,0
 field,"calendar.calendar-write-res.user,user",0,User,Utilisateur,0
-field,"calendar.calendar,write_users",0,Write Users,Utilisateurs en écriture,0
 field,"calendar.category,name",0,Name,Nom,0
 field,"calendar.category,rec_name",0,Name,Nom,0
 field,"calendar.date,date",0,Is Date,Est une date,0
 field,"calendar.date,datetime",0,Date,Date,0
 field,"calendar.date,rec_name",0,Name,Nom,0
-field,"calendar.event.alarm,calendar_alarm",0,Calendar Alarm,Alarme calendrier,0
-field,"calendar.event.alarm,event",0,Event,Événement,0
-field,"calendar.event.alarm,rec_name",0,Name,Nom,0
 field,"calendar.event,alarms",0,Alarms,Alarmes,0
 field,"calendar.event,all_day",0,All Day,Toute la journée,0
-field,"calendar.event.attendee,calendar_attendee",0,Calendar Attendee,Participant calendrier,0
-field,"calendar.event.attendee,event",0,Event,Événement,0
-field,"calendar.event.attendee,rec_name",0,Name,Nom,0
 field,"calendar.event,attendees",0,Attendees,Participants,0
 field,"calendar.event,calendar",0,Calendar,Calendrier,0
-field,"calendar.event-calendar.category,category",0,Category,Catégorie,0
-field,"calendar.event-calendar.category,event",0,Event,Événement,0
-field,"calendar.event-calendar.category,rec_name",0,Name,Nom,0
 field,"calendar.event,calendar_owner",0,Owner,Propriétaire,0
 field,"calendar.event,calendar_read_users",0,Read Users,Utilisateurs en lecture,0
 field,"calendar.event,calendar_write_users",0,Write Users,Utilisateurs en écriture,0
@@ -59,28 +50,15 @@ field,"calendar.event,classification",0,Classification,Classification,0
 field,"calendar.event,description",0,Description,Description,0
 field,"calendar.event,dtend",0,End Date,Date de fin,0
 field,"calendar.event,dtstart",0,Start Date,Date de début,0
-field,"calendar.event.exdate,calendar_date",0,Calendar Date,Date calendrier,0
-field,"calendar.event.exdate,event",0,Event,Événement,0
-field,"calendar.event.exdate,rec_name",0,Name,Nom,0
 field,"calendar.event,exdates",0,Exception Dates,Dates d'exception,0
-field,"calendar.event.exrule,calendar_rrule",0,Calendar RRule,Règle de récurrence,0
-field,"calendar.event.exrule,event",0,Event,Événement,0
-field,"calendar.event.exrule,rec_name",0,Name,Nom,0
 field,"calendar.event,exrules",0,Exception Rules,Règles d'exception,0
 field,"calendar.event,location",0,Location,Emplacement,0
 field,"calendar.event,occurences",0,Occurences,Occurrences,0
 field,"calendar.event,organizer",0,Organizer,Organisateur,0
 field,"calendar.event,parent",0,Parent,Parent,0
-field,"calendar.event.rdate,calendar_date",0,Calendar Date,Date calendrier,0
-field,"calendar.event.rdate,calendar_rdate",0,Calendar RDate,Date de récurrence,0
-field,"calendar.event.rdate,event",0,Event,Événement,0
-field,"calendar.event.rdate,rec_name",0,Name,Nom,0
 field,"calendar.event,rdates",0,Recurrence Dates,Dates de récurrence,0
 field,"calendar.event,rec_name",0,Name,Nom,0
 field,"calendar.event,recurrence",0,Recurrence,Récurrence,0
-field,"calendar.event.rrule,calendar_rrule",0,Calendar RRule,Règle de récurrence,0
-field,"calendar.event.rrule,event",0,Event,Événement,0
-field,"calendar.event.rrule,rec_name",0,Name,Nom,0
 field,"calendar.event,rrules",0,Recurrence Rules,Règles de récurrence,0
 field,"calendar.event,sequence",0,Sequence,Séquence,0
 field,"calendar.event,status",0,Status,Statut,0
@@ -89,9 +67,29 @@ field,"calendar.event,timezone",0,Timezone,Fuseau Horaire,0
 field,"calendar.event,transp",0,Time Transparency,Transparence,0
 field,"calendar.event,uuid",0,UUID,UUID,0
 field,"calendar.event,vevent",0,vevent,vevent,0
+field,"calendar.event-calendar.category,category",0,Category,Catégorie,0
+field,"calendar.event-calendar.category,event",0,Event,Événement,0
+field,"calendar.event-calendar.category,rec_name",0,Name,Nom,0
+field,"calendar.event.alarm,calendar_alarm",0,Calendar Alarm,Alarme calendrier,0
+field,"calendar.event.alarm,event",0,Event,Événement,0
+field,"calendar.event.alarm,rec_name",0,Name,Nom,0
+field,"calendar.event.attendee,calendar_attendee",0,Calendar Attendee,Participant calendrier,0
+field,"calendar.event.attendee,event",0,Event,Événement,0
+field,"calendar.event.attendee,rec_name",0,Name,Nom,0
+field,"calendar.event.exdate,calendar_date",0,Calendar Date,Date calendrier,0
+field,"calendar.event.exdate,event",0,Event,Événement,0
+field,"calendar.event.exdate,rec_name",0,Name,Nom,0
+field,"calendar.event.exrule,calendar_rrule",0,Calendar RRule,Règle de récurrence,0
+field,"calendar.event.exrule,event",0,Event,Événement,0
+field,"calendar.event.exrule,rec_name",0,Name,Nom,0
+field,"calendar.event.rdate,calendar_date",0,Calendar Date,Date calendrier,0
+field,"calendar.event.rdate,event",0,Event,Événement,0
+field,"calendar.event.rdate,rec_name",0,Name,Nom,0
+field,"calendar.event.rrule,calendar_rrule",0,Calendar RRule,Règle de récurrence,0
+field,"calendar.event.rrule,event",0,Event,Événement,0
+field,"calendar.event.rrule,rec_name",0,Name,Nom,0
 field,"calendar.location,name",0,Name,Nom,0
 field,"calendar.location,rec_name",0,Name,Nom,0
-field,"calendar.rdate,date",0,Is Date,Est une date,0
 field,"calendar.rrule,byday",0,By Day,Par jour,0
 field,"calendar.rrule,byhour",0,By Hour,Par heure,0
 field,"calendar.rrule,byminute",0,By Minute,Par minute,0
@@ -120,12 +118,12 @@ model,"calendar.calendar-read-res.user,name",0,Calendar - read - User,Calendrier
 model,"calendar.calendar-write-res.user,name",0,Calendar - write - User,Calendrier - Écriture - Utilisateur,0
 model,"calendar.category,name",0,Category,Catégorie,0
 model,"calendar.date,name",0,Calendar Date,Date calendrier,0
+model,"calendar.event,name",0,Event,Événement,0
+model,"calendar.event-calendar.category,name",0,Event - Category,Évenement - Catégorie,0
 model,"calendar.event.alarm,name",0,Alarm,Alarme,0
 model,"calendar.event.attendee,name",0,Attendee,Participant,0
-model,"calendar.event-calendar.category,name",0,Event - Category,Évenement - Catégorie,0
 model,"calendar.event.exdate,name",0,Exception Date,Date d'exception,0
 model,"calendar.event.exrule,name",0,Exception Rule,Règle d'exception,0
-model,"calendar.event,name",0,Event,Événement,0
 model,"calendar.event.rdate,name",0,Recurrence Date,Date de récurrence,0
 model,"calendar.event.rrule,name",0,Recurrence Rule,Règle de récurrence,0
 model,"calendar.location,name",0,Location,Emplacement,0
@@ -137,8 +135,8 @@ model,"ir.action,name",act_event_form2,Events,Événements,0
 model,"ir.action,name",act_event_form3,Events,Événements,0
 model,"ir.ui.menu,name",menu_calendar,Calendar Management,Gestion de calendrier,0
 model,"ir.ui.menu,name",menu_calendar_form,Calendars,Calendriers,0
-model,"ir.ui.menu,name",menu_event_form,Events,Évenement,0
 model,"ir.ui.menu,name",menu_calendar_form2,New Calendar,Nouveau calendrier,0
+model,"ir.ui.menu,name",menu_event_form,Events,Évenement,0
 model,"ir.ui.menu,name",menu_event_form2,New Event,Nouvel événement,0
 model,"res.group,name",group_calendar_admin,Calendar Administration,Administration calendrier,0
 selection,"calendar.attendee,status",0,,,0
