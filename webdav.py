@@ -581,6 +581,7 @@ class Collection(ModelSQL, ModelView):
             calendar_id = self.calendar(uri)
             if calendar_id:
                 calendar = calendar_obj.browse(calendar_id)
+                user = Transaction().user
                 if user == calendar.owner.id:
                     return ['create', 'read', 'write', 'delete']
                 res = []
