@@ -1,0 +1,194 @@
+type,name,res_id,src,value,fuzzy
+error,calendar.calendar,0,A user can have only one calendar!,Потребителя може да има само един календар!,0
+error,calendar.calendar,0,The name of calendar must be unique!,Името на календара трябва да е уникално!,0
+error,calendar.category,0,The name of calendar category must be unique!,Името на категорията на календара трябва да е уникално!,0
+error,calendar.event,0,Recurrence can not be recurrent!,Повторението не може да е периодично!,0
+error,calendar.event,0,UUID and recurrence must be unique in a calendar!,,0
+error,calendar.location,0,The name of calendar location must be unique!,Името на местонахождението на календара трябва да е уникално!,0
+error,calendar.rrule,0,"Invalid ""By Day""","Невалиден ""По ден""",0
+error,calendar.rrule,0,"Invalid ""By Hour""","Навалиден ""По час""",0
+error,calendar.rrule,0,"Invalid ""By Minute""","Невалиден ""По минута""",0
+error,calendar.rrule,0,"Invalid ""By Month Day""","Невалиден ""По ден от месец""",0
+error,calendar.rrule,0,"Invalid ""By Month""","Невалидно ""По месец""",0
+error,calendar.rrule,0,"Invalid ""By Position""","Невалиден ""По позиция""",0
+error,calendar.rrule,0,"Invalid ""By Second""","Невалиден ""По секунда""",0
+error,calendar.rrule,0,"Invalid ""By Week Number""","Невалиден ""По номер на седмица""",0
+error,calendar.rrule,0,"Invalid ""By Year Day""","Невалиден ""По ден от годината""",0
+error,calendar.rrule,0,"Only one of ""until"" and ""count"" can be set!","""Крайна дата"" и ""брой"" не може да се попълва по едно и също време!",0
+field,"calendar.alarm,rec_name",0,Name,Име,0
+field,"calendar.alarm,valarm",0,valarm,,0
+field,"calendar.attendee,attendee",0,attendee,присътващ,0
+field,"calendar.attendee,email",0,Email,Email,0
+field,"calendar.attendee,rec_name",0,Name,Име,0
+field,"calendar.attendee,status",0,Participation Status,Статус на участие,0
+field,"calendar.calendar,description",0,Description,Описание,0
+field,"calendar.calendar,name",0,Name,Име,0
+field,"calendar.calendar,owner",0,Owner,Собственик,0
+field,"calendar.calendar,read_users",0,Read Users,Потребители с права за четене,0
+field,"calendar.calendar,rec_name",0,Name,Име,0
+field,"calendar.calendar,write_users",0,Write Users,Записване на потребители,0
+field,"calendar.calendar-read-res.user,calendar",0,Calendar,Календар,0
+field,"calendar.calendar-read-res.user,rec_name",0,Name,Име,0
+field,"calendar.calendar-read-res.user,user",0,User,Потребител,0
+field,"calendar.calendar-write-res.user,calendar",0,Calendar,Календар,0
+field,"calendar.calendar-write-res.user,rec_name",0,Name,Име,0
+field,"calendar.calendar-write-res.user,user",0,User,Потребител,0
+field,"calendar.category,name",0,Name,Име,0
+field,"calendar.category,rec_name",0,Name,Име,0
+field,"calendar.date,date",0,Is Date,Е дата,0
+field,"calendar.date,datetime",0,Date,Дата,0
+field,"calendar.date,rec_name",0,Name,Име,0
+field,"calendar.event,alarms",0,Alarms,Аларми,0
+field,"calendar.event,all_day",0,All Day,Всички дни,0
+field,"calendar.event,attendees",0,Attendees,Присъстващи,0
+field,"calendar.event,calendar",0,Calendar,Календар,0
+field,"calendar.event,calendar_owner",0,Owner,Собственик,0
+field,"calendar.event,calendar_read_users",0,Read Users,Потребители с права за четене,0
+field,"calendar.event,calendar_write_users",0,Write Users,Записване на потребители,0
+field,"calendar.event,categories",0,Categories,Категории,0
+field,"calendar.event,classification",0,Classification,Класификация,0
+field,"calendar.event,description",0,Description,Описание,0
+field,"calendar.event,dtend",0,End Date,Крайна дата,0
+field,"calendar.event,dtstart",0,Start Date,Начална дата,0
+field,"calendar.event,exdates",0,Exception Dates,Дати на грешките,0
+field,"calendar.event,exrules",0,Exception Rules,Правила при грешка,0
+field,"calendar.event,location",0,Location,Местоположение,0
+field,"calendar.event,occurences",0,Occurences,Събития,0
+field,"calendar.event,organizer",0,Organizer,Организатор,0
+field,"calendar.event,parent",0,Parent,Родител,0
+field,"calendar.event,rdates",0,Recurrence Dates,Дати на повторяемост,0
+field,"calendar.event,rec_name",0,Name,Име,0
+field,"calendar.event,recurrence",0,Recurrence,Повторение,0
+field,"calendar.event,rrules",0,Recurrence Rules,Правила за повторяемост,0
+field,"calendar.event,sequence",0,Sequence,Последователност,0
+field,"calendar.event,status",0,Status,Състояние,0
+field,"calendar.event,summary",0,Summary,Обобщено,0
+field,"calendar.event,timezone",0,Timezone,Времева зона,0
+field,"calendar.event,transp",0,Time Transparency,Прозрачен във времето,0
+field,"calendar.event,uuid",0,UUID,,0
+field,"calendar.event,vevent",0,vevent,,0
+field,"calendar.event-calendar.category,category",0,Category,Категория,0
+field,"calendar.event-calendar.category,event",0,Event,Събитие,0
+field,"calendar.event-calendar.category,rec_name",0,Name,Име,0
+field,"calendar.event.alarm,calendar_alarm",0,Calendar Alarm,Аларма на календар,0
+field,"calendar.event.alarm,event",0,Event,Събитие,0
+field,"calendar.event.alarm,rec_name",0,Name,Име,0
+field,"calendar.event.attendee,calendar_attendee",0,Calendar Attendee,Присъстващ на календар,0
+field,"calendar.event.attendee,event",0,Event,Събитие,0
+field,"calendar.event.attendee,rec_name",0,Name,Име,0
+field,"calendar.event.exdate,calendar_date",0,Calendar Date,Дата от календар,0
+field,"calendar.event.exdate,event",0,Event,Събитие,0
+field,"calendar.event.exdate,rec_name",0,Name,Име,0
+field,"calendar.event.exrule,calendar_rrule",0,Calendar RRule,,0
+field,"calendar.event.exrule,event",0,Event,Събитие,0
+field,"calendar.event.exrule,rec_name",0,Name,Име,0
+field,"calendar.event.rdate,calendar_date",0,Calendar Date,Дата от календар,0
+field,"calendar.event.rdate,event",0,Event,Събитие,0
+field,"calendar.event.rdate,rec_name",0,Name,Име,0
+field,"calendar.event.rrule,calendar_rrule",0,Calendar RRule,,0
+field,"calendar.event.rrule,event",0,Event,Събитие,0
+field,"calendar.event.rrule,rec_name",0,Name,Име,0
+field,"calendar.location,name",0,Name,Име,0
+field,"calendar.location,rec_name",0,Name,Име,0
+field,"calendar.rrule,byday",0,By Day,По ден,0
+field,"calendar.rrule,byhour",0,By Hour,По час,0
+field,"calendar.rrule,byminute",0,By Minute,По минута,0
+field,"calendar.rrule,bymonth",0,By Month,По месец,0
+field,"calendar.rrule,bymonthday",0,By Month Day,По ден от месеца,0
+field,"calendar.rrule,bysecond",0,By Second,По секунда,0
+field,"calendar.rrule,bysetpos",0,By Position,По позиция,0
+field,"calendar.rrule,byweekno",0,By Week Number,По номер на седмицата,0
+field,"calendar.rrule,byyearday",0,By Year Day,По ден от годината,0
+field,"calendar.rrule,count",0,Count,Брой,0
+field,"calendar.rrule,freq",0,Frequency,Честота,0
+field,"calendar.rrule,interval",0,Interval,Интервал,0
+field,"calendar.rrule,rec_name",0,Name,Име,0
+field,"calendar.rrule,until",0,Until Date,До дата,0
+field,"calendar.rrule,until_date",0,Is Date,Е дата,0
+field,"calendar.rrule,wkst",0,Week Day,Ден от седмица,0
+field,"res.user,calendars",0,Calendars,Календари,0
+help,"calendar.calendar,owner",0,The user must have an email,Потребителя трябва да има email,0
+help,"calendar.date,date",0,"Ignore time of field ""Date"", but handle as date only.","От полето ""Дата"" се игнорира часа и се използва само датата.",0
+help,"calendar.event,uuid",0,Universally Unique Identifier,Универсален иникален идентификатор,0
+help,"calendar.rrule,until_date",0,"Ignore time of field ""Until Date"", but handle as date only.","От полето ""До дата"" се игнорира часа и се използва само датата.",0
+model,"calendar.alarm,name",0,Alarm,Аларма,0
+model,"calendar.attendee,name",0,Attendee,Присъстващ,0
+model,"calendar.calendar,name",0,Calendar,Календар,0
+model,"calendar.calendar-read-res.user,name",0,Calendar - read - User,,0
+model,"calendar.calendar-write-res.user,name",0,Calendar - write - User,,0
+model,"calendar.category,name",0,Category,Категория,0
+model,"calendar.date,name",0,Calendar Date,Дата от календар,0
+model,"calendar.event,name",0,Event,Събитие,0
+model,"calendar.event-calendar.category,name",0,Event - Category,Събитие - категория,0
+model,"calendar.event.alarm,name",0,Alarm,Аларма,0
+model,"calendar.event.attendee,name",0,Attendee,Присъстващ,0
+model,"calendar.event.exdate,name",0,Exception Date,Дата на грешка,0
+model,"calendar.event.exrule,name",0,Exception Rule,Правило при грешка,0
+model,"calendar.event.rdate,name",0,Recurrence Date,Повтаряща се дата,0
+model,"calendar.event.rrule,name",0,Recurrence Rule,Правило за повторение,0
+model,"calendar.location,name",0,Location,Местоположение,0
+model,"calendar.rrule,name",0,Recurrence Rule,Правило за повторение,0
+model,"ir.action,name",act_calendar_form,Calendars,Календари,0
+model,"ir.action,name",act_calendar_form2,Calendars,Календари,0
+model,"ir.action,name",act_event_form,Events,Събития,0
+model,"ir.action,name",act_event_form2,Events,Събития,0
+model,"ir.action,name",act_event_form3,Events,Събития,0
+model,"ir.ui.menu,name",menu_calendar,Calendar Management,Управление на календари,0
+model,"ir.ui.menu,name",menu_calendar_form,Calendars,Календари,0
+model,"ir.ui.menu,name",menu_calendar_form2,New Calendar,Нов календар,0
+model,"ir.ui.menu,name",menu_event_form,Events,Събития,0
+model,"ir.ui.menu,name",menu_event_form2,New Event,Ново събитие,0
+model,"res.group,name",group_calendar_admin,Calendar Administration,Управление на календар,0
+selection,"calendar.attendee,status",0,,,0
+selection,"calendar.attendee,status",0,Accepted,Приет,0
+selection,"calendar.attendee,status",0,Declined,Отхвърлен,0
+selection,"calendar.attendee,status",0,Delegated,Делегиран,0
+selection,"calendar.attendee,status",0,Needs Action,Необходимо е действие,0
+selection,"calendar.attendee,status",0,Tentative,Пробен,0
+selection,"calendar.event,classification",0,Confidential,Поверителен,0
+selection,"calendar.event,classification",0,Private,Частен,0
+selection,"calendar.event,classification",0,Public,Публичен,0
+selection,"calendar.event,status",0,,,0
+selection,"calendar.event,status",0,Cancelled,Отказан,0
+selection,"calendar.event,status",0,Confirmed,Потвърден,0
+selection,"calendar.event,status",0,Tentative,Пробен,0
+selection,"calendar.event,transp",0,Opaque,Непрозрачен,0
+selection,"calendar.event,transp",0,Transparent,Прозрачен,0
+selection,"calendar.rrule,freq",0,Daily,Ежедневно,0
+selection,"calendar.rrule,freq",0,Hourly,Ежечасно,0
+selection,"calendar.rrule,freq",0,Minutely,Ежеминутно,0
+selection,"calendar.rrule,freq",0,Monthly,Месечно,0
+selection,"calendar.rrule,freq",0,Secondly,Всяка секунда,0
+selection,"calendar.rrule,freq",0,Weekly,Седмично,0
+selection,"calendar.rrule,freq",0,Yearly,Годишно,0
+selection,"calendar.rrule,wkst",0,Friday,Петък,0
+selection,"calendar.rrule,wkst",0,Monday,Понеделник,0
+selection,"calendar.rrule,wkst",0,Saturday,Събота,0
+selection,"calendar.rrule,wkst",0,Sunday,Неделя,0
+selection,"calendar.rrule,wkst",0,Thursday,Четвъртък,0
+selection,"calendar.rrule,wkst",0,Tuesday,Вторник,0
+selection,"calendar.rrule,wkst",0,Wednesday,Четвъртък,0
+view,calendar.calendar,0,Calendar,Календар,0
+view,calendar.calendar,0,Calendars,Календари,0
+view,calendar.calendar,0,General,Основен,0
+view,calendar.calendar,0,Security,Сигурност,0
+view,calendar.category,0,Categories,Категории,0
+view,calendar.category,0,Category,Категория,0
+view,calendar.event,0,Attendees,Присъстващи,0
+view,calendar.event,0,Categories,Категории,0
+view,calendar.event,0,Event,Събитие,0
+view,calendar.event,0,Events,Събития,0
+view,calendar.event,0,General,Основен,0
+view,calendar.event,0,Occurences,Събития,0
+view,calendar.event.attendee,0,Attendee,Присъстващ,0
+view,calendar.event.attendee,0,Attendees,Присъстващи,0
+view,calendar.event.exdate,0,Exception Date,Дата на грешка,0
+view,calendar.event.exdate,0,Exception Dates,Дати на грешките,0
+view,calendar.event.exrule,0,Exception Rule,Правило при грешка,0
+view,calendar.event.exrule,0,Exception Rules,Правила при грешка,0
+view,calendar.event.rdate,0,Recurrence Date,Повтаряща се дата,0
+view,calendar.event.rdate,0,Recurrence Dates,Дати на повторяемост,0
+view,calendar.event.rrule,0,Recurrence Rule,Правило за повторение,0
+view,calendar.event.rrule,0,Recurrence Rules,Правила за повторяемост,0
+view,calendar.location,0,Location,Местоположение,0
+view,calendar.location,0,Locations,Местонахождения,0
