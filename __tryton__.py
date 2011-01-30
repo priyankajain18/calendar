@@ -8,6 +8,7 @@
     'name_es_CO' : 'Calendario',
     'name_es_ES' : 'Calendario',
     'name_fr_FR' : 'Calendrier',
+    'name_ru_RU' : 'Календарь',
     'version' : '1.9.0',
     'author' : 'B2CK',
     'email': 'info@b2ck.com',
@@ -17,7 +18,8 @@
     'description_de_DE' : 'Fügt Unterstützung für CalDAV hinzu',
     'description_es_CO' : 'Añade soporte para CalDAV',
     'description_es_ES' : 'Añade soporte para CalDAV',
-    'description_fr_FR': 'Ajoute le support CalDAV',
+    'description_fr_FR' : 'Ajoute le support CalDAV',
+    'description_ru_RU' : 'Добавление поддержки CalDAV',
     'depends' : [
         'ir',
         'res',
@@ -32,5 +34,6 @@
         'es_CO.csv',
         'es_ES.csv',
         'fr_FR.csv',
+        'ru_RU.csv',
     ],
 }
