@@ -57,7 +57,6 @@ this repository contains the full copyright notices and license terms. -->
         <record model="ir.action.act_window" id="act_calendar_form">
             <field name="name">Calendars</field>
             <field name="res_model">calendar.calendar</field>
-            <field name="view_type">form</field>
         </record>
         <record model="ir.action.act_window.view" id="act_calendar_form_view1">
             <field name="sequence" eval="10"/>
@@ -74,7 +73,6 @@ this repository contains the full copyright notices and license terms. -->
         <record model="ir.action.act_window" id="act_calendar_form2">
             <field name="name">Calendars</field>
             <field name="res_model">calendar.calendar</field>
-            <field name="view_type">form</field>
         </record>
         <record model="ir.action.act_window.view" id="act_calendar_form2_view1">
             <field name="sequence" eval="10"/>
@@ -267,7 +265,6 @@ this repository contains the full copyright notices and license terms. -->
         <record model="ir.action.act_window" id="act_event_form">
             <field name="name">Events</field>
             <field name="res_model">calendar.event</field>
-            <field name="view_type">form</field>
             <field name="domain">[('parent', '=', False)]</field>
         </record>
         <record model="ir.action.act_window.view" id="act_event_form_view1">
@@ -285,7 +282,6 @@ this repository contains the full copyright notices and license terms. -->
         <record model="ir.action.act_window" id="act_event_form2">
             <field name="name">Events</field>
             <field name="res_model">calendar.event</field>
-            <field name="view_type">form</field>
             <field name="domain">[('parent', '=', False)]</field>
         </record>
         <record model="ir.action.act_window.view" id="act_event_form2_view1">
@@ -304,7 +300,6 @@ this repository contains the full copyright notices and license terms. -->
         <record model="ir.action.act_window" id="act_event_form3">
             <field name="name">Events</field>
             <field name="res_model">calendar.event</field>
-            <field name="view_type">form</field>
             <field name="domain">[('parent', '=', False), ('calendar', '=', Eval('active_id'))]</field>
         </record>
         <record model="ir.action.act_window.view" id="act_event_form3_view1">
