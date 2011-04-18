@@ -3,7 +3,7 @@ error,calendar.calendar,0,A user can have only one calendar!,Потребите�
 error,calendar.calendar,0,The name of calendar must be unique!,Името на календара трябва да е уникално!,0
 error,calendar.category,0,The name of calendar category must be unique!,Името на категорията на календара трябва да е уникално!,0
 error,calendar.event,0,Recurrence can not be recurrent!,Повторението не може да е периодично!,0
-error,calendar.event,0,UUID and recurrence must be unique in a calendar!,,0
+error,calendar.event,0,UUID and recurrence must be unique in a calendar!,UUID и взаимна вложеност трябва да са уникални в календар!,0
 error,calendar.location,0,The name of calendar location must be unique!,Името на местонахождението на календара трябва да е уникално!,0
 error,calendar.rrule,0,"Invalid ""By Day""","Невалиден ""По ден""",0
 error,calendar.rrule,0,"Invalid ""By Hour""","Навалиден ""По час""",0
@@ -65,7 +65,7 @@ field,"calendar.event,status",0,Status,Състояние,0
 field,"calendar.event,summary",0,Summary,Обобщено,0
 field,"calendar.event,timezone",0,Timezone,Времева зона,0
 field,"calendar.event,transp",0,Time Transparency,Прозрачен във времето,0
-field,"calendar.event,uuid",0,UUID,,0
+field,"calendar.event,uuid",0,UUID,UUID,0
 field,"calendar.event,vevent",0,vevent,,0
 field,"calendar.event-calendar.category,category",0,Category,Категория,0
 field,"calendar.event-calendar.category,event",0,Event,Събитие,0
