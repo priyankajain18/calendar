@@ -9,7 +9,7 @@
     'name_es_ES' : 'Calendario',
     'name_fr_FR' : 'Calendrier',
     'name_ru_RU' : 'Календарь',
-    'version' : '1.9.0',
+    'version' : '2.0.0',
     'author' : 'B2CK',
     'email': 'info@b2ck.com',
     'website': 'http://www.tryton.org/',
