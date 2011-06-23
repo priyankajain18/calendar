@@ -44,9 +44,7 @@ this repository contains the full copyright notices and license terms. -->
                             <field name="description" colspan="4"/>
                         </page>
                         <page string="Security" id="security">
-                            <separator name="read_users" colspan="4"/>
                             <field name="read_users" colspan="4"/>
-                            <separator name="write_users" colspan="4"/>
                             <field name="write_users" colspan="4"/>
                         </page>
                     </notebook>
@@ -230,7 +228,6 @@ this repository contains the full copyright notices and license terms. -->
                             <field name="description" colspan="4"/>
                         </page>
                         <page string="Categories" id="categories">
-                            <separator name="categories" colspan="4"/>
                             <field name="categories" colspan="4"/>
                         </page>
                         <page string="Attendees" id="attendees">
