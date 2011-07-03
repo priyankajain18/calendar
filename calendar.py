@@ -13,6 +13,7 @@ from trytond.backend import TableHandler
 from trytond.pyson import If, Bool, Not, Eval, Greater
 from trytond.transaction import Transaction
 from trytond.cache import Cache
+from trytond.pool import Pool
 tzlocal = dateutil.tz.tzlocal()
 tzutc = dateutil.tz.tzutc()
 domimpl = xml.dom.minidom.getDOMImplementation()
@@ -96,7 +97,7 @@ class Calendar(ModelSQL, ModelView):
         :param calendar_id: an id of calendar.calendar
         :return: an iCalendar
         '''
-        event_obj = self.pool.get('calendar.event')
+        event_obj = Pool().get('calendar.event')
 
         ical = vobject.iCalendar()
         ical.vevent_list = []
@@ -139,7 +140,7 @@ class Calendar(ModelSQL, ModelView):
         :param dtend: a date of datetime
         :return: an iCalendar
         '''
-        event_obj = self.pool.get('calendar.event')
+        event_obj = Pool().get('calendar.event')
 
         ical = vobject.iCalendar()
         ical.add('method').value = 'REPLY'
@@ -274,7 +275,7 @@ class Calendar(ModelSQL, ModelView):
         :return: the xml with schedule-response
         '''
         from DAV.errors import DAV_Forbidden
-        collection_obj = self.pool.get('webdav.collection')
+        collection_obj = Pool().get('webdav.collection')
 
         calendar_id = collection_obj.calendar(uri)
         if not calendar_id:
@@ -508,8 +509,8 @@ class Event(ModelSQL, ModelView):
 
     def init(self, module_name):
         # Migrate from 1.4: remove classification_public
-        model_data_obj = self.pool.get('ir.model.data')
-        rule_obj = self.pool.get('ir.rule')
+        model_data_obj = Pool().get('ir.model.data')
+        rule_obj = Pool().get('ir.rule')
         with Transaction().set_user(0):
             model_data_ids = model_data_obj.search([
                 ('fs_id', '=', 'rule_group_read_calendar_line3'),
@@ -534,7 +535,7 @@ class Event(ModelSQL, ModelView):
         return 'opaque'
 
     def default_timezone(self):
-        user_obj = self.pool.get('res.user')
+        user_obj = Pool().get('res.user')
         user = user_obj.browse(Transaction().user)
         return user.timezone
 
@@ -572,8 +573,8 @@ class Event(ModelSQL, ModelView):
         return True
 
     def create(self, values):
-        calendar_obj = self.pool.get('calendar.calendar')
-        collection_obj = self.pool.get('webdav.collection')
+        calendar_obj = Pool().get('calendar.calendar')
+        collection_obj = Pool().get('webdav.collection')
 
         res = super(Event, self).create(values)
         event = self.browse(res)
@@ -622,10 +623,11 @@ class Event(ModelSQL, ModelView):
         return res
 
     def _event2update(self, event):
-        rdate_obj = self.pool.get('calendar.event.rdate')
-        exdate_obj = self.pool.get('calendar.event.exdate')
-        rrule_obj = self.pool.get('calendar.event.rrule')
-        exrule_obj = self.pool.get('calendar.event.exrule')
+        pool = Pool()
+        rdate_obj = pool.get('calendar.event.rdate')
+        exdate_obj = pool.get('calendar.event.exdate')
+        rrule_obj = pool.get('calendar.event.rrule')
+        exrule_obj = pool.get('calendar.event.exrule')
 
         res = {}
         res['summary'] = event.summary
@@ -655,8 +657,8 @@ class Event(ModelSQL, ModelView):
         return res
 
     def write(self, ids, values):
-        calendar_obj = self.pool.get('calendar.calendar')
-        collection_obj = self.pool.get('webdav.collection')
+        calendar_obj = Pool().get('calendar.calendar')
+        collection_obj = Pool().get('webdav.collection')
         cursor = Transaction().cursor
 
         values = values.copy()
@@ -734,8 +736,8 @@ class Event(ModelSQL, ModelView):
         return res
 
     def delete(self, ids):
-        attendee_obj = self.pool.get('calendar.event.attendee')
-        collection_obj = self.pool.get('webdav.collection')
+        attendee_obj = Pool().get('calendar.event.attendee')
+        collection_obj = Pool().get('webdav.collection')
 
         if isinstance(ids, (int, long)):
             ids = [ids]
@@ -794,15 +796,16 @@ class Event(ModelSQL, ModelView):
         :param vevent: the vevent of the ical to use if None use the first one
         :return: a dictionary with values
         '''
-        category_obj = self.pool.get('calendar.category')
-        location_obj = self.pool.get('calendar.location')
-        user_obj = self.pool.get('res.user')
-        alarm_obj = self.pool.get('calendar.event.alarm')
-        attendee_obj = self.pool.get('calendar.event.attendee')
-        rdate_obj = self.pool.get('calendar.event.rdate')
-        exdate_obj = self.pool.get('calendar.event.exdate')
-        rrule_obj = self.pool.get('calendar.event.rrule')
-        exrule_obj = self.pool.get('calendar.event.exrule')
+        pool = Pool()
+        category_obj = pool.get('calendar.category')
+        location_obj = pool.get('calendar.location')
+        user_obj = pool.get('res.user')
+        alarm_obj = pool.get('calendar.event.alarm')
+        attendee_obj = pool.get('calendar.event.attendee')
+        rdate_obj = pool.get('calendar.event.rdate')
+        exdate_obj = pool.get('calendar.event.exdate')
+        rrule_obj = pool.get('calendar.event.rrule')
+        exrule_obj = pool.get('calendar.event.exrule')
 
         vevents = []
         if not vevent:
@@ -1037,13 +1040,14 @@ class Event(ModelSQL, ModelView):
             or a calendar.calendar id
         :return: an iCalendar instance of vobject
         '''
-        user_obj = self.pool.get('res.user')
-        alarm_obj = self.pool.get('calendar.event.alarm')
-        attendee_obj = self.pool.get('calendar.event.attendee')
-        rdate_obj = self.pool.get('calendar.event.rdate')
-        exdate_obj = self.pool.get('calendar.event.exdate')
-        rrule_obj = self.pool.get('calendar.event.rrule')
-        exrule_obj = self.pool.get('calendar.event.exrule')
+        pool = Pool()
+        user_obj = pool.get('res.user')
+        alarm_obj = pool.get('calendar.event.alarm')
+        attendee_obj = pool.get('calendar.event.attendee')
+        rdate_obj = pool.get('calendar.event.rdate')
+        exdate_obj = pool.get('calendar.event.exdate')
+        rrule_obj = pool.get('calendar.event.rrule')
+        exrule_obj = pool.get('calendar.event.exrule')
 
         if isinstance(event, (int, long)):
             event = self.browse(event)
@@ -1250,14 +1254,14 @@ class EventAlarm(ModelSQL):
             required=True, select=1)
 
     def create(self, values):
-        event_obj = self.pool.get('calendar.event')
+        event_obj = Pool().get('calendar.event')
         if values.get('event'):
             # Update write_date of event
             event_obj.write(values['event'], {})
         return super(EventAlarm, self).create(values)
 
     def write(self, ids, values):
-        event_obj = self.pool.get('calendar.event')
+        event_obj = Pool().get('calendar.event')
         if isinstance(ids, (int, long)):
             ids = [ids]
         event_ids = [x.event.id for x in self.browse(ids)]
@@ -1269,8 +1273,8 @@ class EventAlarm(ModelSQL):
         return super(EventAlarm, self).write(ids, values)
 
     def delete(self, ids):
-        event_obj = self.pool.get('calendar.event')
-        alarm_obj = self.pool.get('calendar.alarm')
+        event_obj = Pool().get('calendar.event')
+        alarm_obj = Pool().get('calendar.alarm')
         if isinstance(ids, (int, long)):
             ids = [ids]
         event_alarms = self.browse(ids)
@@ -1285,11 +1289,11 @@ class EventAlarm(ModelSQL):
         return res
 
     def valarm2values(self, alarm):
-        alarm_obj = self.pool.get('calendar.alarm')
+        alarm_obj = Pool().get('calendar.alarm')
         return alarm_obj.valarm2values(alarm)
 
     def alarm2valarm(self, alarm):
-        alarm_obj = self.pool.get('calendar.alarm')
+        alarm_obj = Pool().get('calendar.alarm')
         return alarm_obj.alarm2valarm(alarm)
 
 EventAlarm()
@@ -1382,7 +1386,7 @@ class EventAttendee(ModelSQL, ModelView):
             required=True, select=1)
 
     def create(self, values):
-        event_obj = self.pool.get('calendar.event')
+        event_obj = Pool().get('calendar.event')
         if values.get('event'):
             # Update write_date of event
             event_obj.write(values['event'], {})
@@ -1414,7 +1418,7 @@ class EventAttendee(ModelSQL, ModelView):
         return res
 
     def write(self, ids, values):
-        event_obj = self.pool.get('calendar.event')
+        event_obj = Pool().get('calendar.event')
         if isinstance(ids, (int, long)):
             ids = [ids]
         event_ids = [x.event.id for x in self.browse(ids)]
@@ -1458,8 +1462,8 @@ class EventAttendee(ModelSQL, ModelView):
         return res
 
     def delete(self, ids):
-        event_obj = self.pool.get('calendar.event')
-        attendee_obj = self.pool.get('calendar.attendee')
+        event_obj = Pool().get('calendar.event')
+        attendee_obj = Pool().get('calendar.attendee')
 
         if isinstance(ids, (int, long)):
             ids = [ids]
@@ -1521,7 +1525,7 @@ class EventAttendee(ModelSQL, ModelView):
         return res
 
     def copy(self, ids, default=None):
-        attendee_obj = self.pool.get('calendar.attendee')
+        attendee_obj = Pool().get('calendar.attendee')
 
         int_id = False
         if isinstance(ids, (int, long)):
@@ -1542,15 +1546,15 @@ class EventAttendee(ModelSQL, ModelView):
         return new_ids
 
     def _attendee2update(self, attendee):
-        attendee_obj = self.pool.get('calendar.attendee')
+        attendee_obj = Pool().get('calendar.attendee')
         return attendee_obj._attendee2update(attendee)
 
     def attendee2values(self, attendee):
-        attendee_obj = self.pool.get('calendar.attendee')
+        attendee_obj = Pool().get('calendar.attendee')
         return attendee_obj.attendee2values(attendee)
 
     def attendee2attendee(self, attendee):
-        attendee_obj = self.pool.get('calendar.attendee')
+        attendee_obj = Pool().get('calendar.attendee')
         return attendee_obj.attendee2attendee(attendee)
 
 EventAttendee()
@@ -1642,14 +1646,14 @@ class EventRDate(ModelSQL, ModelView):
         return super(EventRDate, self).init(module_name)
 
     def create(self, values):
-        event_obj = self.pool.get('calendar.event')
+        event_obj = Pool().get('calendar.event')
         if values.get('event'):
             # Update write_date of event
             event_obj.write(values['event'], {})
         return super(EventRDate, self).create(values)
 
     def write(self, ids, values):
-        event_obj = self.pool.get('calendar.event')
+        event_obj = Pool().get('calendar.event')
         if isinstance(ids, (int, long)):
             ids = [ids]
         event_ids = [x.event.id for x in self.browse(ids)]
@@ -1661,8 +1665,8 @@ class EventRDate(ModelSQL, ModelView):
         return super(EventRDate, self).write(ids, values)
 
     def delete(self, ids):
-        event_obj = self.pool.get('calendar.event')
-        rdate_obj = self.pool.get('calendar.date')
+        event_obj = Pool().get('calendar.event')
+        rdate_obj = Pool().get('calendar.date')
         if isinstance(ids, (int, long)):
             ids = [ids]
         event_rdates = self.browse(ids)
@@ -1677,15 +1681,15 @@ class EventRDate(ModelSQL, ModelView):
         return res
 
     def _date2update(self, date):
-        date_obj = self.pool.get('calendar.date')
+        date_obj = Pool().get('calendar.date')
         return date_obj._date2update(date)
 
     def date2values(self, date):
-        date_obj = self.pool.get('calendar.date')
+        date_obj = Pool().get('calendar.date')
         return date_obj.date2values(date)
 
     def date2date(self, date):
-        date_obj = self.pool.get('calendar.date')
+        date_obj = Pool().get('calendar.date')
         return date_obj.date2date(date)
 
 EventRDate()
@@ -1984,14 +1988,14 @@ class EventRRule(ModelSQL, ModelView):
 
 
     def create(self, values):
-        event_obj = self.pool.get('calendar.event')
+        event_obj = Pool().get('calendar.event')
         if values.get('event'):
             # Update write_date of event
             event_obj.write(values['event'], {})
         return super(EventRRule, self).create(values)
 
     def write(self, ids, values):
-        event_obj = self.pool.get('calendar.event')
+        event_obj = Pool().get('calendar.event')
         if isinstance(ids, (int, long)):
             ids = [ids]
         event_ids = [x.event.id for x in self.browse(ids)]
@@ -2003,8 +2007,8 @@ class EventRRule(ModelSQL, ModelView):
         return super(EventRRule, self).write(ids, values)
 
     def delete(self, ids):
-        event_obj = self.pool.get('calendar.event')
-        rrule_obj = self.pool.get('calendar.rrule')
+        event_obj = Pool().get('calendar.event')
+        rrule_obj = Pool().get('calendar.rrule')
         if isinstance(ids, (int, long)):
             ids = [ids]
         event_rrules = self.browse(ids)
@@ -2019,15 +2023,15 @@ class EventRRule(ModelSQL, ModelView):
         return res
 
     def _rule2update(self, rule):
-        rule_obj = self.pool.get('calendar.rrule')
+        rule_obj = Pool().get('calendar.rrule')
         return rule_obj._rule2update(rule)
 
     def rule2values(self, rule):
-        rule_obj = self.pool.get('calendar.rrule')
+        rule_obj = Pool().get('calendar.rrule')
         return rule_obj.rule2values(rule)
 
     def rule2rule(self, rule):
-        rule_obj = self.pool.get('calendar.rrule')
+        rule_obj = Pool().get('calendar.rrule')
         return rule_obj.rule2rule(rule)
 
 EventRRule()

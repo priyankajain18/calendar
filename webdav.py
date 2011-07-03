@@ -7,6 +7,7 @@ from trytond.model import ModelView, ModelSQL
 from trytond.tools import reduce_ids
 from trytond.cache import Cache
 from trytond.transaction import Transaction
+from trytond.pool import Pool
 
 CALDAV_NS = 'urn:ietf:params:xml:ns:caldav'
 
@@ -23,7 +24,7 @@ class Collection(ModelSQL, ModelView):
         :return: calendar id
             or False if there is no calendar
         '''
-        calendar_obj = self.pool.get('calendar.calendar')
+        calendar_obj = Pool().get('calendar.calendar')
 
         if uri and uri.startswith('Calendars/'):
             calendar, uri = (uri[10:].split('/', 1) + [None])[0:2]
@@ -45,7 +46,7 @@ class Collection(ModelSQL, ModelView):
         :return: event id
             or False if there is no event
         '''
-        event_obj = self.pool.get('calendar.event')
+        event_obj = Pool().get('calendar.event')
 
         if uri and uri.startswith('Calendars/'):
             calendar, event_uri = (uri[10:].split('/', 1) + [None])[0:2]
@@ -140,8 +141,8 @@ class Collection(ModelSQL, ModelView):
         return res
 
     def get_childs(self, uri, filter=None, cache=None):
-        calendar_obj = self.pool.get('calendar.calendar')
-        event_obj = self.pool.get('calendar.event')
+        calendar_obj = Pool().get('calendar.calendar')
+        event_obj = Pool().get('calendar.event')
 
         if uri in ('Calendars', 'Calendars/'):
             domain = self._caldav_filter_domain_calendar(filter)
@@ -195,7 +196,7 @@ class Collection(ModelSQL, ModelView):
         return super(Collection, self).get_resourcetype(uri, cache=cache)
 
     def get_displayname(self, uri, cache=None):
-        calendar_obj = self.pool.get('calendar.calendar')
+        calendar_obj = Pool().get('calendar.calendar')
         if uri in ('Calendars', 'Calendars/'):
             return 'Calendars'
         calendar_id = self.calendar(uri)
@@ -214,8 +215,8 @@ class Collection(ModelSQL, ModelView):
         return super(Collection, self).get_contenttype(uri, cache=cache)
 
     def get_creationdate(self, uri, cache=None):
-        calendar_obj = self.pool.get('calendar.calendar')
-        event_obj = self.pool.get('calendar.event')
+        calendar_obj = Pool().get('calendar.calendar')
+        event_obj = Pool().get('calendar.event')
 
         calendar_id = self.calendar(uri)
         if not calendar_id:
@@ -290,8 +291,8 @@ class Collection(ModelSQL, ModelView):
         return super(Collection, self).get_creationdate(uri, cache=cache)
 
     def get_lastmodified(self, uri, cache=None):
-        calendar_obj = self.pool.get('calendar.calendar')
-        event_obj = self.pool.get('calendar.event')
+        calendar_obj = Pool().get('calendar.calendar')
+        event_obj = Pool().get('calendar.event')
 
         cursor = Transaction().cursor
         calendar_id = self.calendar(uri)
@@ -403,8 +404,8 @@ class Collection(ModelSQL, ModelView):
         return super(Collection, self).get_lastmodified(uri, cache=cache)
 
     def get_data(self, uri, cache=None):
-        event_obj = self.pool.get('calendar.event')
-        calendar_obj = self.pool.get('calendar.calendar')
+        event_obj = Pool().get('calendar.event')
+        calendar_obj = Pool().get('calendar.calendar')
 
         calendar_id = self.calendar(uri)
         if calendar_id:
@@ -422,7 +423,7 @@ class Collection(ModelSQL, ModelView):
         return super(Collection, self).get_data(uri, cache=cache)
 
     def get_calendar_description(self, uri, cache=None):
-        calendar_obj = self.pool.get('calendar.calendar')
+        calendar_obj = Pool().get('calendar.calendar')
 
         calendar_id = self.calendar(uri)
         if calendar_id:
@@ -462,14 +463,14 @@ class Collection(ModelSQL, ModelView):
         return '/Calendars'
 
     def get_calendar_user_address_set(self, uri, cache=None):
-        user_obj = self.pool.get('res.user')
+        user_obj = Pool().get('res.user')
         user = user_obj.browse(Transaction().user)
         if user.email:
             return user.email
         raise DAV_NotFound
 
     def get_schedule_inbox_URL(self, uri, cache=None):
-        calendar_obj = self.pool.get('calendar.calendar')
+        calendar_obj = Pool().get('calendar.calendar')
         user = Transaction().user
 
         calendar_ids = calendar_obj.search([
@@ -485,8 +486,8 @@ class Collection(ModelSQL, ModelView):
         return self.get_schedule_inbox_URL(uri, cache=cache)
 
     def put(self, uri, data, content_type, cache=None):
-        event_obj = self.pool.get('calendar.event')
-        calendar_obj = self.pool.get('calendar.calendar')
+        event_obj = Pool().get('calendar.event')
+        calendar_obj = Pool().get('calendar.calendar')
 
         calendar_id = self.calendar(uri)
         if calendar_id:
@@ -517,7 +518,7 @@ class Collection(ModelSQL, ModelView):
         return super(Collection, self).mkcol(uri, cache=cache)
 
     def rmcol(self, uri, cache=None):
-        calendar_obj = self.pool.get('calendar.calendar')
+        calendar_obj = Pool().get('calendar.calendar')
 
         calendar_id = self.calendar(uri)
         if calendar_id:
@@ -531,7 +532,7 @@ class Collection(ModelSQL, ModelView):
         return super(Collection, self).rmcol(uri, cache=cache)
 
     def rm(self, uri, cache=None):
-        event_obj = self.pool.get('calendar.event')
+        event_obj = Pool().get('calendar.event')
 
         calendar_id = self.calendar(uri)
         if calendar_id:
@@ -573,7 +574,7 @@ class Collection(ModelSQL, ModelView):
         :param cache: the cache
         :return: a list of privileges
         '''
-        calendar_obj = self.pool.get('calendar.calendar')
+        calendar_obj = Pool().get('calendar.calendar')
 
         if uri in ('Calendars', 'Calendars/'):
             return ['create', 'read', 'write', 'delete']
