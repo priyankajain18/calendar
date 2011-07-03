@@ -7,11 +7,15 @@ this repository contains the full copyright notices and license terms. -->
         <record model="res.group" id="group_calendar_admin">
             <field name="name">Calendar Administration</field>
         </record>
-        <record model="res.user" id="res.user_admin">
-            <field name="groups" eval="[('add', ref('group_calendar_admin'))]"/>
+        <record model="res.user-res.group"
+            id="user_admin_group_calendar_admin">
+            <field name="user" ref="res.user_admin"/>
+            <field name="group" ref="group_calendar_admin"/>
         </record>
-        <record model="res.user" id="res.user_trigger">
-            <field name="groups" eval="[('add', ref('group_calendar_admin'))]"/>
+        <record model="res.user-res.group"
+            id="user_trigger_group_calendar_admin">
+            <field name="user" ref="res.user_trigger"/>
+            <field name="group" ref="group_calendar_admin"/>
         </record>
 
         <menuitem name="Calendar Management" sequence="8" id="menu_calendar"/>
