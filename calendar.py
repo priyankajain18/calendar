@@ -1304,8 +1304,8 @@ class Attendee(ModelSQL, ModelView):
     _name = 'calendar.attendee'
 
     email = fields.Char('Email', required=True, states={
-        'readonly': Greater(Eval('active_id', 0), 0),
-        })
+        'readonly': Greater(Eval('id', 0), 0),
+        }, depends=['id'])
     status = fields.Selection([
         ('', ''),
         ('needs-action', 'Needs Action'),
