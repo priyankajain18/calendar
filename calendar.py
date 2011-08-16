@@ -280,7 +280,7 @@ class Calendar(ModelSQL, ModelView):
         if not calendar_id:
             raise DAV_Forbidden
         calendar = self.browse(calendar_id)
-        if calendar.owner.id != user:
+        if calendar.owner.id != Transaction().user:
             raise DAV_Forbidden
         ical = vobject.readOne(data)
         if ical.method.value == 'REQUEST' \
