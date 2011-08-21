@@ -2,7 +2,7 @@
 #this repository contains the full copyright notices and license terms.
 import copy
 from trytond.model import ModelView, ModelSQL, fields
-from trytond.pyson import Bool, Eval, Or
+from trytond.pyson import Bool, Eval
 
 
 class User(ModelSQL, ModelView):
@@ -19,9 +19,8 @@ class User(ModelSQL, ModelView):
         if not self.email.states.get('required'):
             self.email.states['required'] = required
         else:
-            self.email.states['required'] = \
-                    Or(self.email.states['required'],
-                            required)
+            self.email.states['required'] = (
+                self.email.states['required'] | required)
         if 'calendars' not in self.email.depends:
             self.email.depends.append('calendars')
 
