@@ -11,6 +11,37 @@ from trytond.pool import Pool
 
 CALDAV_NS = 'urn:ietf:params:xml:ns:caldav'
 
+def _comp_filter_domain(dtstart, dtend):
+    return ['OR',
+        [
+            ['OR',
+                [('dtstart', '<=', dtstart),
+                    ('dtend', '>=', dtstart)],
+                [('dtstart', '<=', dtend),
+                    ('dtend', '>=', dtend)],
+                [('dtstart', '>=', dtstart),
+                    ('dtend', '<=', dtend)],
+                [('dtstart', '>=', dtstart),
+                    ('dtstart', '<=', dtend),
+                    ('dtend', '=', False)]],
+            ('parent', '=', False),
+            ('rdates', '=', False),
+            ('rrules', '=', False),
+            ('exdates', '=', False),
+            ('exrules', '=', False),
+            ('occurences', '=', False),
+            ],
+        [ #TODO manage better recurring event
+            ('parent', '=', False),
+            ('dtstart', '<=', dtend),
+            ['OR',
+                ('rdates', '!=', False),
+                ('rrules', '!=', False),
+                ('exdates', '!=', False),
+                ('exrules', '!=', False),
+                ('occurences', '!=', False),
+                ]
+            ]]
 
 class Collection(ModelSQL, ModelView):
 
@@ -89,6 +120,7 @@ class Collection(ModelSQL, ModelView):
         if filter.localName == 'principal-property-search':
             return [('id', '=', 0)]
         elif filter.localName == 'calendar-query':
+            result = []
             calendar_filter = None
             for e in filter.childNodes:
                 if e.nodeType == e.TEXT_NODE:
@@ -112,11 +144,19 @@ class Collection(ModelSQL, ModelView):
                         if vevent_filter.getAttribute('name') != 'VEVENT':
                             vevent_filter = None
                             continue
+                        for comp_filter in vevent_filter.childNodes:
+                            if comp_filter.localName != 'time-range':
+                                continue
+                            start = comp_filter.getAttribute('start')
+                            start = vobject.icalendar.stringToDateTime(start)
+                            end = comp_filter.getAttribute('end')
+                            end = vobject.icalendar.stringToDateTime(end)
+                            result.append(_comp_filter_domain(start, end))
                         break
                 if vevent_filter is None:
                     return [('id', '=', 0)]
                 break
-            return []
+            return result
         elif filter.localName == 'calendar-multiget':
             ids = []
             for e in filter.childNodes:
