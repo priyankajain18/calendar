@@ -57,6 +57,9 @@ setup(name='trytond_calendar',
     ],
     license='GPL-3',
     install_requires=requires,
+    extras_require={
+        'test': ['caldav'],
+    },
     zip_safe=False,
     entry_points="""
     [trytond.modules]
