@@ -675,6 +675,8 @@ class Event(ModelSQL, ModelView):
                     'SET sequence = sequence + 1 ' \
                     'WHERE ' + red_sql, red_ids)
 
+        if not values:
+            return res
         for event in self.browse(ids):
             if event.calendar.owner \
                     and (event.organizer == event.calendar.owner.email \
@@ -688,18 +690,20 @@ class Event(ModelSQL, ModelView):
                     attendee_emails = [x.email for x in event.parent.attendees
                             if x.status != 'declined'
                             and x.email != event.parent.organizer]
-                if attendee_emails:
-                    with Transaction().set_user(0):
-                        event_ids = self.search([
-                            ('uuid', '=', event.uuid),
-                            ('calendar.owner.email', 'in', attendee_emails),
-                            ('id', '!=', event.id),
-                            ('recurrence', '=', event.recurrence or False),
-                            ])
-                        for event2 in self.browse(event_ids):
-                            if event2.calendar.owner.email in attendee_emails:
-                                attendee_emails.remove(
-                                        event2.calendar.owner.email)
+                with Transaction().set_user(0):
+                    event_ids = self.search([
+                        ('uuid', '=', event.uuid),
+                        ('id', '!=', event.id),
+                        ('recurrence', '=', event.recurrence or False),
+                        ])
+                    for event2 in self.browse(event_ids):
+                        if event2.calendar.owner.email in attendee_emails:
+                            attendee_emails.remove(
+                                    event2.calendar.owner.email)
+                        else:
+                            event_ids.remove(event2.id)
+                            self.delete(event2.id)
+                    if event_ids:
                         self.write(event_ids, self._event2update(event))
                 if attendee_emails:
                     with Transaction().set_user(0):
