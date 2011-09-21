@@ -283,7 +283,7 @@ this repository contains the full copyright notices and license terms. -->
         <record model="ir.action.keyword"
                 id="act_open_event_keyword1">
             <field name="keyword">form_relate</field>
-            <field name="model">calendar.calendar,0</field>
+            <field name="model">calendar.calendar,-1</field>
             <field name="action" ref="act_event_form3"/>
         </record>
 
