@@ -26,8 +26,8 @@ this repository contains the full copyright notices and license terms. -->
             <field name="arch" type="xml">
                 <![CDATA[
                 <tree string="Calendars">
-                    <field name="name" select="1"/>
-                    <field name="owner" select="1"/>
+                    <field name="name"/>
+                    <field name="owner"/>
                 </tree>
                 ]]>
             </field>
@@ -123,7 +123,7 @@ this repository contains the full copyright notices and license terms. -->
             <field name="arch" type="xml">
                 <![CDATA[
                 <tree string="Categories">
-                    <field name="name" select="1"/>
+                    <field name="name"/>
                 </tree>
                 ]]>
             </field>
@@ -148,7 +148,7 @@ this repository contains the full copyright notices and license terms. -->
             <field name="arch" type="xml">
                 <![CDATA[
                 <tree string="Locations">
-                    <field name="name" select="1"/>
+                    <field name="name"/>
                 </tree>
                 ]]>
             </field>
@@ -173,12 +173,12 @@ this repository contains the full copyright notices and license terms. -->
             <field name="arch" type="xml">
                 <![CDATA[
                 <tree string="Events">
-                    <field name="calendar" select="1"/>
-                    <field name="summary" select="1"/>
+                    <field name="calendar"/>
+                    <field name="summary"/>
                     <field name="all_day"/>
-                    <field name="dtstart" select="1"/>
-                    <field name="dtend" select="2"/>
-                    <field name="status" select="2"/>
+                    <field name="dtstart"/>
+                    <field name="dtend"/>
+                    <field name="status"/>
                 </tree>
                 ]]>
             </field>
@@ -231,12 +231,12 @@ this repository contains the full copyright notices and license terms. -->
                             <field name="exdates" colspan="2"/>
                             <field name="occurences" colspan="4">
                                 <tree string="Events">
-                                    <field name="summary" select="1"/>
-                                    <field name="recurrence" select="1"/>
+                                    <field name="summary"/>
+                                    <field name="recurrence"/>
                                     <field name="all_day"/>
-                                    <field name="dtstart" select="2"/>
-                                    <field name="dtend" select="2"/>
-                                    <field name="status" select="2"/>
+                                    <field name="dtstart"/>
+                                    <field name="dtend"/>
+                                    <field name="status"/>
                                 </tree>
                             </field>
                         </page>
@@ -293,9 +293,9 @@ this repository contains the full copyright notices and license terms. -->
             <field name="arch" type="xml">
                 <![CDATA[
                 <tree string="Attendees">
-                    <field name="event" select="1"/>
-                    <field name="email" select="1"/>
-                    <field name="status" select="1"/>
+                    <field name="event"/>
+                    <field name="email"/>
+                    <field name="status"/>
                 </tree>
                 ]]>
             </field>
@@ -324,9 +324,9 @@ this repository contains the full copyright notices and license terms. -->
             <field name="arch" type="xml">
                 <![CDATA[
                 <tree string="Recurrence Dates">
-                    <field name="event" select="1"/>
-                    <field name="datetime" select="1"/>
-                    <field name="date" select="2"/>
+                    <field name="event"/>
+                    <field name="datetime"/>
+                    <field name="date"/>
                 </tree>
                 ]]>
             </field>
@@ -355,9 +355,9 @@ this repository contains the full copyright notices and license terms. -->
             <field name="arch" type="xml">
                 <![CDATA[
                 <tree string="Exception Dates">
-                    <field name="event" select="1"/>
-                    <field name="datetime" select="1"/>
-                    <field name="date" select="2"/>
+                    <field name="event"/>
+                    <field name="datetime"/>
+                    <field name="date"/>
                 </tree>
                 ]]>
             </field>
@@ -386,8 +386,8 @@ this repository contains the full copyright notices and license terms. -->
             <field name="arch" type="xml">
                 <![CDATA[
                 <tree string="Recurrence Rules">
-                    <field name="event" select="1"/>
-                    <field name="freq" select="1"/>
+                    <field name="event"/>
+                    <field name="freq"/>
                 </tree>
                 ]]>
             </field>
@@ -442,8 +442,8 @@ this repository contains the full copyright notices and license terms. -->
             <field name="arch" type="xml">
                 <![CDATA[
                 <tree string="Exception Rules">
-                    <field name="event" select="1"/>
-                    <field name="freq" select="1"/>
+                    <field name="event"/>
+                    <field name="freq"/>
                 </tree>
                 ]]>
             </field>
