@@ -531,8 +531,8 @@ msgid "Events"
 msgstr "Événements"
 
 msgctxt "model:ir.ui.menu,name:menu_calendar"
-msgid "Calendar Management"
-msgstr "Gestion de calendrier"
+msgid "Calendar"
+msgstr "Calendrier"
 
 msgctxt "model:ir.ui.menu,name:menu_calendar_form"
 msgid "Calendars"
@@ -545,10 +545,6 @@ msgstr "Évenement"
 msgctxt "model:res.group,name:group_calendar_admin"
 msgid "Calendar Administration"
 msgstr "Administration calendrier"
-
-msgctxt "selection:calendar.attendee,status:0"
-msgid ""
-msgstr ""
 
 msgctxt "selection:calendar.attendee,status:0"
 msgid "Accepted"
@@ -570,6 +566,10 @@ msgctxt "selection:calendar.attendee,status:0"
 msgid "Tentative"
 msgstr "Tentative"
 
+msgctxt "selection:calendar.attendee,status:0"
+msgid ""
+msgstr ""
+
 msgctxt "selection:calendar.event,classification:0"
 msgid "Confidential"
 msgstr "Confidentiel"
@@ -583,10 +583,6 @@ msgid "Public"
 msgstr "Publique"
 
 msgctxt "selection:calendar.event,status:0"
-msgid ""
-msgstr ""
-
-msgctxt "selection:calendar.event,status:0"
 msgid "Cancelled"
 msgstr "Annulé"
 
@@ -597,6 +593,10 @@ msgstr "Confirmé"
 msgctxt "selection:calendar.event,status:0"
 msgid "Tentative"
 msgstr "Tentative"
+
+msgctxt "selection:calendar.event,status:0"
+msgid ""
+msgstr ""
 
 msgctxt "selection:calendar.event,transp:0"
 msgid "Opaque"
