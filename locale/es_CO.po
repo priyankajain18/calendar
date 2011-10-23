@@ -39,11 +39,11 @@ msgid "Invalid \"By Minute\""
 msgstr ""
 
 msgctxt "error:calendar.rrule:0"
-msgid "Invalid \"By Month\""
+msgid "Invalid \"By Month Day\""
 msgstr ""
 
 msgctxt "error:calendar.rrule:0"
-msgid "Invalid \"By Month Day\""
+msgid "Invalid \"By Month\""
 msgstr ""
 
 msgctxt "error:calendar.rrule:0"
@@ -425,9 +425,10 @@ msgctxt "field:calendar.rrule,until:0"
 msgid "Until Date"
 msgstr ""
 
+#, fuzzy
 msgctxt "field:calendar.rrule,until_date:0"
 msgid "Is Date"
-msgstr ""
+msgstr "Es Fecha"
 
 msgctxt "field:calendar.rrule,wkst:0"
 msgid "Week Day"
@@ -533,8 +534,9 @@ msgctxt "model:ir.action,name:act_event_form3"
 msgid "Events"
 msgstr "Eventos"
 
+#, fuzzy
 msgctxt "model:ir.ui.menu,name:menu_calendar"
-msgid "Calendar Management"
+msgid "Calendar"
 msgstr "Calendario"
 
 msgctxt "model:ir.ui.menu,name:menu_calendar_form"

@@ -530,8 +530,9 @@ msgctxt "model:ir.action,name:act_event_form3"
 msgid "Events"
 msgstr "Събития"
 
+#, fuzzy
 msgctxt "model:ir.ui.menu,name:menu_calendar"
-msgid "Calendar Management"
+msgid "Calendar"
 msgstr "Управление на календари"
 
 msgctxt "model:ir.ui.menu,name:menu_calendar_form"

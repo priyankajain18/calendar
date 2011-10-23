@@ -4,11 +4,11 @@ msgstr "Content-Type: text/plain; charset=utf-8\n"
 
 msgctxt "error:calendar.calendar:0"
 msgid "A user can have only one calendar!"
-msgstr "Пользователь может иметь только Один календарь!"
+msgstr ""
 
 msgctxt "error:calendar.calendar:0"
 msgid "The name of calendar must be unique!"
-msgstr "Имя календаря должно быть уникально"
+msgstr ""
 
 msgctxt "error:calendar.category:0"
 msgid "The name of calendar category must be unique!"
@@ -28,39 +28,39 @@ msgstr ""
 
 msgctxt "error:calendar.rrule:0"
 msgid "Invalid \"By Day\""
-msgstr "Неверное поле \"По дням\""
+msgstr ""
 
 msgctxt "error:calendar.rrule:0"
 msgid "Invalid \"By Hour\""
-msgstr "Неверное поле \"По часам\""
+msgstr ""
 
 msgctxt "error:calendar.rrule:0"
 msgid "Invalid \"By Minute\""
-msgstr "Неверное поле \"По минутам\""
+msgstr ""
 
 msgctxt "error:calendar.rrule:0"
 msgid "Invalid \"By Month Day\""
-msgstr "Неверное поле \"По дням месяца\""
+msgstr ""
 
 msgctxt "error:calendar.rrule:0"
 msgid "Invalid \"By Month\""
-msgstr "Неверное поле \"По месяцам\""
+msgstr ""
 
 msgctxt "error:calendar.rrule:0"
 msgid "Invalid \"By Position\""
-msgstr "Неверное поле \"По позиции\""
+msgstr ""
 
 msgctxt "error:calendar.rrule:0"
 msgid "Invalid \"By Second\""
-msgstr "Неверное поле \"По секундам\""
+msgstr ""
 
 msgctxt "error:calendar.rrule:0"
 msgid "Invalid \"By Week Number\""
-msgstr "Неверное поле \"По номерам недель\""
+msgstr ""
 
 msgctxt "error:calendar.rrule:0"
 msgid "Invalid \"By Year Day\""
-msgstr "Неверный \"По дням года\""
+msgstr ""
 
 msgctxt "error:calendar.rrule:0"
 msgid "Only one of \"until\" and \"count\" can be set!"
@@ -68,7 +68,7 @@ msgstr ""
 
 msgctxt "field:calendar.alarm,rec_name:0"
 msgid "Name"
-msgstr "Наименование"
+msgstr ""
 
 msgctxt "field:calendar.alarm,valarm:0"
 msgid "valarm"
@@ -76,195 +76,195 @@ msgstr ""
 
 msgctxt "field:calendar.attendee,attendee:0"
 msgid "attendee"
-msgstr "участник"
+msgstr ""
 
 msgctxt "field:calendar.attendee,email:0"
 msgid "Email"
-msgstr "Эл.почта"
+msgstr ""
 
 msgctxt "field:calendar.attendee,rec_name:0"
 msgid "Name"
-msgstr "Наименование"
+msgstr ""
 
 msgctxt "field:calendar.attendee,status:0"
 msgid "Participation Status"
-msgstr "Статус участия"
+msgstr ""
 
 msgctxt "field:calendar.calendar,description:0"
 msgid "Description"
-msgstr "Описание"
+msgstr ""
 
 msgctxt "field:calendar.calendar,name:0"
 msgid "Name"
-msgstr "Наименование"
+msgstr ""
 
 msgctxt "field:calendar.calendar,owner:0"
 msgid "Owner"
-msgstr "Владелец"
+msgstr ""
 
 msgctxt "field:calendar.calendar,read_users:0"
 msgid "Read Users"
-msgstr "Пользователи могут читать"
+msgstr ""
 
 msgctxt "field:calendar.calendar,rec_name:0"
 msgid "Name"
-msgstr "Наименование"
+msgstr ""
 
 msgctxt "field:calendar.calendar,write_users:0"
 msgid "Write Users"
-msgstr "Пользователи могут писать"
+msgstr ""
 
 msgctxt "field:calendar.calendar-read-res.user,calendar:0"
 msgid "Calendar"
-msgstr "Календар"
+msgstr ""
 
 msgctxt "field:calendar.calendar-read-res.user,rec_name:0"
 msgid "Name"
-msgstr "Наименование"
+msgstr ""
 
 msgctxt "field:calendar.calendar-read-res.user,user:0"
 msgid "User"
-msgstr "Пользователь"
+msgstr ""
 
 msgctxt "field:calendar.calendar-write-res.user,calendar:0"
 msgid "Calendar"
-msgstr "Календарь"
+msgstr ""
 
 msgctxt "field:calendar.calendar-write-res.user,rec_name:0"
 msgid "Name"
-msgstr "Наименование"
+msgstr ""
 
 msgctxt "field:calendar.calendar-write-res.user,user:0"
 msgid "User"
-msgstr "Пользователь"
+msgstr ""
 
 msgctxt "field:calendar.category,name:0"
 msgid "Name"
-msgstr "Наименование"
+msgstr ""
 
 msgctxt "field:calendar.category,rec_name:0"
 msgid "Name"
-msgstr "Наименование"
+msgstr ""
 
 msgctxt "field:calendar.date,date:0"
 msgid "Is Date"
-msgstr "Весь день"
+msgstr ""
 
 msgctxt "field:calendar.date,datetime:0"
 msgid "Date"
-msgstr "Дата"
+msgstr ""
 
 msgctxt "field:calendar.date,rec_name:0"
 msgid "Name"
-msgstr "Наименование"
+msgstr ""
 
 msgctxt "field:calendar.event,alarms:0"
 msgid "Alarms"
-msgstr "Вызовы"
+msgstr ""
 
 msgctxt "field:calendar.event,all_day:0"
 msgid "All Day"
-msgstr "Все дни"
+msgstr ""
 
 msgctxt "field:calendar.event,attendees:0"
 msgid "Attendees"
-msgstr "Участники"
+msgstr ""
 
 msgctxt "field:calendar.event,calendar:0"
 msgid "Calendar"
-msgstr "Календарь"
+msgstr ""
 
 msgctxt "field:calendar.event,calendar_owner:0"
 msgid "Owner"
-msgstr "Владелец"
+msgstr ""
 
 msgctxt "field:calendar.event,calendar_read_users:0"
 msgid "Read Users"
-msgstr "Пользователи могут читать"
+msgstr ""
 
 msgctxt "field:calendar.event,calendar_write_users:0"
 msgid "Write Users"
-msgstr "Пользователи могут писать"
+msgstr ""
 
 msgctxt "field:calendar.event,categories:0"
 msgid "Categories"
-msgstr "Категория"
+msgstr ""
 
 msgctxt "field:calendar.event,classification:0"
 msgid "Classification"
-msgstr "Классификация"
+msgstr ""
 
 msgctxt "field:calendar.event,description:0"
 msgid "Description"
-msgstr "Описание"
+msgstr ""
 
 msgctxt "field:calendar.event,dtend:0"
 msgid "End Date"
-msgstr "Дата окончания"
+msgstr ""
 
 msgctxt "field:calendar.event,dtstart:0"
 msgid "Start Date"
-msgstr "Дата начала"
+msgstr ""
 
 msgctxt "field:calendar.event,exdates:0"
 msgid "Exception Dates"
-msgstr "Дата исключения"
+msgstr ""
 
 msgctxt "field:calendar.event,exrules:0"
 msgid "Exception Rules"
-msgstr "Правила исключения"
+msgstr ""
 
 msgctxt "field:calendar.event,location:0"
 msgid "Location"
-msgstr "Местоположение"
+msgstr ""
 
 msgctxt "field:calendar.event,occurences:0"
 msgid "Occurences"
-msgstr "Дополнительные задачи"
+msgstr ""
 
 msgctxt "field:calendar.event,organizer:0"
 msgid "Organizer"
-msgstr "Организатор"
+msgstr ""
 
 msgctxt "field:calendar.event,parent:0"
 msgid "Parent"
-msgstr "Основной"
+msgstr ""
 
 msgctxt "field:calendar.event,rdates:0"
 msgid "Recurrence Dates"
-msgstr "Даты повторения"
+msgstr ""
 
 msgctxt "field:calendar.event,rec_name:0"
 msgid "Name"
-msgstr "Наименование"
+msgstr ""
 
 msgctxt "field:calendar.event,recurrence:0"
 msgid "Recurrence"
-msgstr "Повторение"
+msgstr ""
 
 msgctxt "field:calendar.event,rrules:0"
 msgid "Recurrence Rules"
-msgstr "Правила повторения"
+msgstr ""
 
 msgctxt "field:calendar.event,sequence:0"
 msgid "Sequence"
-msgstr "Последовательность"
+msgstr ""
 
 msgctxt "field:calendar.event,status:0"
 msgid "Status"
-msgstr "Состояние"
+msgstr ""
 
 msgctxt "field:calendar.event,summary:0"
 msgid "Summary"
-msgstr "Резюме"
+msgstr ""
 
 msgctxt "field:calendar.event,timezone:0"
 msgid "Timezone"
-msgstr "Зона времени"
+msgstr ""
 
 msgctxt "field:calendar.event,transp:0"
 msgid "Time Transparency"
-msgstr "Время Прозрачность"
+msgstr ""
 
 msgctxt "field:calendar.event,uuid:0"
 msgid "UUID"
@@ -276,163 +276,163 @@ msgstr ""
 
 msgctxt "field:calendar.event-calendar.category,category:0"
 msgid "Category"
-msgstr "Категории"
+msgstr ""
 
 msgctxt "field:calendar.event-calendar.category,event:0"
 msgid "Event"
-msgstr "Событие"
+msgstr ""
 
 msgctxt "field:calendar.event-calendar.category,rec_name:0"
 msgid "Name"
-msgstr "Наименование"
+msgstr ""
 
 msgctxt "field:calendar.event.alarm,calendar_alarm:0"
 msgid "Calendar Alarm"
-msgstr "Сигнала календаря"
+msgstr ""
 
 msgctxt "field:calendar.event.alarm,event:0"
 msgid "Event"
-msgstr "Событие"
+msgstr ""
 
 msgctxt "field:calendar.event.alarm,rec_name:0"
 msgid "Name"
-msgstr "Наименование"
+msgstr ""
 
 msgctxt "field:calendar.event.attendee,calendar_attendee:0"
 msgid "Calendar Attendee"
-msgstr "Календарь участников"
+msgstr ""
 
 msgctxt "field:calendar.event.attendee,event:0"
 msgid "Event"
-msgstr "Событие"
+msgstr ""
 
 msgctxt "field:calendar.event.attendee,rec_name:0"
 msgid "Name"
-msgstr "Наименование"
+msgstr ""
 
 msgctxt "field:calendar.event.exdate,calendar_date:0"
 msgid "Calendar Date"
-msgstr "День календаря"
+msgstr ""
 
 msgctxt "field:calendar.event.exdate,event:0"
 msgid "Event"
-msgstr "Событие"
+msgstr ""
 
 msgctxt "field:calendar.event.exdate,rec_name:0"
 msgid "Name"
-msgstr "Наименование"
+msgstr ""
 
 msgctxt "field:calendar.event.exrule,calendar_rrule:0"
 msgid "Calendar RRule"
-msgstr "Правила календаря"
+msgstr ""
 
 msgctxt "field:calendar.event.exrule,event:0"
 msgid "Event"
-msgstr "Событие"
+msgstr ""
 
 msgctxt "field:calendar.event.exrule,rec_name:0"
 msgid "Name"
-msgstr "Наименование"
+msgstr ""
 
 msgctxt "field:calendar.event.rdate,calendar_date:0"
 msgid "Calendar Date"
-msgstr "День календаря"
+msgstr ""
 
 msgctxt "field:calendar.event.rdate,event:0"
 msgid "Event"
-msgstr "Событие"
+msgstr ""
 
 msgctxt "field:calendar.event.rdate,rec_name:0"
 msgid "Name"
-msgstr "Наименование"
+msgstr ""
 
 msgctxt "field:calendar.event.rrule,calendar_rrule:0"
 msgid "Calendar RRule"
-msgstr "Правила календаря"
+msgstr ""
 
 msgctxt "field:calendar.event.rrule,event:0"
 msgid "Event"
-msgstr "Событие"
+msgstr ""
 
 msgctxt "field:calendar.event.rrule,rec_name:0"
 msgid "Name"
-msgstr "Наименование"
+msgstr ""
 
 msgctxt "field:calendar.location,name:0"
 msgid "Name"
-msgstr "Наименование"
+msgstr ""
 
 msgctxt "field:calendar.location,rec_name:0"
 msgid "Name"
-msgstr "Наименование"
+msgstr ""
 
 msgctxt "field:calendar.rrule,byday:0"
 msgid "By Day"
-msgstr "По дням"
+msgstr ""
 
 msgctxt "field:calendar.rrule,byhour:0"
 msgid "By Hour"
-msgstr "По часам"
+msgstr ""
 
 msgctxt "field:calendar.rrule,byminute:0"
 msgid "By Minute"
-msgstr "По минутам"
+msgstr ""
 
 msgctxt "field:calendar.rrule,bymonth:0"
 msgid "By Month"
-msgstr "По месячно"
+msgstr ""
 
 msgctxt "field:calendar.rrule,bymonthday:0"
 msgid "By Month Day"
-msgstr "По дням месяца"
+msgstr ""
 
 msgctxt "field:calendar.rrule,bysecond:0"
 msgid "By Second"
-msgstr "По секундам"
+msgstr ""
 
 msgctxt "field:calendar.rrule,bysetpos:0"
 msgid "By Position"
-msgstr "По позиции"
+msgstr ""
 
 msgctxt "field:calendar.rrule,byweekno:0"
 msgid "By Week Number"
-msgstr "По номерам недель"
+msgstr ""
 
 msgctxt "field:calendar.rrule,byyearday:0"
 msgid "By Year Day"
-msgstr "По дням года"
+msgstr ""
 
 msgctxt "field:calendar.rrule,count:0"
 msgid "Count"
-msgstr "Количество"
+msgstr ""
 
 msgctxt "field:calendar.rrule,freq:0"
 msgid "Frequency"
-msgstr "Частота"
+msgstr ""
 
 msgctxt "field:calendar.rrule,interval:0"
 msgid "Interval"
-msgstr "Внутренний"
+msgstr ""
 
 msgctxt "field:calendar.rrule,rec_name:0"
 msgid "Name"
-msgstr "Наименование"
+msgstr ""
 
 msgctxt "field:calendar.rrule,until:0"
 msgid "Until Date"
-msgstr "До даты"
+msgstr ""
 
 msgctxt "field:calendar.rrule,until_date:0"
 msgid "Is Date"
-msgstr "Весь день"
+msgstr ""
 
 msgctxt "field:calendar.rrule,wkst:0"
 msgid "Week Day"
-msgstr "День недели"
+msgstr ""
 
 msgctxt "field:res.user,calendars:0"
 msgid "Calendars"
-msgstr "Календари"
+msgstr ""
 
 msgctxt "help:calendar.calendar,owner:0"
 msgid "The user must have an email"
@@ -440,325 +440,320 @@ msgstr ""
 
 msgctxt "help:calendar.date,date:0"
 msgid "Ignore time of field \"Date\", but handle as date only."
-msgstr "Время игнорируется в поле \"Дата\", действует только дата"
+msgstr ""
 
 msgctxt "help:calendar.event,uuid:0"
 msgid "Universally Unique Identifier"
-msgstr "Универсальный уникальный идентификатор"
+msgstr ""
 
 msgctxt "help:calendar.rrule,until_date:0"
 msgid "Ignore time of field \"Until Date\", but handle as date only."
-msgstr "Время игнорируется в поле \"До даты\", действует только дата"
+msgstr ""
 
 msgctxt "model:calendar.alarm,name:0"
 msgid "Alarm"
-msgstr "Вызов"
+msgstr ""
 
 msgctxt "model:calendar.attendee,name:0"
 msgid "Attendee"
-msgstr "Участник"
+msgstr ""
 
 msgctxt "model:calendar.calendar,name:0"
 msgid "Calendar"
-msgstr "Календарь"
+msgstr ""
 
 msgctxt "model:calendar.calendar-read-res.user,name:0"
 msgid "Calendar - read - User"
-msgstr "Пользователи могут читать"
+msgstr ""
 
 msgctxt "model:calendar.calendar-write-res.user,name:0"
 msgid "Calendar - write - User"
-msgstr "Пользователи могут писать"
+msgstr ""
 
 msgctxt "model:calendar.category,name:0"
 msgid "Category"
-msgstr "Категории"
+msgstr ""
 
 msgctxt "model:calendar.date,name:0"
 msgid "Calendar Date"
-msgstr "День календаря"
+msgstr ""
 
 msgctxt "model:calendar.event,name:0"
 msgid "Event"
-msgstr "Событие"
+msgstr ""
 
 msgctxt "model:calendar.event-calendar.category,name:0"
 msgid "Event - Category"
-msgstr "Категории - События"
+msgstr ""
 
 msgctxt "model:calendar.event.alarm,name:0"
 msgid "Alarm"
-msgstr "Вызов"
+msgstr ""
 
 msgctxt "model:calendar.event.attendee,name:0"
 msgid "Attendee"
-msgstr "Участник"
+msgstr ""
 
 msgctxt "model:calendar.event.exdate,name:0"
 msgid "Exception Date"
-msgstr "Дата исключения"
+msgstr ""
 
 msgctxt "model:calendar.event.exrule,name:0"
 msgid "Exception Rule"
-msgstr "Правило исключения"
+msgstr ""
 
 msgctxt "model:calendar.event.rdate,name:0"
 msgid "Recurrence Date"
-msgstr "Даты повторения"
+msgstr ""
 
 msgctxt "model:calendar.event.rrule,name:0"
 msgid "Recurrence Rule"
-msgstr "Правила повторения"
+msgstr ""
 
 msgctxt "model:calendar.location,name:0"
 msgid "Location"
-msgstr "Местоположение"
+msgstr ""
 
 msgctxt "model:calendar.rrule,name:0"
 msgid "Recurrence Rule"
-msgstr "Правила повторения"
+msgstr ""
 
 msgctxt "model:ir.action,name:act_calendar_form"
 msgid "Calendars"
-msgstr "Календари"
+msgstr ""
 
-#, fuzzy
 msgctxt "model:ir.action,name:act_event_form"
 msgid "Events"
-msgstr "События"
+msgstr ""
 
-#, fuzzy
 msgctxt "model:ir.action,name:act_event_form3"
 msgid "Events"
-msgstr "События"
+msgstr ""
 
-#, fuzzy
 msgctxt "model:ir.ui.menu,name:menu_calendar"
 msgid "Calendar"
-msgstr "Календари"
+msgstr ""
 
 msgctxt "model:ir.ui.menu,name:menu_calendar_form"
 msgid "Calendars"
-msgstr "Календари"
+msgstr ""
 
 msgctxt "model:ir.ui.menu,name:menu_event_form"
 msgid "Events"
-msgstr "События"
+msgstr ""
 
 msgctxt "model:res.group,name:group_calendar_admin"
 msgid "Calendar Administration"
-msgstr "Управление календарем"
+msgstr ""
 
-#, fuzzy
 msgctxt "selection:calendar.attendee,status:0"
 msgid ""
-msgstr "Резервный счет"
+msgstr ""
 
 msgctxt "selection:calendar.attendee,status:0"
 msgid "Accepted"
-msgstr "Подтверждено"
+msgstr ""
 
 msgctxt "selection:calendar.attendee,status:0"
 msgid "Declined"
-msgstr "Отклонено"
+msgstr ""
 
 msgctxt "selection:calendar.attendee,status:0"
 msgid "Delegated"
-msgstr "Делегировано"
+msgstr ""
 
 msgctxt "selection:calendar.attendee,status:0"
 msgid "Needs Action"
-msgstr "Требуется действие"
+msgstr ""
 
 msgctxt "selection:calendar.attendee,status:0"
 msgid "Tentative"
-msgstr "Предварительный"
+msgstr ""
 
 msgctxt "selection:calendar.event,classification:0"
 msgid "Confidential"
-msgstr "Конфиденциальное"
+msgstr ""
 
 msgctxt "selection:calendar.event,classification:0"
 msgid "Private"
-msgstr "Личное"
+msgstr ""
 
 msgctxt "selection:calendar.event,classification:0"
 msgid "Public"
-msgstr "Публичное"
+msgstr ""
 
-#, fuzzy
 msgctxt "selection:calendar.event,status:0"
 msgid ""
-msgstr "Резервный счет"
+msgstr ""
 
 msgctxt "selection:calendar.event,status:0"
 msgid "Cancelled"
-msgstr "Отмененно"
+msgstr ""
 
 msgctxt "selection:calendar.event,status:0"
 msgid "Confirmed"
-msgstr "Подтвержденно"
+msgstr ""
 
 msgctxt "selection:calendar.event,status:0"
 msgid "Tentative"
-msgstr "Предварительный"
+msgstr ""
 
 msgctxt "selection:calendar.event,transp:0"
 msgid "Opaque"
-msgstr "Непрозрачный"
+msgstr ""
 
 msgctxt "selection:calendar.event,transp:0"
 msgid "Transparent"
-msgstr "Прозрачный"
+msgstr ""
 
 msgctxt "selection:calendar.rrule,freq:0"
 msgid "Daily"
-msgstr "Ежедневный"
+msgstr ""
 
 msgctxt "selection:calendar.rrule,freq:0"
 msgid "Hourly"
-msgstr "Ежечасный"
+msgstr ""
 
 msgctxt "selection:calendar.rrule,freq:0"
 msgid "Minutely"
-msgstr "Ежеминутно"
+msgstr ""
 
 msgctxt "selection:calendar.rrule,freq:0"
 msgid "Monthly"
-msgstr "Ежемесячно"
+msgstr ""
 
 msgctxt "selection:calendar.rrule,freq:0"
 msgid "Secondly"
-msgstr "Ежесекудно"
+msgstr ""
 
 msgctxt "selection:calendar.rrule,freq:0"
 msgid "Weekly"
-msgstr "Еженедельно"
+msgstr ""
 
 msgctxt "selection:calendar.rrule,freq:0"
 msgid "Yearly"
-msgstr "Ежегодно"
+msgstr ""
 
 msgctxt "selection:calendar.rrule,wkst:0"
 msgid "Friday"
-msgstr "Пятница"
+msgstr ""
 
 msgctxt "selection:calendar.rrule,wkst:0"
 msgid "Monday"
-msgstr "Понедельник"
+msgstr ""
 
 msgctxt "selection:calendar.rrule,wkst:0"
 msgid "Saturday"
-msgstr "Суббота"
+msgstr ""
 
 msgctxt "selection:calendar.rrule,wkst:0"
 msgid "Sunday"
-msgstr "Воскресенье"
+msgstr ""
 
 msgctxt "selection:calendar.rrule,wkst:0"
 msgid "Thursday"
-msgstr "Четверг"
+msgstr ""
 
 msgctxt "selection:calendar.rrule,wkst:0"
 msgid "Tuesday"
-msgstr "Вторник"
+msgstr ""
 
 msgctxt "selection:calendar.rrule,wkst:0"
 msgid "Wednesday"
-msgstr "Среда"
+msgstr ""
 
 msgctxt "view:calendar.calendar:0"
 msgid "Calendar"
-msgstr "Календарь"
+msgstr ""
 
 msgctxt "view:calendar.calendar:0"
 msgid "Calendars"
-msgstr "Календари"
+msgstr ""
 
 msgctxt "view:calendar.calendar:0"
 msgid "General"
-msgstr "Основной"
+msgstr ""
 
 msgctxt "view:calendar.calendar:0"
 msgid "Security"
-msgstr "Доступ"
+msgstr ""
 
 msgctxt "view:calendar.category:0"
 msgid "Categories"
-msgstr "Категория"
+msgstr ""
 
 msgctxt "view:calendar.category:0"
 msgid "Category"
-msgstr "Категории"
+msgstr ""
 
 msgctxt "view:calendar.event.attendee:0"
 msgid "Attendee"
-msgstr "Участник"
+msgstr ""
 
 msgctxt "view:calendar.event.attendee:0"
 msgid "Attendees"
-msgstr "Участники"
+msgstr ""
 
 msgctxt "view:calendar.event.exdate:0"
 msgid "Exception Date"
-msgstr "Дата исключения"
+msgstr ""
 
 msgctxt "view:calendar.event.exdate:0"
 msgid "Exception Dates"
-msgstr "Дата исключения"
+msgstr ""
 
 msgctxt "view:calendar.event.exrule:0"
 msgid "Exception Rule"
-msgstr "Правило исключения"
+msgstr ""
 
 msgctxt "view:calendar.event.exrule:0"
 msgid "Exception Rules"
-msgstr "Правила исключения"
+msgstr ""
 
 msgctxt "view:calendar.event.rdate:0"
 msgid "Recurrence Date"
-msgstr "Даты повторения"
+msgstr ""
 
 msgctxt "view:calendar.event.rdate:0"
 msgid "Recurrence Dates"
-msgstr "Даты повторения"
+msgstr ""
 
 msgctxt "view:calendar.event.rrule:0"
 msgid "Recurrence Rule"
-msgstr "Правила повторения"
+msgstr ""
 
 msgctxt "view:calendar.event.rrule:0"
 msgid "Recurrence Rules"
-msgstr "Правила повторения"
+msgstr ""
 
 msgctxt "view:calendar.event:0"
 msgid "Attendees"
-msgstr "Участники"
+msgstr ""
 
 msgctxt "view:calendar.event:0"
 msgid "Categories"
-msgstr "Категория"
+msgstr ""
 
 msgctxt "view:calendar.event:0"
 msgid "Event"
-msgstr "Событие"
+msgstr ""
 
 msgctxt "view:calendar.event:0"
 msgid "Events"
-msgstr "События"
+msgstr ""
 
 msgctxt "view:calendar.event:0"
 msgid "General"
-msgstr "Основной"
+msgstr ""
 
 msgctxt "view:calendar.event:0"
 msgid "Occurences"
-msgstr "Повторение"
+msgstr ""
 
 msgctxt "view:calendar.location:0"
 msgid "Location"
-msgstr "Местоположение"
+msgstr ""
 
 msgctxt "view:calendar.location:0"
 msgid "Locations"
-msgstr "Местоположения"
+msgstr ""

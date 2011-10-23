@@ -39,12 +39,12 @@ msgid "Invalid \"By Minute\""
 msgstr "Inválido «por minuto»"
 
 msgctxt "error:calendar.rrule:0"
-msgid "Invalid \"By Month\""
-msgstr "Inválido «por mes»"
-
-msgctxt "error:calendar.rrule:0"
 msgid "Invalid \"By Month Day\""
 msgstr "Inválido «por día del mes»"
+
+msgctxt "error:calendar.rrule:0"
+msgid "Invalid \"By Month\""
+msgstr "Inválido «por mes»"
 
 msgctxt "error:calendar.rrule:0"
 msgid "Invalid \"By Position\""
@@ -146,6 +146,21 @@ msgctxt "field:calendar.category,rec_name:0"
 msgid "Name"
 msgstr "Nombre"
 
+#, fuzzy
+msgctxt "field:calendar.date,date:0"
+msgid "Is Date"
+msgstr "Es fecha"
+
+#, fuzzy
+msgctxt "field:calendar.date,datetime:0"
+msgid "Date"
+msgstr "Fecha"
+
+#, fuzzy
+msgctxt "field:calendar.date,rec_name:0"
+msgid "Name"
+msgstr "Nombre del campo"
+
 msgctxt "field:calendar.event,alarms:0"
 msgid "Alarms"
 msgstr "Alarmas"
@@ -181,10 +196,6 @@ msgstr "Categorías"
 msgctxt "field:calendar.event,classification:0"
 msgid "Classification"
 msgstr "Clasificación"
-
-msgctxt "field:calendar.event,classification_public:0"
-msgid "Classification Public"
-msgstr "Clasificación pública"
 
 msgctxt "field:calendar.event,description:0"
 msgid "Description"
@@ -302,9 +313,9 @@ msgctxt "field:calendar.event.attendee,rec_name:0"
 msgid "Name"
 msgstr "Nombre"
 
-msgctxt "field:calendar.event.exdate,calendar_rdate:0"
-msgid "Calendar RDate"
-msgstr "Fecha de recurrencia"
+msgctxt "field:calendar.event.exdate,calendar_date:0"
+msgid "Calendar Date"
+msgstr ""
 
 msgctxt "field:calendar.event.exdate,event:0"
 msgid "Event"
@@ -326,9 +337,9 @@ msgctxt "field:calendar.event.exrule,rec_name:0"
 msgid "Name"
 msgstr "Nombre"
 
-msgctxt "field:calendar.event.rdate,calendar_rdate:0"
-msgid "Calendar RDate"
-msgstr "Fecha de recurrencia"
+msgctxt "field:calendar.event.rdate,calendar_date:0"
+msgid "Calendar Date"
+msgstr ""
 
 msgctxt "field:calendar.event.rdate,event:0"
 msgid "Event"
@@ -355,18 +366,6 @@ msgid "Name"
 msgstr "Nombre"
 
 msgctxt "field:calendar.location,rec_name:0"
-msgid "Name"
-msgstr "Nombre"
-
-msgctxt "field:calendar.rdate,date:0"
-msgid "Is Date"
-msgstr "Es fecha"
-
-msgctxt "field:calendar.rdate,datetime:0"
-msgid "Date"
-msgstr "Fecha"
-
-msgctxt "field:calendar.rdate,rec_name:0"
 msgid "Name"
 msgstr "Nombre"
 
@@ -442,13 +441,13 @@ msgctxt "help:calendar.calendar,owner:0"
 msgid "The user must have an email"
 msgstr "El usuario debe tener un correo electrónico"
 
+msgctxt "help:calendar.date,date:0"
+msgid "Ignore time of field \"Date\", but handle as date only."
+msgstr ""
+
 msgctxt "help:calendar.event,uuid:0"
 msgid "Universally Unique Identifier"
 msgstr "Identificador universal único"
-
-msgctxt "help:calendar.rdate,date:0"
-msgid "Ignore time of field \"Date\", but handle as date only."
-msgstr "Ignora la hora del campo «Fecha» y lo trata como fecha."
 
 msgctxt "help:calendar.rrule,until_date:0"
 msgid "Ignore time of field \"Until Date\", but handle as date only."
@@ -477,6 +476,10 @@ msgstr "Calendario - escribir - usuario"
 msgctxt "model:calendar.category,name:0"
 msgid "Category"
 msgstr "Categoría"
+
+msgctxt "model:calendar.date,name:0"
+msgid "Calendar Date"
+msgstr ""
 
 msgctxt "model:calendar.event,name:0"
 msgid "Event"
@@ -514,10 +517,6 @@ msgctxt "model:calendar.location,name:0"
 msgid "Location"
 msgstr "Ubicación"
 
-msgctxt "model:calendar.rdate,name:0"
-msgid "Recurrence Date"
-msgstr "Fecha de recurrencia"
-
 msgctxt "model:calendar.rrule,name:0"
 msgid "Recurrence Rule"
 msgstr "Regla de recurrencia"
@@ -530,8 +529,14 @@ msgctxt "model:ir.action,name:act_event_form"
 msgid "Events"
 msgstr "Eventos"
 
+#, fuzzy
+msgctxt "model:ir.action,name:act_event_form3"
+msgid "Events"
+msgstr "Eventos"
+
+#, fuzzy
 msgctxt "model:ir.ui.menu,name:menu_calendar"
-msgid "Calendar Management"
+msgid "Calendar"
 msgstr "Gestión de calendario"
 
 msgctxt "model:ir.ui.menu,name:menu_calendar_form"

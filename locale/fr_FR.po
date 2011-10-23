@@ -547,6 +547,10 @@ msgid "Calendar Administration"
 msgstr "Administration calendrier"
 
 msgctxt "selection:calendar.attendee,status:0"
+msgid ""
+msgstr ""
+
+msgctxt "selection:calendar.attendee,status:0"
 msgid "Accepted"
 msgstr "Accepté"
 
@@ -566,10 +570,6 @@ msgctxt "selection:calendar.attendee,status:0"
 msgid "Tentative"
 msgstr "Tentative"
 
-msgctxt "selection:calendar.attendee,status:0"
-msgid ""
-msgstr ""
-
 msgctxt "selection:calendar.event,classification:0"
 msgid "Confidential"
 msgstr "Confidentiel"
@@ -583,6 +583,10 @@ msgid "Public"
 msgstr "Publique"
 
 msgctxt "selection:calendar.event,status:0"
+msgid ""
+msgstr ""
+
+msgctxt "selection:calendar.event,status:0"
 msgid "Cancelled"
 msgstr "Annulé"
 
@@ -593,10 +597,6 @@ msgstr "Confirmé"
 msgctxt "selection:calendar.event,status:0"
 msgid "Tentative"
 msgstr "Tentative"
-
-msgctxt "selection:calendar.event,status:0"
-msgid ""
-msgstr ""
 
 msgctxt "selection:calendar.event,transp:0"
 msgid "Opaque"
