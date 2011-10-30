@@ -4,6 +4,7 @@
 {
     'name' : 'Calendar',
     'name_bg_BG' : 'Календар',
+    'name_ca_ES' : 'Calendari',
     'name_de_DE' : 'Kalender',
     'name_es_CO' : 'Calendario',
     'name_es_ES' : 'Calendario',
@@ -15,6 +16,7 @@
     'website': 'http://www.tryton.org/',
     'description': 'Add CalDAV support',
     'description_bg_BG' : 'Добавя подръжка на CalDAV',
+    'description_ca_ES' : 'Afegeix suport per CalDAV.',
     'description_de_DE' : 'Fügt Unterstützung für CalDAV hinzu',
     'description_es_CO' : 'Añade soporte para CalDAV',
     'description_es_ES' : 'Añade soporte para CalDAV',
@@ -30,6 +32,7 @@
     ],
     'translation': [
         'locale/bg_BG.po',
+        'locale/ca_ES.po',
         'locale/cs_CZ.po',
         'locale/de_DE.po',
         'locale/es_CO.po',
