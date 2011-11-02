@@ -214,9 +214,6 @@ class Calendar(ModelSQL, ModelView):
             event_ical = event_obj.event2ical(event)
             if event_ical.vevent.rruleset:
                 between_dtstart, between_dtend = dtstart, dtend
-                if event.all_day:
-                    between_dtstart = dtstart.replace(tzinfo=None)
-                    between_dtend = dtend.replace(tzinfo=None)
                 for freebusy_dtstart in event_ical.vevent.rruleset:
                     if freebusy_dtstart.replace(tzinfo=tzlocal) > dtend:
                         break
@@ -802,7 +799,6 @@ class Event(ModelSQL, ModelView):
         pool = Pool()
         category_obj = pool.get('calendar.category')
         location_obj = pool.get('calendar.location')
-        user_obj = pool.get('res.user')
         alarm_obj = pool.get('calendar.event.alarm')
         attendee_obj = pool.get('calendar.event.attendee')
         rdate_obj = pool.get('calendar.event.rdate')

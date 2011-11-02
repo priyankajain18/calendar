@@ -278,8 +278,6 @@ def do_POST(self):
         if self.headers.has_key("Content-Type"):
             ct=self.headers['Content-Type']
 
-        headers = {}
-
         try:
             DATA = '%s\n' % dc._get_caldav_post(uri, body, ct)
         except DAV_Error, (ec, dd):
