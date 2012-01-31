@@ -170,11 +170,30 @@ this repository contains the full copyright notices and license terms. -->
         <record model="ir.ui.view" id="event_view_tree">
             <field name="model">calendar.event</field>
             <field name="type">tree</field>
+            <field name="priority" eval="10"/>
             <field name="arch" type="xml">
                 <![CDATA[
                 <tree string="Events">
                     <field name="calendar"/>
                     <field name="summary"/>
+                    <field name="all_day"/>
+                    <field name="dtstart"/>
+                    <field name="dtend"/>
+                    <field name="status"/>
+                </tree>
+                ]]>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="event_vieww_tree_occurence">
+            <field name="model">calendar.event</field>
+            <field name="type">tree</field>
+            <field name="priority" eval="20"/>
+            <field name="arch" type="xml">
+                <![CDATA[
+                <tree string="Events">
+                    <field name="summary"/>
+                    <field name="recurrence"/>
                     <field name="all_day"/>
                     <field name="dtstart"/>
                     <field name="dtend"/>
@@ -229,16 +248,8 @@ this repository contains the full copyright notices and license terms. -->
                             <field name="rdates" colspan="2"/>
                             <field name="exrules" colspan="2"/>
                             <field name="exdates" colspan="2"/>
-                            <field name="occurences" colspan="4">
-                                <tree string="Events">
-                                    <field name="summary"/>
-                                    <field name="recurrence"/>
-                                    <field name="all_day"/>
-                                    <field name="dtstart"/>
-                                    <field name="dtend"/>
-                                    <field name="status"/>
-                                </tree>
-                            </field>
+                            <field name="occurences" colspan="4"
+                                view_ids="calendar.event_vieww_tree_occurence"/>
                         </page>
                     </notebook>
                     <field name="parent" colspan="4" invisible="1"/>
