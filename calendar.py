@@ -23,9 +23,9 @@ class Calendar(ModelSQL, ModelView):
     _description = __doc__
     _name = 'calendar.calendar'
 
-    name = fields.Char('Name', required=True, select=1)
+    name = fields.Char('Name', required=True, select=True)
     description = fields.Text('Description')
-    owner = fields.Many2One('res.user', 'Owner', select=1,
+    owner = fields.Many2One('res.user', 'Owner', select=True,
             domain=[('email', '!=', False)],
             help='The user must have an email')
     read_users = fields.Many2Many('calendar.calendar-read-res.user',
@@ -350,9 +350,9 @@ class ReadUser(ModelSQL):
     _name = 'calendar.calendar-read-res.user'
 
     calendar = fields.Many2One('calendar.calendar', 'Calendar',
-            ondelete='CASCADE', required=True, select=1)
+            ondelete='CASCADE', required=True, select=True)
     user = fields.Many2One('res.user', 'User', ondelete='CASCADE',
-            required=True, select=1)
+            required=True, select=True)
 
 ReadUser()
 
@@ -363,9 +363,9 @@ class WriteUser(ModelSQL):
     _name = 'calendar.calendar-write-res.user'
 
     calendar = fields.Many2One('calendar.calendar', 'Calendar',
-            ondelete='CASCADE', required=True, select=1)
+            ondelete='CASCADE', required=True, select=True)
     user = fields.Many2One('res.user', 'User', ondelete='CASCADE',
-            required=True, select=1)
+            required=True, select=True)
 
 WriteUser()
 
@@ -375,7 +375,7 @@ class Category(ModelSQL, ModelView):
     _description = __doc__
     _name = 'calendar.category'
 
-    name = fields.Char('Name', required=True, select=1)
+    name = fields.Char('Name', required=True, select=True)
 
     def __init__(self):
         super(Category, self).__init__()
@@ -393,7 +393,7 @@ class Location(ModelSQL, ModelView):
     _description = __doc__
     _name = 'calendar.location'
 
-    name = fields.Char('Name', required=True, select=1)
+    name = fields.Char('Name', required=True, select=True)
 
     def __init__(self):
         super(Location, self).__init__()
@@ -413,15 +413,15 @@ class Event(ModelSQL, ModelView):
     _rec_name = 'uuid'
 
     uuid = fields.Char('UUID', required=True,
-            help='Universally Unique Identifier', select=1)
+            help='Universally Unique Identifier', select=True)
     calendar = fields.Many2One('calendar.calendar', 'Calendar',
-            required=True, select=1, ondelete="CASCADE")
+            required=True, select=True, ondelete="CASCADE")
     summary = fields.Char('Summary')
     sequence = fields.Integer('Sequence')
     description = fields.Text('Description')
     all_day = fields.Boolean('All Day')
-    dtstart = fields.DateTime('Start Date', required=True, select=1)
-    dtend = fields.DateTime('End Date', select=1)
+    dtstart = fields.DateTime('Start Date', required=True, select=True)
+    dtend = fields.DateTime('End Date', select=True)
     timezone = fields.Selection('timezones', 'Timezone')
     categories = fields.Many2Many('calendar.event-calendar.category',
             'event', 'category', 'Categories')
@@ -478,7 +478,7 @@ class Event(ModelSQL, ModelView):
             ('calendar', '=', Eval('calendar')),
             ],
         ondelete='CASCADE', depends=['uuid', 'calendar'])
-    recurrence = fields.DateTime('Recurrence', select=1, states={
+    recurrence = fields.DateTime('Recurrence', select=True, states={
             'invisible': ~Eval('_parent_parent'),
             'required': Bool(Eval('_parent_parent')),
             }, depends=['parent'])
@@ -1201,9 +1201,9 @@ class EventCategory(ModelSQL):
     _name = 'calendar.event-calendar.category'
 
     event = fields.Many2One('calendar.event', 'Event', ondelete='CASCADE',
-            required=True, select=1)
+            required=True, select=True)
     category = fields.Many2One('calendar.category', 'Category',
-            ondelete='CASCADE', required=True, select=1)
+            ondelete='CASCADE', required=True, select=True)
 
 EventCategory()
 
@@ -1248,9 +1248,9 @@ class EventAlarm(ModelSQL):
     _inherits = {'calendar.alarm': 'calendar_alarm'}
 
     calendar_alarm = fields.Many2One('calendar.alarm', 'Calendar Alarm',
-            required=True, ondelete='CASCADE', select=1)
+            required=True, ondelete='CASCADE', select=True)
     event = fields.Many2One('calendar.event', 'Event', ondelete='CASCADE',
-            required=True, select=1)
+            required=True, select=True)
 
     def create(self, values):
         event_obj = Pool().get('calendar.event')
@@ -1380,9 +1380,9 @@ class EventAttendee(ModelSQL, ModelView):
     _inherits = {'calendar.attendee': 'calendar_attendee'}
 
     calendar_attendee = fields.Many2One('calendar.attendee',
-            'Calendar Attendee', required=True, ondelete='CASCADE', select=1)
+            'Calendar Attendee', required=True, ondelete='CASCADE', select=True)
     event = fields.Many2One('calendar.event', 'Event', ondelete='CASCADE',
-            required=True, select=1)
+            required=True, select=True)
 
     def create(self, values):
         event_obj = Pool().get('calendar.event')
@@ -1630,9 +1630,9 @@ class EventRDate(ModelSQL, ModelView):
     _rec_name = 'datetime'
 
     calendar_date = fields.Many2One('calendar.date', 'Calendar Date',
-            required=True, ondelete='CASCADE', select=1)
+            required=True, ondelete='CASCADE', select=True)
     event = fields.Many2One('calendar.event', 'Event', ondelete='CASCADE',
-            select=1, required=True)
+            select=True, required=True)
 
     def init(self, module_name):
         cursor = Transaction().cursor
@@ -1981,9 +1981,9 @@ class EventRRule(ModelSQL, ModelView):
     _rec_name = 'freq'
 
     calendar_rrule = fields.Many2One('calendar.rrule', 'Calendar RRule',
-            required=True, ondelete='CASCADE', select=1)
+            required=True, ondelete='CASCADE', select=True)
     event = fields.Many2One('calendar.event', 'Event', ondelete='CASCADE',
-            select=1, required=True)
+            select=True, required=True)
 
 
     def create(self, values):
