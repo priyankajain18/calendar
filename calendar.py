@@ -417,7 +417,7 @@ class Event(ModelSQL, ModelView):
     calendar = fields.Many2One('calendar.calendar', 'Calendar',
             required=True, select=True, ondelete="CASCADE")
     summary = fields.Char('Summary')
-    sequence = fields.Integer('Sequence')
+    sequence = fields.Integer('Sequence', required=True)
     description = fields.Text('Description')
     all_day = fields.Boolean('All Day')
     dtstart = fields.DateTime('Start Date', required=True, select=True)
