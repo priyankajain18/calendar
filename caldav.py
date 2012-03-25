@@ -13,7 +13,6 @@ from trytond.protocols.webdav import TrytonDAVInterface, CACHE, \
 from trytond.pool import Pool
 from trytond.transaction import Transaction
 
-_TRYTON_RELOAD = False
 domimpl = xml.dom.minidom.getDOMImplementation()
 
 TrytonDAVInterface.PROPS['urn:ietf:params:xml:ns:caldav'] = (
