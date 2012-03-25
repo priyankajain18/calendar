@@ -4,10 +4,10 @@ import urlparse
 import urllib
 from string import atoi
 import xml.dom.minidom
-from DAV import propfind
-from DAV.errors import *
-from DAV.utils import get_uriparentpath
-from DAV.constants import DAV_VERSION_1, DAV_VERSION_2
+from pywebdav.lib import propfind
+from pywebdav.lib.errors import *
+from pywebdav.lib.utils import get_uriparentpath
+from pywebdav.lib.constants import DAV_VERSION_1, DAV_VERSION_2
 from trytond.protocols.webdav import TrytonDAVInterface, CACHE, \
         WebDAVAuthRequestHandler
 from trytond.pool import Pool

@@ -2,7 +2,7 @@
 #this repository contains the full copyright notices and license terms.
 import vobject
 import urllib
-from DAV.errors import DAV_NotFound, DAV_Forbidden
+from pywebdav.lib.errors import DAV_NotFound, DAV_Forbidden
 from trytond.model import ModelView, ModelSQL
 from trytond.tools import reduce_ids
 from trytond.cache import Cache
