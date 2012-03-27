@@ -23,23 +23,23 @@ def _comp_filter_domain(dtstart, dtend):
                     ('dtend', '<=', dtend)],
                 [('dtstart', '>=', dtstart),
                     ('dtstart', '<=', dtend),
-                    ('dtend', '=', False)]],
-            ('parent', '=', False),
-            ('rdates', '=', False),
-            ('rrules', '=', False),
-            ('exdates', '=', False),
-            ('exrules', '=', False),
-            ('occurences', '=', False),
+                    ('dtend', '=', None)]],
+            ('parent', '=', None),
+            ('rdates', '=', None),
+            ('rrules', '=', None),
+            ('exdates', '=', None),
+            ('exrules', '=', None),
+            ('occurences', '=', None),
             ],
         [ #TODO manage better recurring event
-            ('parent', '=', False),
+            ('parent', '=', None),
             ('dtstart', '<=', dtend),
             ['OR',
-                ('rdates', '!=', False),
-                ('rrules', '!=', False),
-                ('exdates', '!=', False),
-                ('exrules', '!=', False),
-                ('occurences', '!=', False),
+                ('rdates', '!=', None),
+                ('rrules', '!=', None),
+                ('exdates', '!=', None),
+                ('exrules', '!=', None),
+                ('occurences', '!=', None),
                 ]
             ]]
 
@@ -49,11 +49,11 @@ class Collection(ModelSQL, ModelView):
 
     def calendar(self, uri, ics=False):
         '''
-        Return the calendar id in the uri or False
+        Return the calendar id in the uri
 
         :param uri: the uri
         :return: calendar id
-            or False if there is no calendar
+            or None if there is no calendar
         '''
         calendar_obj = Pool().get('calendar.calendar')
 
@@ -63,19 +63,18 @@ class Collection(ModelSQL, ModelView):
                 if calendar.endswith('.ics'):
                     calendar = calendar[:-4]
                 else:
-                    return False
+                    return None
             return calendar_obj.get_name(calendar)
-        return False
 
     @Cache('webdav_collection.event')
     def event(self, uri, calendar_id=False):
         '''
-        Return the event id in the uri or False
+        Return the event id in the uri
 
         :param uri: the uri
         :param calendar_id: the calendar id
         :return: event id
-            or False if there is no event
+            or None if there is no event
         '''
         event_obj = Pool().get('calendar.event')
 
@@ -84,15 +83,14 @@ class Collection(ModelSQL, ModelView):
             if not calendar_id:
                 calendar_id = self.calendar(uri)
                 if not calendar_id:
-                    return False
+                    return None
             event_ids = event_obj.search([
                 ('calendar', '=', calendar_id),
                 ('uuid', '=', event_uri[:-4]),
-                ('parent', '=', False),
+                ('parent', '=', None),
                 ], limit=1)
             if event_ids:
                 return event_ids[0]
-        return False
 
     def _caldav_filter_domain_calendar(self, filter):
         '''

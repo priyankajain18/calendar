@@ -26,7 +26,7 @@ class Calendar(ModelSQL, ModelView):
     name = fields.Char('Name', required=True, select=True)
     description = fields.Text('Description')
     owner = fields.Many2One('res.user', 'Owner', select=True,
-            domain=[('email', '!=', False)],
+            domain=[('email', '!=', None)],
             help='The user must have an email')
     read_users = fields.Many2Many('calendar.calendar-read-res.user',
             'calendar', 'user', 'Read Users')
@@ -79,14 +79,13 @@ class Calendar(ModelSQL, ModelView):
         Return the calendar id of the name
 
         :param name: the calendar name
-        :return: the calendar.calendar id or False
+        :return: the calendar.calendar id
         '''
         calendar_ids = self.search([
             ('name', '=', name),
             ], limit=1)
         if calendar_ids:
             return calendar_ids[0]
-        return False
 
     def calendar2ical(self, calendar_id):
         '''
@@ -102,7 +101,7 @@ class Calendar(ModelSQL, ModelView):
         ical.vevent_list = []
         event_ids = event_obj.search([
             ('calendar', '=', calendar_id),
-            ('parent', '=', False),
+            ('parent', '=', None),
             ])
         for event in event_obj.browse(event_ids):
             ical2 = event_obj.event2ical(event.id)
@@ -168,13 +167,13 @@ class Calendar(ModelSQL, ModelView):
                         ('dtend', '<=', dtend)],
                     [('dtstart', '>=', dtstart),
                         ('dtstart', '<=', dtend),
-                        ('dtend', '=', False)]],
-                ('parent', '=', False),
-                ('rdates', '=', False),
-                ('rrules', '=', False),
-                ('exdates', '=', False),
-                ('exrules', '=', False),
-                ('occurences', '=', False),
+                        ('dtend', '=', None)]],
+                ('parent', '=', None),
+                ('rdates', '=', None),
+                ('rrules', '=', None),
+                ('exdates', '=', None),
+                ('exrules', '=', None),
+                ('occurences', '=', None),
                 ('calendar', '=', calendar_id),
                 ])
             events = event_obj.browse(event_ids)
@@ -197,14 +196,14 @@ class Calendar(ModelSQL, ModelView):
 
         with Transaction().set_user(0):
             event_ids = event_obj.search([
-                ('parent', '=', False),
+                ('parent', '=', None),
                 ('dtstart', '<=', dtend),
                 ['OR',
-                    ('rdates', '!=', False),
-                    ('rrules', '!=', False),
-                    ('exdates', '!=', False),
-                    ('exrules', '!=', False),
-                    ('occurences', '!=', False),
+                    ('rdates', '!=', None),
+                    ('rrules', '!=', None),
+                    ('exdates', '!=', None),
+                    ('exrules', '!=', None),
+                    ('occurences', '!=', None),
                 ],
                 ('calendar', '=', calendar_id),
                 ])
@@ -474,7 +473,7 @@ class Event(ModelSQL, ModelView):
     parent = fields.Many2One('calendar.event', 'Parent',
         domain=[
             ('uuid', '=', Eval('uuid')),
-            ('parent', '=', False),
+            ('parent', '=', None),
             ('calendar', '=', Eval('calendar')),
             ],
         ondelete='CASCADE', depends=['uuid', 'calendar'])
@@ -511,7 +510,7 @@ class Event(ModelSQL, ModelView):
             model_data_ids = model_data_obj.search([
                 ('fs_id', '=', 'rule_group_read_calendar_line3'),
                 ('module', '=', module_name),
-                ('inherit', '=', False),
+                ('inherit', '=', None),
                 ], limit=1)
             if model_data_ids:
                 model_data = model_data_obj.browse(model_data_ids[0])
@@ -595,7 +594,7 @@ class Event(ModelSQL, ModelView):
                         for calendar_id in calendar_ids:
                             new_id = self.copy(event.id, default={
                                 'calendar': calendar_id,
-                                'occurences': False,
+                                'occurences': None,
                                 })
                             for occurence in event.occurences:
                                 self.copy(occurence.id, default={
@@ -607,7 +606,7 @@ class Event(ModelSQL, ModelView):
                             ('uuid', '=', event.uuid),
                             ('calendar.owner.email', 'in', attendee_emails),
                             ('id', '!=', event.id),
-                            ('recurrence', '=', False),
+                            ('recurrence', '=', None),
                             ])
                         for parent in self.browse(parent_ids):
                             self.copy(event.id, default={
@@ -692,7 +691,7 @@ class Event(ModelSQL, ModelView):
                     event_ids = self.search([
                         ('uuid', '=', event.uuid),
                         ('id', '!=', event.id),
-                        ('recurrence', '=', event.recurrence or False),
+                        ('recurrence', '=', event.recurrence),
                         ])
                     for event2 in self.browse(event_ids):
                         if event2.calendar.owner.email in attendee_emails:
@@ -712,7 +711,7 @@ class Event(ModelSQL, ModelView):
                             for calendar_id in calendar_ids:
                                 new_id = self.copy(event.id, default={
                                     'calendar': calendar_id,
-                                    'occurences': False,
+                                    'occurences': None,
                                     })
                                 for occurence in event.occurences:
                                     self.copy(occurence.id, default={
@@ -724,7 +723,7 @@ class Event(ModelSQL, ModelView):
                                 ('uuid', '=', event.uuid),
                                 ('calendar.owner.email', 'in', attendee_emails),
                                 ('id', '!=', event.id),
-                                ('recurrence', '=', False),
+                                ('recurrence', '=', None),
                                 ])
                             for parent in self.browse(parent_ids):
                                 self.copy(event.id, default={
@@ -758,7 +757,7 @@ class Event(ModelSQL, ModelView):
                             ('uuid', '=', event.uuid),
                             ('calendar.owner.email', 'in', attendee_emails),
                             ('id', '!=', event.id),
-                            ('recurrence', '=', event.recurrence or False),
+                            ('recurrence', '=', event.recurrence),
                             ])
                         self.delete(event_ids)
             elif event.organizer \
@@ -772,7 +771,7 @@ class Event(ModelSQL, ModelView):
                         ('uuid', '=', event.uuid),
                         ('calendar.owner.email', '=', organizer),
                         ('id', '!=', event.id),
-                        ('recurrence', '=', event.recurrence or False),
+                        ('recurrence', '=', event.recurrence),
                         ], limit=1)
                     if event_ids:
                         event2 = self.browse(event_ids[0])
@@ -828,11 +827,11 @@ class Event(ModelSQL, ModelView):
         if hasattr(vevent, 'summary'):
             res['summary'] = vevent.summary.value
         else:
-            res['summary'] = False
+            res['summary'] = None
         if hasattr(vevent, 'description'):
             res['description'] = vevent.description.value
         else:
-            res['description'] = False
+            res['description'] = None
         if not isinstance(vevent.dtstart.value, datetime.datetime):
             res['all_day'] = True
             res['dtstart'] = datetime.datetime.combine(vevent.dtstart.value,
@@ -855,7 +854,7 @@ class Event(ModelSQL, ModelView):
         elif hasattr(vevent, 'duration') and hasattr(vevent, 'dtstart'):
             res['dtend'] = vevent.dtstart.value + vevent.duration.value
         else:
-            res['dtend'] = False
+            res['dtend'] = None
         if hasattr(vevent, 'recurrence-id'):
             if not isinstance(vevent.recurrence_id.value, datetime.datetime):
                 res['recurrence'] = datetime.datetime.combine(
@@ -868,7 +867,7 @@ class Event(ModelSQL, ModelView):
                 else:
                     res['recurrence'] = vevent.recurrence_id.value
         else:
-            res['recurrence'] = False
+            res['recurrence'] = None
         if hasattr(vevent, 'status'):
             res['status'] = vevent.status.value.lower()
         else:
@@ -911,7 +910,7 @@ class Event(ModelSQL, ModelView):
                 location_id = location_ids[0]
             res['location'] = location_id
         else:
-            res['location'] = False
+            res['location'] = None
 
         res['calendar'] = calendar_id
 
@@ -926,7 +925,7 @@ class Event(ModelSQL, ModelView):
             else:
                 res['organizer'] = vevent.organizer.value
         else:
-            res['organizer'] = False
+            res['organizer'] = None
 
         attendees_todel = {}
         if event:
@@ -1408,7 +1407,7 @@ class EventAttendee(ModelSQL, ModelView):
                         ('uuid', '=', event.uuid),
                         ('calendar.owner.email', 'in', attendee_emails),
                         ('id', '!=', event.id),
-                        ('recurrence', '=', event.recurrence or False),
+                        ('recurrence', '=', event.recurrence),
                         ])
                     for event_id in event_ids:
                         self.copy(res, default={
@@ -1453,7 +1452,7 @@ class EventAttendee(ModelSQL, ModelView):
                                 attendee_emails),
                             ('id', '!=', attendee.id),
                             ('event.recurrence', '=',
-                                event.recurrence or False),
+                                event.recurrence),
                             ('email', '=', attendee.email),
                             ])
                         self.write(attendee_ids, self._attendee2update(
@@ -1494,7 +1493,7 @@ class EventAttendee(ModelSQL, ModelView):
                                 attendee_emails),
                             ('id', '!=', attendee.id),
                             ('event.recurrence', '=',
-                                event.recurrence or False),
+                                event.recurrence),
                             ('email', '=', attendee.email),
                             ])
                         self.delete(attendee_ids)
@@ -1511,7 +1510,7 @@ class EventAttendee(ModelSQL, ModelView):
                         ('event.uuid', '=', event.uuid),
                         ('event.calendar.owner.email', '=', organizer),
                         ('id', '!=', attendee.id),
-                        ('event.recurrence', '=', event.recurrence or False),
+                        ('event.recurrence', '=', event.recurrence),
                         ('email', '=', attendee.email),
                         ])
                     if attendee_ids:
