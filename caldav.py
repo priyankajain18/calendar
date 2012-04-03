@@ -5,7 +5,7 @@ import urllib
 from string import atoi
 import xml.dom.minidom
 from pywebdav.lib import propfind
-from pywebdav.lib.errors import *
+from pywebdav.lib.errors import DAV_NotFound, DAV_Error, DAV_Forbidden
 from pywebdav.lib.utils import get_uriparentpath
 from pywebdav.lib.constants import DAV_VERSION_1, DAV_VERSION_2
 from trytond.protocols.webdav import TrytonDAVInterface, CACHE, \
@@ -23,13 +23,14 @@ TrytonDAVInterface.PROPS['urn:ietf:params:xml:ns:caldav'] = (
         'schedule-inbox-URL',
         'schedule-outbox-URL',
     )
-TrytonDAVInterface.PROPS['DAV:'] = tuple(list(TrytonDAVInterface.PROPS['DAV:']) \
-        + ['principal-collection-set'])
+TrytonDAVInterface.PROPS['DAV:'] = tuple(list(TrytonDAVInterface.PROPS['DAV:'])
+    + ['principal-collection-set'])
 TrytonDAVInterface.M_NS['urn:ietf:params:xml:ns:caldav'] = '_get_caldav'
-DAV_VERSION_1['version'] += ',calendar-access,calendar-schedule'#,calendar-auto-schedule'
-DAV_VERSION_2['version'] += ',calendar-access,calendar-schedule'#,calendar-auto-schedule'
+DAV_VERSION_1['version'] += ',calendar-access,calendar-schedule'
+DAV_VERSION_2['version'] += ',calendar-access,calendar-schedule'
 
 _mk_prop_response = propfind.PROPFIND.mk_prop_response
+
 
 def mk_prop_response(self, uri, good_props, bad_props, doc):
     res = _mk_prop_response(self, uri, good_props, bad_props, doc)
@@ -51,6 +52,7 @@ def mk_prop_response(self, uri, good_props, bad_props, doc):
 
 propfind.PROPFIND.mk_prop_response = mk_prop_response
 
+
 def _get_caldav_calendar_description(self, uri):
     dbname, dburi = self._get_dburi(uri)
     if not dbname:
@@ -64,7 +66,7 @@ def _get_caldav_calendar_description(self, uri):
         res = collection_obj.get_calendar_description(dburi, cache=CACHE)
     except AttributeError:
         raise DAV_NotFound
-    except (DAV_Error, DAV_NotFound, DAV_Secret, DAV_Forbidden), exception:
+    except DAV_Error, exception:
         self._log_exception(exception)
         raise
     except Exception, exception:
@@ -72,7 +74,9 @@ def _get_caldav_calendar_description(self, uri):
         raise DAV_Error(500)
     return res
 
-TrytonDAVInterface._get_caldav_calendar_description = _get_caldav_calendar_description
+TrytonDAVInterface._get_caldav_calendar_description = \
+    _get_caldav_calendar_description
+
 
 def _get_caldav_calendar_data(self, uri):
     dbname, dburi = self._get_dburi(uri)
@@ -87,7 +91,7 @@ def _get_caldav_calendar_data(self, uri):
         res = collection_obj.get_calendar_data(dburi, cache=CACHE)
     except AttributeError:
         raise DAV_NotFound
-    except (DAV_Error, DAV_NotFound, DAV_Secret, DAV_Forbidden), exception:
+    except DAV_Error, exception:
         self._log_exception(exception)
         raise
     except Exception, exception:
@@ -96,6 +100,7 @@ def _get_caldav_calendar_data(self, uri):
     return res
 
 TrytonDAVInterface._get_caldav_calendar_data = _get_caldav_calendar_data
+
 
 def _get_caldav_calendar_home_set(self, uri):
     dbname, dburi = self._get_dburi(uri)
@@ -110,7 +115,7 @@ def _get_caldav_calendar_home_set(self, uri):
         res = collection_obj.get_calendar_home_set(dburi, cache=CACHE)
     except AttributeError:
         raise DAV_NotFound
-    except (DAV_Error, DAV_NotFound, DAV_Secret, DAV_Forbidden), exception:
+    except DAV_Error, exception:
         self._log_exception(exception)
         raise
     except Exception, exception:
@@ -127,7 +132,9 @@ def _get_caldav_calendar_home_set(self, uri):
     href.appendChild(huri)
     return href
 
-TrytonDAVInterface._get_caldav_calendar_home_set = _get_caldav_calendar_home_set
+TrytonDAVInterface._get_caldav_calendar_home_set = \
+    _get_caldav_calendar_home_set
+
 
 def _get_caldav_calendar_user_address_set(self, uri):
     dbname, dburi = self._get_dburi(uri)
@@ -142,7 +149,7 @@ def _get_caldav_calendar_user_address_set(self, uri):
         res = collection_obj.get_calendar_user_address_set(dburi, cache=CACHE)
     except AttributeError:
         raise DAV_NotFound
-    except (DAV_Error, DAV_NotFound, DAV_Secret, DAV_Forbidden), exception:
+    except DAV_Error, exception:
         self._log_exception(exception)
         raise
     except Exception, exception:
@@ -155,7 +162,9 @@ def _get_caldav_calendar_user_address_set(self, uri):
     href.appendChild(huri)
     return href
 
-TrytonDAVInterface._get_caldav_calendar_user_address_set = _get_caldav_calendar_user_address_set
+TrytonDAVInterface._get_caldav_calendar_user_address_set = \
+    _get_caldav_calendar_user_address_set
+
 
 def _get_caldav_schedule_inbox_URL(self, uri):
     dbname, dburi = self._get_dburi(uri)
@@ -170,7 +179,7 @@ def _get_caldav_schedule_inbox_URL(self, uri):
         res = collection_obj.get_schedule_inbox_URL(dburi, cache=CACHE)
     except AttributeError:
         raise DAV_NotFound
-    except (DAV_Error, DAV_NotFound, DAV_Secret, DAV_Forbidden), exception:
+    except DAV_Error, exception:
         self._log_exception(exception)
         raise
     except Exception, exception:
@@ -185,7 +194,9 @@ def _get_caldav_schedule_inbox_URL(self, uri):
     href.appendChild(huri)
     return href
 
-TrytonDAVInterface._get_caldav_schedule_inbox_URL = _get_caldav_schedule_inbox_URL
+TrytonDAVInterface._get_caldav_schedule_inbox_URL = \
+    _get_caldav_schedule_inbox_URL
+
 
 def _get_caldav_schedule_outbox_URL(self, uri):
     dbname, dburi = self._get_dburi(uri)
@@ -200,7 +211,7 @@ def _get_caldav_schedule_outbox_URL(self, uri):
         res = collection_obj.get_schedule_outbox_URL(dburi, cache=CACHE)
     except AttributeError:
         raise DAV_NotFound
-    except (DAV_Error, DAV_NotFound, DAV_Secret, DAV_Forbidden), exception:
+    except DAV_Error, exception:
         self._log_exception(exception)
         raise
     except Exception, exception:
@@ -215,11 +226,13 @@ def _get_caldav_schedule_outbox_URL(self, uri):
     href.appendChild(huri)
     return href
 
-TrytonDAVInterface._get_caldav_schedule_outbox_URL = _get_caldav_schedule_outbox_URL
+TrytonDAVInterface._get_caldav_schedule_outbox_URL = \
+    _get_caldav_schedule_outbox_URL
 
 _prev_get_dav_principal_collection_set = hasattr(TrytonDAVInterface,
         '_get_dav_principal_collection_set') and \
                 TrytonDAVInterface._get_dav_principal_collection_set or None
+
 
 def _get_dav_principal_collection_set(self, uri):
     dbname, dburi = self._get_dburi(uri)
@@ -236,7 +249,9 @@ def _get_dav_principal_collection_set(self, uri):
         return _prev_get_dav_principal_collection_set(self, uri)
     raise DAV_NotFound
 
-TrytonDAVInterface._get_dav_principal_collection_set = _get_dav_principal_collection_set
+TrytonDAVInterface._get_dav_principal_collection_set = \
+    _get_dav_principal_collection_set
+
 
 def _get_caldav_post(self, uri, body, contenttype=''):
     dbname, dburi = self._get_dburi(uri)
@@ -248,7 +263,7 @@ def _get_caldav_post(self, uri, body, contenttype=''):
         res = calendar_obj.post(dburi, body)
     except AttributeError:
         raise DAV_NotFound
-    except (DAV_Error, DAV_NotFound, DAV_Secret, DAV_Forbidden), exception:
+    except DAV_Error, exception:
         self._log_exception(exception)
         raise
     except Exception, exception:
@@ -260,22 +275,23 @@ TrytonDAVInterface._get_caldav_post = _get_caldav_post
 
 _prev_do_POST = WebDAVAuthRequestHandler.do_POST
 
-def do_POST(self):
-    dc=self.IFACE_CLASS
 
-    uri=urlparse.urljoin(self.get_baseuri(dc), self.path)
-    uri=urllib.unquote(uri)
+def do_POST(self):
+    dc = self.IFACE_CLASS
+
+    uri = urlparse.urljoin(self.get_baseuri(dc), self.path)
+    uri = urllib.unquote(uri)
 
     dbname, dburi = TrytonDAVInterface.get_dburi(uri)
     if dburi.startswith('Calendars'):
         # read the body
-        body=None
-        if self.headers.has_key("Content-Length"):
-            l=self.headers['Content-Length']
-            body=self.rfile.read(atoi(l))
-        ct=None
-        if self.headers.has_key("Content-Type"):
-            ct=self.headers['Content-Type']
+        body = None
+        if 'Content-Length' in self.headers:
+            l = self.headers['Content-Length']
+            body = self.rfile.read(atoi(l))
+        ct = None
+        if 'Content-Type' in self.headers:
+            ct = self.headers['Content-Type']
 
         try:
             DATA = '%s\n' % dc._get_caldav_post(uri, body, ct)

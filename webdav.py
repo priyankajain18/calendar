@@ -11,6 +11,7 @@ from trytond.pool import Pool
 
 CALDAV_NS = 'urn:ietf:params:xml:ns:caldav'
 
+
 def _comp_filter_domain(dtstart, dtend):
     return ['OR',
         [
@@ -31,7 +32,7 @@ def _comp_filter_domain(dtstart, dtend):
             ('exrules', '=', None),
             ('occurences', '=', None),
             ],
-        [ #TODO manage better recurring event
+        [  # TODO manage better recurring event
             ('parent', '=', None),
             ('dtstart', '<=', dtend),
             ['OR',
@@ -42,6 +43,7 @@ def _comp_filter_domain(dtstart, dtend):
                 ('occurences', '!=', None),
                 ]
             ]]
+
 
 class Collection(ModelSQL, ModelView):
 
@@ -184,8 +186,11 @@ class Collection(ModelSQL, ModelView):
 
         if uri in ('Calendars', 'Calendars/'):
             domain = self._caldav_filter_domain_calendar(filter)
-            domain = [['OR', ('owner', '=', Transaction().user), ('read_users', '=', Transaction().user)],
-                    domain]
+            domain = [['OR',
+                    ('owner', '=', Transaction().user),
+                    ('read_users', '=', Transaction().user),
+                    ],
+                domain]
             calendar_ids = calendar_obj.search(domain)
             calendars = calendar_obj.browse(calendar_ids)
             if cache is not None:
@@ -267,10 +272,10 @@ class Collection(ModelSQL, ModelView):
                     ids = cache['_calendar'][calendar_obj._name].keys()
                     if calendar_id not in ids:
                         ids.append(calendar_id)
-                    elif 'creationdate' in cache['_calendar']\
-                            [calendar_obj._name][calendar_id]:
-                        return cache['_calendar'][calendar_obj._name]\
-                                [calendar_id]['creationdate']
+                    elif 'creationdate' in cache['_calendar'][
+                            calendar_obj._name][calendar_id]:
+                        return cache['_calendar'][calendar_obj._name][
+                            calendar_id]['creationdate']
                 else:
                     ids = [calendar_id]
                 res = None
@@ -288,8 +293,8 @@ class Collection(ModelSQL, ModelView):
                         if cache is not None:
                             cache['_calendar'][calendar_obj._name]\
                                     .setdefault(calendar_id2, {})
-                            cache['_calendar'][calendar_obj._name]\
-                                    [calendar_id2]['creationdate'] = date
+                            cache['_calendar'][calendar_obj._name][
+                                calendar_id2]['creationdate'] = date
                 if res is not None:
                     return res
             else:
@@ -301,10 +306,10 @@ class Collection(ModelSQL, ModelView):
                         ids = cache['_calendar'][event_obj._name].keys()
                         if event_id not in ids:
                             ids.append(event_id)
-                        elif 'creationdate' in cache['_calendar']\
-                                [event_obj._name][event_id]:
-                            return cache['_calendar'][event_obj._name]\
-                                    [event_id]['creationdate']
+                        elif 'creationdate' in cache['_calendar'][
+                                event_obj._name][event_id]:
+                            return cache['_calendar'][event_obj._name][
+                                event_id]['creationdate']
                     else:
                         ids = [event_id]
                     res = None
@@ -322,8 +327,8 @@ class Collection(ModelSQL, ModelView):
                             if cache is not None:
                                 cache['_calendar'][event_obj._name]\
                                         .setdefault(event_id2, {})
-                                cache['_calendar'][event_obj._name]\
-                                        [event_id2]['creationdate'] = date
+                                cache['_calendar'][event_obj._name][
+                                    event_id2]['creationdate'] = date
                     if res is not None:
                         return res
         return super(Collection, self).get_creationdate(uri, cache=cache)
@@ -342,10 +347,10 @@ class Collection(ModelSQL, ModelView):
                     ids = cache['_calendar'][calendar_obj._name].keys()
                     if calendar_id not in ids:
                         ids.append(calendar_id)
-                    elif 'lastmodified' in cache['_calendar']\
-                            [calendar_obj._name][calendar_id]:
-                        return cache['_calendar'][calendar_obj._name]\
-                                [calendar_id]['lastmodified']
+                    elif 'lastmodified' in cache['_calendar'][
+                            calendar_obj._name][calendar_id]:
+                        return cache['_calendar'][calendar_obj._name][
+                            calendar_id]['lastmodified']
                 else:
                     ids = [calendar_id]
                 res = None
@@ -363,8 +368,8 @@ class Collection(ModelSQL, ModelView):
                         if cache is not None:
                             cache['_calendar'][calendar_obj._name]\
                                     .setdefault(calendar_id2, {})
-                            cache['_calendar'][calendar_obj._name]\
-                                    [calendar_id2]['lastmodified'] = date
+                            cache['_calendar'][calendar_obj._name][
+                                calendar_id2]['lastmodified'] = date
                 if res is not None:
                     return res
             else:
@@ -376,15 +381,15 @@ class Collection(ModelSQL, ModelView):
                         ids = cache['_calendar'][event_obj._name].keys()
                         if event_id not in ids:
                             ids.append(event_id)
-                        elif 'lastmodified' in cache['_calendar']\
-                                [event_obj._name][event_id]:
-                            return cache['_calendar'][event_obj._name]\
-                                    [event_id]['lastmodified']
+                        elif 'lastmodified' in cache['_calendar'][
+                                event_obj._name][event_id]:
+                            return cache['_calendar'][event_obj._name][
+                                event_id]['lastmodified']
                     else:
                         ids = [event_id]
                     res = None
-                    for i in range(0, len(ids), cursor.IN_MAX/2):
-                        sub_ids = ids[i:i + cursor.IN_MAX/2]
+                    for i in range(0, len(ids), cursor.IN_MAX / 2):
+                        sub_ids = ids[i:i + cursor.IN_MAX / 2]
                         red_id_sql, red_id_ids = reduce_ids('id', sub_ids)
                         red_parent_sql, red_parent_ids = reduce_ids('parent',
                                 sub_ids)
@@ -402,8 +407,8 @@ class Collection(ModelSQL, ModelView):
                             if cache is not None:
                                 cache['_calendar'][event_obj._name]\
                                         .setdefault(event_id2, {})
-                                cache['_calendar'][event_obj._name]\
-                                        [event_id2]['lastmodified'] = date
+                                cache['_calendar'][event_obj._name][
+                                    event_id2]['lastmodified'] = date
                     if res is not None:
                         return res
         calendar_ics_id = self.calendar(uri, ics=True)
@@ -414,10 +419,10 @@ class Collection(ModelSQL, ModelView):
                 ids = cache['_calendar'][calendar_obj._name].keys()
                 if calendar_ics_id not in ids:
                     ids.append(calendar_ics_id)
-                elif 'lastmodified ics' in cache['_calendar']\
-                        [calendar_obj._name][calendar_ics_id]:
-                    return cache['_calendar'][calendar_obj._name]\
-                            [calendar_ics_id]['lastmodified ics']
+                elif 'lastmodified ics' in cache['_calendar'][
+                        calendar_obj._name][calendar_ics_id]:
+                    return cache['_calendar'][calendar_obj._name][
+                        calendar_ics_id]['lastmodified ics']
             else:
                 ids = [calendar_ics_id]
             res = None
@@ -435,8 +440,8 @@ class Collection(ModelSQL, ModelView):
                     if cache is not None:
                         cache['_calendar'][calendar_obj._name]\
                                 .setdefault(calendar_id2, {})
-                        cache['_calendar'][calendar_obj._name]\
-                                [calendar_id2]['lastmodified ics'] = date
+                        cache['_calendar'][calendar_obj._name][
+                            calendar_id2]['lastmodified ics'] = date
             if res is not None:
                 return res
         return super(Collection, self).get_lastmodified(uri, cache=cache)
@@ -472,10 +477,10 @@ class Collection(ModelSQL, ModelView):
                     ids = cache['_calendar'][calendar_obj._name].keys()
                     if calendar_id not in ids:
                         ids.append(calendar_id)
-                    elif 'calendar_description' in cache['_calendar']\
-                            [calendar_obj._name][calendar_id]:
-                        res = cache['_calendar'][calendar_obj._name]\
-                                [calendar_id]['calendar_description']
+                    elif 'calendar_description' in cache['_calendar'][
+                            calendar_obj._name][calendar_id]:
+                        res = cache['_calendar'][calendar_obj._name][
+                            calendar_id]['calendar_description']
                         if res is not None:
                             return res
                 else:
@@ -487,8 +492,8 @@ class Collection(ModelSQL, ModelView):
                     if cache is not None:
                         cache['_calendar'][calendar_obj._name]\
                                 .setdefault(calendar.id, {})
-                        cache['_calendar'][calendar_obj._name]\
-                                [calendar.id]['calendar_description'] = \
+                        cache['_calendar'][calendar_obj._name][
+                            calendar.id]['calendar_description'] = \
                                 calendar.description
                 if res is not None:
                     return res

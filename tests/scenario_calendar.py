@@ -12,12 +12,14 @@ import caldav
 import vobject
 from proteus import config, Model, Wizard
 
+
 def install_module(name, config):
     Module = Model.get('ir.module.module')
     module, = Module.find([('name', '=', name)])
     if module.state != 'installed':
         Module.install([module.id], config.context)
         Wizard('ir.module.module.install_upgrade').execute('start')
+
 
 def configure_user(login, config):
     User = Model.get('res.user')
@@ -29,6 +31,7 @@ def configure_user(login, config):
         user, = users
         user.email = email
         user.save()
+
 
 def create_calendar(login, user, config):
     Calendar = Model.get('calendar.calendar')
@@ -64,7 +67,8 @@ class TestCase(unittest.TestCase):
         vevent.add('summary')
         vevent.summary.value = 'Test event'
         vevent.add('dtstart')
-        vevent.dtstart.value = datetime.datetime.now() + relativedelta(months=1)
+        vevent.dtstart.value = (datetime.datetime.now()
+            + relativedelta(months=1))
         vevent.add('dtend')
         vevent.dtend.value = datetime.datetime.now() + relativedelta(months=1,
             hours=1)
@@ -122,7 +126,8 @@ class TestCase(unittest.TestCase):
         'Update status of attendee'
         for event in self.calendar.events():
             event.load()
-            if event.instance.vevent.summary.value == 'Test event with attendee':
+            value = event.instance.vevent.summary.value
+            if value == 'Test event with attendee':
                 break
         for attendee in event.instance.vevent.attendee_list:
             attendee.partstat_param = 'accepted'
@@ -139,7 +144,8 @@ class TestCase(unittest.TestCase):
         'Delete attendee'
         for event in self.calendar.events():
             event.load()
-            if event.instance.vevent.summary.value == 'Test event with attendee':
+            value = event.instance.vevent.summary.value
+            if value == 'Test event with attendee':
                 break
         event.instance.vevent.attendee_list = []
         event.save()

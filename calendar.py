@@ -222,19 +222,22 @@ class Calendar(ModelSQL, ModelView):
                         freebusy_dtend = event.dtend.replace(tzinfo=tzlocal)\
                                 - event.dtstart.replace(tzinfo=tzlocal) \
                                 + freebusy_dtstart
-                    if not ((freebusy_dtstart.replace(tzinfo=tzlocal) <= dtstart
-                        and freebusy_dtend.replace(tzinfo=tzlocal) >= dtstart)
-                        or (freebusy_dtstart.replace(tzinfo=tzlocal) <= dtend
-                        and freebusy_dtend.replace(tzinfo=tzlocal) >= dtend)
-                        or (freebusy_dtstart.replace(tzinfo=tzlocal) >= dtstart
-                        and freebusy_dtend.replace(tzinfo=tzlocal) <= dtend)):
+                    f_dtstart_tz = freebusy_dtstart.replace(tzinfo=tzlocal)
+                    f_dtend_tz = freebusy_dtend.replace(tzinfo=tzlocal)
+                    if not ((f_dtstart_tz <= dtstart
+                                and f_dtend_tz >= dtstart)
+                            or (f_dtstart_tz <= dtend
+                                and f_dtend_tz >= dtend)
+                            or (f_dtstart_tz >= dtstart
+                                and f_dtend_tz <= dtend)):
                         continue
                     freebusy_fbtype = self._fbtype(event)
                     all_day = event.all_day
                     for occurence in event.occurences:
-                        if occurence.recurrence.replace(tzinfo=tzlocal) == \
-                                freebusy_dtstart.replace(tzinfo=tzlocal):
-                            freebusy_dtstart = occurence.dtstart.replace(tzinfo=tzlocal)
+                        if (occurence.recurrence.replace(tzinfo=tzlocal)
+                                == f_dtstart_tz):
+                            freebusy_dtstart = \
+                                occurence.dtstart.replace(tzinfo=tzlocal)
                             if occurence.dtend:
                                 freebusy_dtend = occurence.dtend\
                                         .replace(tzinfo=tzlocal)
@@ -245,16 +248,15 @@ class Calendar(ModelSQL, ModelView):
                             break
                     freebusy = ical.vfreebusy.add('freebusy')
                     freebusy.fbtype_param = freebusy_fbtype
-                    if freebusy_dtstart.replace(tzinfo=tzlocal) <= dtstart:
+                    if f_dtstart_tz <= dtstart:
                         freebusy_dtstart = dtstart
-                    if freebusy_dtend.replace(tzinfo=tzlocal) >= dtend:
+                    if f_dtend_tz >= dtend:
                         freebusy_dtend = dtend
                     if all_day:
                         freebusy.value = [(
-                            freebusy_dtstart.replace(tzinfo=tzlocal)\
-                                    .astimezone(tzutc),
-                            freebusy_dtend.replace(tzinfo=tzlocal)\
-                                    .astimezone(tzutc))]
+                                f_dtstart_tz.astimezone(tzutc),
+                                f_dtend_tz.astimezone(tzutc),
+                                )]
                     else:
                         freebusy.value = [(
                             freebusy_dtstart.astimezone(tzutc),
@@ -330,8 +332,9 @@ class Calendar(ModelSQL, ModelView):
                     vfreebusy.vfreebusy.add('attendee').value = attendee.value
 
                 status = doc.createElement('C:request-status')
-                status.appendChild(doc.createTextNode(vfreebusy and \
-                        '2.0;Success' or '5.3;No scheduling support for user.'))
+                status.appendChild(doc.createTextNode(vfreebusy
+                        and '2.0;Success'
+                        or '5.3;No scheduling support for user.'))
                 resp.appendChild(status)
                 if vfreebusy:
                     data = doc.createElement('C:calendar-data')
@@ -446,19 +449,23 @@ class Event(ModelSQL, ModelView):
         ('transparent', 'Transparent'),
         ], 'Time Transparency', required=True)
     alarms = fields.One2Many('calendar.event.alarm', 'event', 'Alarms')
-    rdates = fields.One2Many('calendar.event.rdate', 'event', 'Recurrence Dates',
+    rdates = fields.One2Many('calendar.event.rdate', 'event',
+        'Recurrence Dates',
         states={
             'invisible': Bool(Eval('parent')),
             }, depends=['parent'])
-    rrules = fields.One2Many('calendar.event.rrule', 'event', 'Recurrence Rules',
+    rrules = fields.One2Many('calendar.event.rrule', 'event',
+        'Recurrence Rules',
         states={
             'invisible': Bool(Eval('parent')),
             }, depends=['parent'])
-    exdates = fields.One2Many('calendar.event.exdate', 'event', 'Exception Dates',
+    exdates = fields.One2Many('calendar.event.exdate', 'event',
+        'Exception Dates',
         states={
             'invisible': Bool(Eval('parent')),
             }, depends=['parent'])
-    exrules = fields.One2Many('calendar.event.exrule', 'event', 'Exception Rules',
+    exrules = fields.One2Many('calendar.event.exrule', 'event',
+        'Exception Rules',
         states={
             'invisible': Bool(Eval('parent')),
             }, depends=['parent'])
@@ -573,10 +580,11 @@ class Event(ModelSQL, ModelView):
 
         res = super(Event, self).create(values)
         event = self.browse(res)
-        if event.calendar.owner \
-                and (event.organizer == event.calendar.owner.email \
-                or (event.parent \
-                and event.parent.organizer == event.parent.calendar.owner.email)):
+        if (event.calendar.owner
+                and (event.organizer == event.calendar.owner.email
+                    or (event.parent
+                        and event.parent.organizer == \
+                            event.parent.calendar.owner.email))):
             if event.organizer == event.calendar.owner.email:
                 attendee_emails = [x.email for x in event.attendees
                         if x.status != 'declined'
@@ -720,11 +728,12 @@ class Event(ModelSQL, ModelView):
                                         })
                         else:
                             parent_ids = self.search([
-                                ('uuid', '=', event.uuid),
-                                ('calendar.owner.email', 'in', attendee_emails),
-                                ('id', '!=', event.id),
-                                ('recurrence', '=', None),
-                                ])
+                                    ('uuid', '=', event.uuid),
+                                    ('calendar.owner.email', 'in',
+                                        attendee_emails),
+                                    ('id', '!=', event.id),
+                                    ('recurrence', '=', None),
+                                    ])
                             for parent in self.browse(parent_ids):
                                 self.copy(event.id, default={
                                     'calendar': parent.calendar.id,
@@ -1379,9 +1388,9 @@ class EventAttendee(ModelSQL, ModelView):
     _inherits = {'calendar.attendee': 'calendar_attendee'}
 
     calendar_attendee = fields.Many2One('calendar.attendee',
-            'Calendar Attendee', required=True, ondelete='CASCADE', select=True)
+        'Calendar Attendee', required=True, ondelete='CASCADE', select=True)
     event = fields.Many2One('calendar.event', 'Event', ondelete='CASCADE',
-            required=True, select=True)
+        required=True, select=True)
 
     def create(self, values):
         event_obj = Pool().get('calendar.event')
@@ -1391,10 +1400,11 @@ class EventAttendee(ModelSQL, ModelView):
         res = super(EventAttendee, self).create(values)
         attendee = self.browse(res)
         event = attendee.event
-        if event.calendar.owner \
-                and (event.organizer == event.calendar.owner.email \
-                or (event.parent \
-                and event.parent.organizer == event.parent.calendar.owner.email)):
+        if (event.calendar.owner
+                and (event.organizer == event.calendar.owner.email
+                    or (event.parent
+                        and event.parent.organizer == \
+                            event.parent.calendar.owner.email))):
             if event.organizer == event.calendar.owner.email:
                 attendee_emails = [x.email for x in event.attendees
                         if x.email != event.organizer]
@@ -1773,7 +1783,7 @@ class RRule(ModelSQL, ModelView):
     def init(self, module_name):
         cursor = Transaction().cursor
         # Migrate from 1.4: unit_count replaced by until_count_only_one
-        table  = TableHandler(cursor, self, module_name)
+        table = TableHandler(cursor, self, module_name)
         table.drop_constraint('until_count')
         return super(RRule, self).init(module_name)
 
@@ -1983,7 +1993,6 @@ class EventRRule(ModelSQL, ModelView):
             required=True, ondelete='CASCADE', select=True)
     event = fields.Many2One('calendar.event', 'Event', ondelete='CASCADE',
             select=True, required=True)
-
 
     def create(self, values):
         event_obj = Pool().get('calendar.event')
