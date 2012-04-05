@@ -3,5 +3,5 @@
 
 from . import caldav
 from .webdav import *
-from .calendar import *
+from .calendar_ import *
 from .res import *
