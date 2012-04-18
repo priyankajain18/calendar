@@ -130,6 +130,18 @@ msgctxt "error:calendar.rrule:"
 msgid "Only one of \"until\" and \"count\" can be set!"
 msgstr "\"Date de fin\" et \"Répétitions\" ne peuvent être remplis en même temps !"
 
+msgctxt "field:calendar.alarm,create_date:"
+msgid "Create Date"
+msgstr "Date de création"
+
+msgctxt "field:calendar.alarm,create_uid:"
+msgid "Create User"
+msgstr "Créé par"
+
+msgctxt "field:calendar.alarm,id:"
+msgid "ID"
+msgstr "ID"
+
 msgctxt "field:calendar.alarm,rec_name:"
 msgid "Name"
 msgstr "Nom"
@@ -138,13 +150,33 @@ msgctxt "field:calendar.alarm,valarm:"
 msgid "valarm"
 msgstr "valarm"
 
+msgctxt "field:calendar.alarm,write_date:"
+msgid "Write Date"
+msgstr "Date de mise à jour"
+
+msgctxt "field:calendar.alarm,write_uid:"
+msgid "Write User"
+msgstr "Mis à jour par"
+
 msgctxt "field:calendar.attendee,attendee:"
 msgid "attendee"
 msgstr "participant"
 
+msgctxt "field:calendar.attendee,create_date:"
+msgid "Create Date"
+msgstr "Date de création"
+
+msgctxt "field:calendar.attendee,create_uid:"
+msgid "Create User"
+msgstr "Créé par"
+
 msgctxt "field:calendar.attendee,email:"
 msgid "Email"
 msgstr "E-mail"
+
+msgctxt "field:calendar.attendee,id:"
+msgid "ID"
+msgstr "ID"
 
 msgctxt "field:calendar.attendee,rec_name:"
 msgid "Name"
@@ -154,9 +186,29 @@ msgctxt "field:calendar.attendee,status:"
 msgid "Participation Status"
 msgstr "Statut de participation"
 
+msgctxt "field:calendar.attendee,write_date:"
+msgid "Write Date"
+msgstr "Date de mise à jour"
+
+msgctxt "field:calendar.attendee,write_uid:"
+msgid "Write User"
+msgstr "Mis à jour par"
+
+msgctxt "field:calendar.calendar,create_date:"
+msgid "Create Date"
+msgstr "Date de création"
+
+msgctxt "field:calendar.calendar,create_uid:"
+msgid "Create User"
+msgstr "Créé par"
+
 msgctxt "field:calendar.calendar,description:"
 msgid "Description"
 msgstr "Description"
+
+msgctxt "field:calendar.calendar,id:"
+msgid "ID"
+msgstr "ID"
 
 msgctxt "field:calendar.calendar,name:"
 msgid "Name"
@@ -174,6 +226,14 @@ msgctxt "field:calendar.calendar,rec_name:"
 msgid "Name"
 msgstr "Nom"
 
+msgctxt "field:calendar.calendar,write_date:"
+msgid "Write Date"
+msgstr "Date de mise à jour"
+
+msgctxt "field:calendar.calendar,write_uid:"
+msgid "Write User"
+msgstr "Mis à jour par"
+
 msgctxt "field:calendar.calendar,write_users:"
 msgid "Write Users"
 msgstr "Utilisateurs en écriture"
@@ -181,6 +241,18 @@ msgstr "Utilisateurs en écriture"
 msgctxt "field:calendar.calendar-read-res.user,calendar:"
 msgid "Calendar"
 msgstr "Calendrier"
+
+msgctxt "field:calendar.calendar-read-res.user,create_date:"
+msgid "Create Date"
+msgstr "Date de création"
+
+msgctxt "field:calendar.calendar-read-res.user,create_uid:"
+msgid "Create User"
+msgstr "Créé par"
+
+msgctxt "field:calendar.calendar-read-res.user,id:"
+msgid "ID"
+msgstr "ID"
 
 msgctxt "field:calendar.calendar-read-res.user,rec_name:"
 msgid "Name"
@@ -190,9 +262,29 @@ msgctxt "field:calendar.calendar-read-res.user,user:"
 msgid "User"
 msgstr "Utilisateur"
 
+msgctxt "field:calendar.calendar-read-res.user,write_date:"
+msgid "Write Date"
+msgstr "Date de mise à jour"
+
+msgctxt "field:calendar.calendar-read-res.user,write_uid:"
+msgid "Write User"
+msgstr "Mis à jour par"
+
 msgctxt "field:calendar.calendar-write-res.user,calendar:"
 msgid "Calendar"
 msgstr "Calendrier"
+
+msgctxt "field:calendar.calendar-write-res.user,create_date:"
+msgid "Create Date"
+msgstr "Date de création"
+
+msgctxt "field:calendar.calendar-write-res.user,create_uid:"
+msgid "Create User"
+msgstr "Créé par"
+
+msgctxt "field:calendar.calendar-write-res.user,id:"
+msgid "ID"
+msgstr "ID"
 
 msgctxt "field:calendar.calendar-write-res.user,rec_name:"
 msgid "Name"
@@ -202,6 +294,26 @@ msgctxt "field:calendar.calendar-write-res.user,user:"
 msgid "User"
 msgstr "Utilisateur"
 
+msgctxt "field:calendar.calendar-write-res.user,write_date:"
+msgid "Write Date"
+msgstr "Date de mise à jour"
+
+msgctxt "field:calendar.calendar-write-res.user,write_uid:"
+msgid "Write User"
+msgstr "Mis à jour par"
+
+msgctxt "field:calendar.category,create_date:"
+msgid "Create Date"
+msgstr "Date de création"
+
+msgctxt "field:calendar.category,create_uid:"
+msgid "Create User"
+msgstr "Créé par"
+
+msgctxt "field:calendar.category,id:"
+msgid "ID"
+msgstr "ID"
+
 msgctxt "field:calendar.category,name:"
 msgid "Name"
 msgstr "Nom"
@@ -209,6 +321,22 @@ msgstr "Nom"
 msgctxt "field:calendar.category,rec_name:"
 msgid "Name"
 msgstr "Nom"
+
+msgctxt "field:calendar.category,write_date:"
+msgid "Write Date"
+msgstr "Date de mise à jour"
+
+msgctxt "field:calendar.category,write_uid:"
+msgid "Write User"
+msgstr "Mis à jour par"
+
+msgctxt "field:calendar.date,create_date:"
+msgid "Create Date"
+msgstr "Date de création"
+
+msgctxt "field:calendar.date,create_uid:"
+msgid "Create User"
+msgstr "Créé par"
 
 msgctxt "field:calendar.date,date:"
 msgid "Is Date"
@@ -218,9 +346,21 @@ msgctxt "field:calendar.date,datetime:"
 msgid "Date"
 msgstr "Date"
 
+msgctxt "field:calendar.date,id:"
+msgid "ID"
+msgstr "ID"
+
 msgctxt "field:calendar.date,rec_name:"
 msgid "Name"
 msgstr "Nom"
+
+msgctxt "field:calendar.date,write_date:"
+msgid "Write Date"
+msgstr "Date de mise à jour"
+
+msgctxt "field:calendar.date,write_uid:"
+msgid "Write User"
+msgstr "Mis à jour par"
 
 msgctxt "field:calendar.event,alarms:"
 msgid "Alarms"
@@ -258,6 +398,14 @@ msgctxt "field:calendar.event,classification:"
 msgid "Classification"
 msgstr "Classification"
 
+msgctxt "field:calendar.event,create_date:"
+msgid "Create Date"
+msgstr "Date de création"
+
+msgctxt "field:calendar.event,create_uid:"
+msgid "Create User"
+msgstr "Créé par"
+
 msgctxt "field:calendar.event,description:"
 msgid "Description"
 msgstr "Description"
@@ -277,6 +425,10 @@ msgstr "Dates d'exception"
 msgctxt "field:calendar.event,exrules:"
 msgid "Exception Rules"
 msgstr "Règles d'exception"
+
+msgctxt "field:calendar.event,id:"
+msgid "ID"
+msgstr "ID"
 
 msgctxt "field:calendar.event,location:"
 msgid "Location"
@@ -338,89 +490,249 @@ msgctxt "field:calendar.event,vevent:"
 msgid "vevent"
 msgstr "vevent"
 
+msgctxt "field:calendar.event,write_date:"
+msgid "Write Date"
+msgstr "Date de mise à jour"
+
+msgctxt "field:calendar.event,write_uid:"
+msgid "Write User"
+msgstr "Mis à jour par"
+
 msgctxt "field:calendar.event-calendar.category,category:"
 msgid "Category"
 msgstr "Catégorie"
+
+msgctxt "field:calendar.event-calendar.category,create_date:"
+msgid "Create Date"
+msgstr "Date de création"
+
+msgctxt "field:calendar.event-calendar.category,create_uid:"
+msgid "Create User"
+msgstr "Créé par"
 
 msgctxt "field:calendar.event-calendar.category,event:"
 msgid "Event"
 msgstr "Événement"
 
+msgctxt "field:calendar.event-calendar.category,id:"
+msgid "ID"
+msgstr "ID"
+
 msgctxt "field:calendar.event-calendar.category,rec_name:"
 msgid "Name"
 msgstr "Nom"
+
+msgctxt "field:calendar.event-calendar.category,write_date:"
+msgid "Write Date"
+msgstr "Date de mise à jour"
+
+msgctxt "field:calendar.event-calendar.category,write_uid:"
+msgid "Write User"
+msgstr "Mis à jour par"
 
 msgctxt "field:calendar.event.alarm,calendar_alarm:"
 msgid "Calendar Alarm"
 msgstr "Alarme calendrier"
 
+msgctxt "field:calendar.event.alarm,create_date:"
+msgid "Create Date"
+msgstr "Date de création"
+
+msgctxt "field:calendar.event.alarm,create_uid:"
+msgid "Create User"
+msgstr "Créé par"
+
 msgctxt "field:calendar.event.alarm,event:"
 msgid "Event"
 msgstr "Événement"
+
+msgctxt "field:calendar.event.alarm,id:"
+msgid "ID"
+msgstr "ID"
 
 msgctxt "field:calendar.event.alarm,rec_name:"
 msgid "Name"
 msgstr "Nom"
 
+msgctxt "field:calendar.event.alarm,write_date:"
+msgid "Write Date"
+msgstr "Date de mise à jour"
+
+msgctxt "field:calendar.event.alarm,write_uid:"
+msgid "Write User"
+msgstr "Mis à jour par"
+
 msgctxt "field:calendar.event.attendee,calendar_attendee:"
 msgid "Calendar Attendee"
 msgstr "Participant calendrier"
+
+msgctxt "field:calendar.event.attendee,create_date:"
+msgid "Create Date"
+msgstr "Date de création"
+
+msgctxt "field:calendar.event.attendee,create_uid:"
+msgid "Create User"
+msgstr "Créé par"
 
 msgctxt "field:calendar.event.attendee,event:"
 msgid "Event"
 msgstr "Événement"
 
+msgctxt "field:calendar.event.attendee,id:"
+msgid "ID"
+msgstr "ID"
+
 msgctxt "field:calendar.event.attendee,rec_name:"
 msgid "Name"
 msgstr "Nom"
+
+msgctxt "field:calendar.event.attendee,write_date:"
+msgid "Write Date"
+msgstr "Date de mise à jour"
+
+msgctxt "field:calendar.event.attendee,write_uid:"
+msgid "Write User"
+msgstr "Mis à jour par"
 
 msgctxt "field:calendar.event.exdate,calendar_date:"
 msgid "Calendar Date"
 msgstr "Date calendrier"
 
+msgctxt "field:calendar.event.exdate,create_date:"
+msgid "Create Date"
+msgstr "Date de création"
+
+msgctxt "field:calendar.event.exdate,create_uid:"
+msgid "Create User"
+msgstr "Créé par"
+
 msgctxt "field:calendar.event.exdate,event:"
 msgid "Event"
 msgstr "Événement"
+
+msgctxt "field:calendar.event.exdate,id:"
+msgid "ID"
+msgstr "ID"
 
 msgctxt "field:calendar.event.exdate,rec_name:"
 msgid "Name"
 msgstr "Nom"
 
+msgctxt "field:calendar.event.exdate,write_date:"
+msgid "Write Date"
+msgstr "Date de mise à jour"
+
+msgctxt "field:calendar.event.exdate,write_uid:"
+msgid "Write User"
+msgstr "Mis à jour par"
+
 msgctxt "field:calendar.event.exrule,calendar_rrule:"
 msgid "Calendar RRule"
 msgstr "Règle de récurrence"
+
+msgctxt "field:calendar.event.exrule,create_date:"
+msgid "Create Date"
+msgstr "Date de création"
+
+msgctxt "field:calendar.event.exrule,create_uid:"
+msgid "Create User"
+msgstr "Créé par"
 
 msgctxt "field:calendar.event.exrule,event:"
 msgid "Event"
 msgstr "Événement"
 
+msgctxt "field:calendar.event.exrule,id:"
+msgid "ID"
+msgstr "ID"
+
 msgctxt "field:calendar.event.exrule,rec_name:"
 msgid "Name"
 msgstr "Nom"
+
+msgctxt "field:calendar.event.exrule,write_date:"
+msgid "Write Date"
+msgstr "Date de mise à jour"
+
+msgctxt "field:calendar.event.exrule,write_uid:"
+msgid "Write User"
+msgstr "Mis à jour par"
 
 msgctxt "field:calendar.event.rdate,calendar_date:"
 msgid "Calendar Date"
 msgstr "Date calendrier"
 
+msgctxt "field:calendar.event.rdate,create_date:"
+msgid "Create Date"
+msgstr "Date de création"
+
+msgctxt "field:calendar.event.rdate,create_uid:"
+msgid "Create User"
+msgstr "Créé par"
+
 msgctxt "field:calendar.event.rdate,event:"
 msgid "Event"
 msgstr "Événement"
+
+msgctxt "field:calendar.event.rdate,id:"
+msgid "ID"
+msgstr "ID"
 
 msgctxt "field:calendar.event.rdate,rec_name:"
 msgid "Name"
 msgstr "Nom"
 
+msgctxt "field:calendar.event.rdate,write_date:"
+msgid "Write Date"
+msgstr "Date de mise à jour"
+
+msgctxt "field:calendar.event.rdate,write_uid:"
+msgid "Write User"
+msgstr "Mis à jour par"
+
 msgctxt "field:calendar.event.rrule,calendar_rrule:"
 msgid "Calendar RRule"
 msgstr "Règle de récurrence"
+
+msgctxt "field:calendar.event.rrule,create_date:"
+msgid "Create Date"
+msgstr "Date de création"
+
+msgctxt "field:calendar.event.rrule,create_uid:"
+msgid "Create User"
+msgstr "Créé par"
 
 msgctxt "field:calendar.event.rrule,event:"
 msgid "Event"
 msgstr "Événement"
 
+msgctxt "field:calendar.event.rrule,id:"
+msgid "ID"
+msgstr "ID"
+
 msgctxt "field:calendar.event.rrule,rec_name:"
 msgid "Name"
 msgstr "Nom"
+
+msgctxt "field:calendar.event.rrule,write_date:"
+msgid "Write Date"
+msgstr "Date de mise à jour"
+
+msgctxt "field:calendar.event.rrule,write_uid:"
+msgid "Write User"
+msgstr "Mis à jour par"
+
+msgctxt "field:calendar.location,create_date:"
+msgid "Create Date"
+msgstr "Date de création"
+
+msgctxt "field:calendar.location,create_uid:"
+msgid "Create User"
+msgstr "Créé par"
+
+msgctxt "field:calendar.location,id:"
+msgid "ID"
+msgstr "ID"
 
 msgctxt "field:calendar.location,name:"
 msgid "Name"
@@ -429,6 +741,14 @@ msgstr "Nom"
 msgctxt "field:calendar.location,rec_name:"
 msgid "Name"
 msgstr "Nom"
+
+msgctxt "field:calendar.location,write_date:"
+msgid "Write Date"
+msgstr "Date de mise à jour"
+
+msgctxt "field:calendar.location,write_uid:"
+msgid "Write User"
+msgstr "Mis à jour par"
 
 msgctxt "field:calendar.rrule,byday:"
 msgid "By Day"
@@ -470,9 +790,21 @@ msgctxt "field:calendar.rrule,count:"
 msgid "Count"
 msgstr "Répétitions"
 
+msgctxt "field:calendar.rrule,create_date:"
+msgid "Create Date"
+msgstr "Date de création"
+
+msgctxt "field:calendar.rrule,create_uid:"
+msgid "Create User"
+msgstr "Créé par"
+
 msgctxt "field:calendar.rrule,freq:"
 msgid "Frequency"
 msgstr "Fréquence"
+
+msgctxt "field:calendar.rrule,id:"
+msgid "ID"
+msgstr "ID"
 
 msgctxt "field:calendar.rrule,interval:"
 msgid "Interval"
@@ -493,6 +825,14 @@ msgstr "Est une date"
 msgctxt "field:calendar.rrule,wkst:"
 msgid "Week Day"
 msgstr "Jour de la semaine"
+
+msgctxt "field:calendar.rrule,write_date:"
+msgid "Write Date"
+msgstr "Date de mise à jour"
+
+msgctxt "field:calendar.rrule,write_uid:"
+msgid "Write User"
+msgstr "Mis à jour par"
 
 msgctxt "field:res.user,calendars:"
 msgid "Calendars"
@@ -609,6 +949,14 @@ msgstr "Évenement"
 msgctxt "model:res.group,name:group_calendar_admin"
 msgid "Calendar Administration"
 msgstr "Administration calendrier"
+
+msgctxt "model:res.user,name:"
+msgid ""
+msgstr ""
+
+msgctxt "model:webdav.collection,name:"
+msgid ""
+msgstr ""
 
 msgctxt "selection:calendar.attendee,status:"
 msgid ""
