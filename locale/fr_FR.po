@@ -950,14 +950,6 @@ msgctxt "model:res.group,name:group_calendar_admin"
 msgid "Calendar Administration"
 msgstr "Administration calendrier"
 
-msgctxt "model:res.user,name:"
-msgid ""
-msgstr ""
-
-msgctxt "model:webdav.collection,name:"
-msgid ""
-msgstr ""
-
 msgctxt "selection:calendar.attendee,status:"
 msgid ""
 msgstr ""
