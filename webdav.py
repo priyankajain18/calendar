@@ -226,7 +226,7 @@ class Collection(ModelSQL, ModelView):
         return res
 
     def get_resourcetype(self, uri, cache=None):
-        from DAV.constants import COLLECTION, OBJECT
+        from pywebdav.lib.constants import COLLECTION, OBJECT
         if uri in ('Calendars', 'Calendars/'):
             return COLLECTION
         calendar_id = self.calendar(uri)
