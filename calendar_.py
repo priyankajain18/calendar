@@ -548,8 +548,8 @@ class Event(ModelSQL, ModelView):
         assert name in ('calendar_owner', 'calendar_read_users',
                 'calendar_write_users'), 'Invalid name'
         res = {}
+        name = name[9:]
         for event in self.browse(ids):
-            name = name[9:]
             if name in ('read_users', 'write_users'):
                 res[event.id] = [x.id for x in event.calendar[name]]
             else:
