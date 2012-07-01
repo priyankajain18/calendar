@@ -738,6 +738,25 @@ class Event(ModelSQL, ModelView):
         collection_obj.event.reset()
         return res
 
+    def copy(self, ids, default=None):
+        int_id = isinstance(ids, (int, long))
+        if int_id:
+            ids = [ids]
+
+        if default is None:
+            default = {}
+
+        new_ids = []
+        for event in self.browse(ids):
+            current_default = default.copy()
+            current_default['uuid'] = event.default_uuid()
+            new_id = super(Event, self).copy(event.id, default=current_default)
+            new_ids.append(new_id)
+
+        if int_id:
+            return new_ids[0]
+        return new_ids
+
     def delete(self, ids):
         attendee_obj = Pool().get('calendar.event.attendee')
         collection_obj = Pool().get('webdav.collection')
