@@ -752,10 +752,10 @@ class Event(ModelSQL, ModelView):
             default = {}
 
         new_ids = []
-        for event in self.browse(ids):
+        for event_id in ids:
             current_default = default.copy()
-            current_default['uuid'] = event.default_uuid()
-            new_id = super(Event, self).copy(event.id, default=current_default)
+            current_default['uuid'] = self.default_uuid()
+            new_id = super(Event, self).copy(event_id, default=current_default)
             new_ids.append(new_id)
 
         if int_id:
