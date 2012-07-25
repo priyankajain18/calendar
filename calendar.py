@@ -1085,7 +1085,7 @@ class Event(ModelSQL, ModelView):
         ical = vobject.iCalendar()
         vevent = ical.add('vevent')
         if event.vevent:
-            ical.vevent = vobject.readOne(event.vevent)
+            ical.vevent = vobject.readOne(str(event.vevent))
             vevent = ical.vevent
             ical.vevent.transformToNative()
         if event.summary:
@@ -1258,7 +1258,7 @@ class Alarm(ModelSQL):
         '''
         valarm = None
         if alarm.valarm:
-            valarm = vobject.readOne(alarm.valarm)
+            valarm = vobject.readOne(str(alarm.valarm))
         return valarm
 
 Alarm()
@@ -1376,7 +1376,7 @@ class Attendee(ModelSQL, ModelView):
         res = None
         if attendee.attendee:
             res = vobject.base.textLineToContentLine(
-                    attendee.attendee.replace('\r\n ', ''))
+                    str(attendee.attendee).replace('\r\n ', ''))
         else:
             res = vobject.base.ContentLine('ATTENDEE', [], '')
 
