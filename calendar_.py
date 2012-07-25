@@ -1080,9 +1080,9 @@ class Event(ModelSQL, ModelView):
 
         user = user_obj.browse(Transaction().user)
         if event.timezone:
-            tzevent = pytz.timezone(event.timezone)
+            tzevent = dateutil.tz.gettz(event.timezone)
         elif user.timezone:
-                tzevent = pytz.timezone(user.timezone)
+            tzevent = dateutil.tz.gettz(user.timezone)
         else:
             tzevent = tzlocal
 
