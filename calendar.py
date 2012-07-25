@@ -757,10 +757,10 @@ class Event(ModelSQL, ModelView):
             default = {}
 
         new_ids = []
-        for event in self.browse(cursor, user, ids, context=context):
+        for event_id in ids:
             current_default = default.copy()
-            current_default['uuid'] = event.default_uuid()
-            new_id = super(Event, self).copy(cursor, user, event.id,
+            current_default['uuid'] = self.default_uuid()
+            new_id = super(Event, self).copy(cursor, user, event_id,
                 default=current_default, context=context)
             new_ids.append(new_id)
 
