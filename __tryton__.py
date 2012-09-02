@@ -11,7 +11,7 @@
     'name_es_ES': 'Calendario',
     'name_fr_FR': 'Calendrier',
     'name_ru_RU': 'Календарь',
-    'version': '2.4.2',
+    'version': '2.4.3',
     'author': 'B2CK',
     'email': 'info@b2ck.com',
     'website': 'http://www.tryton.org/',
