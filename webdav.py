@@ -3,11 +3,13 @@
 import vobject
 import urllib
 from pywebdav.lib.errors import DAV_NotFound, DAV_Forbidden
-from trytond.model import ModelView, ModelSQL
 from trytond.tools import reduce_ids
 from trytond.cache import Cache
 from trytond.transaction import Transaction
-from trytond.pool import Pool
+from trytond.pool import Pool, PoolMeta
+
+__all__ = ['Collection']
+__metaclass__ = PoolMeta
 
 CALDAV_NS = 'urn:ietf:params:xml:ns:caldav'
 
@@ -45,19 +47,16 @@ def _comp_filter_domain(dtstart, dtend):
             ]]
 
 
-class Collection(ModelSQL, ModelView):
+class Collection:
+    __name__ = "webdav.collection"
+    _event_cache = Cache('webdav_collection.event')
 
-    _name = "webdav.collection"
-
-    def calendar(self, uri, ics=False):
+    @staticmethod
+    def calendar(uri, ics=False):
         '''
         Return the calendar id in the uri
-
-        :param uri: the uri
-        :return: calendar id
-            or None if there is no calendar
         '''
-        calendar_obj = Pool().get('calendar.calendar')
+        Calendar = Pool().get('calendar.calendar')
 
         if uri and uri.startswith('Calendars/'):
             calendar, uri = (uri[10:].split('/', 1) + [None])[0:2]
@@ -66,40 +65,41 @@ class Collection(ModelSQL, ModelView):
                     calendar = calendar[:-4]
                 else:
                     return None
-            return calendar_obj.get_name(calendar)
+            return Calendar.get_name(calendar)
 
-    @Cache('webdav_collection.event')
-    def event(self, uri, calendar_id=False):
+    @classmethod
+    def event(cls, uri, calendar_id=False):
         '''
         Return the event id in the uri
-
-        :param uri: the uri
-        :param calendar_id: the calendar id
-        :return: event id
-            or None if there is no event
         '''
-        event_obj = Pool().get('calendar.event')
+        Event = Pool().get('calendar.event')
 
+        key = (uri, calendar_id)
+        event_id = cls._event_cache.get(key, default=-1)
+        if event_id != -1:
+            return event_id
+        else:
+            event_id = None
         if uri and uri.startswith('Calendars/'):
             calendar, event_uri = (uri[10:].split('/', 1) + [None])[0:2]
             if not calendar_id:
-                calendar_id = self.calendar(uri)
+                calendar_id = cls.calendar(uri)
                 if not calendar_id:
                     return None
-            event_ids = event_obj.search([
-                ('calendar', '=', calendar_id),
-                ('uuid', '=', event_uri[:-4]),
-                ('parent', '=', None),
-                ], limit=1)
-            if event_ids:
-                return event_ids[0]
+            events = Event.search([
+                    ('calendar', '=', calendar_id),
+                    ('uuid', '=', event_uri[:-4]),
+                    ('parent', '=', None),
+                    ], limit=1)
+            if events:
+                event_id = events[0].id
+        cls._event_cache.set(key, event_id)
+        return event_id
 
-    def _caldav_filter_domain_calendar(self, filter):
+    @staticmethod
+    def _caldav_filter_domain_calendar(filter):
         '''
         Return a domain for caldav filter on calendar
-
-        :param filter: the DOM Element of filter
-        :return: a list for domain
         '''
         if not filter:
             return []
@@ -107,12 +107,10 @@ class Collection(ModelSQL, ModelView):
             return [('id', '=', 0)]
         return [('id', '=', 0)]
 
-    def _caldav_filter_domain_event(self, filter):
+    @classmethod
+    def _caldav_filter_domain_event(cls, filter):
         '''
         Return a domain for caldav filter on event
-
-        :param filter: the DOM Element of filter
-        :return: a list for domain
         '''
         res = []
         if not filter:
@@ -174,107 +172,111 @@ class Collection(ModelSQL, ModelView):
                         continue
                     if uri:
                         uri = urllib.unquote_plus(uri)
-                    event_id = self.event(uri)
+                    event_id = cls.event(uri)
                     if event_id:
                         ids.append(event_id)
             return [('id', 'in', ids)]
         return res
 
-    def get_childs(self, uri, filter=None, cache=None):
-        calendar_obj = Pool().get('calendar.calendar')
-        event_obj = Pool().get('calendar.event')
+    @classmethod
+    def get_childs(cls, uri, filter=None, cache=None):
+        pool = Pool()
+        Calendar = pool.get('calendar.calendar')
+        Event = pool.get('calendar.event')
 
         if uri in ('Calendars', 'Calendars/'):
-            domain = self._caldav_filter_domain_calendar(filter)
+            domain = cls._caldav_filter_domain_calendar(filter)
             domain = [['OR',
                     ('owner', '=', Transaction().user),
                     ('read_users', '=', Transaction().user),
                     ],
                 domain]
-            calendar_ids = calendar_obj.search(domain)
-            calendars = calendar_obj.browse(calendar_ids)
+            calendars = Calendar.search(domain)
             if cache is not None:
                 cache.setdefault('_calendar', {})
-                cache['_calendar'].setdefault(calendar_obj._name, {})
-                for calendar_id in calendar_ids:
-                    cache['_calendar'][calendar_obj._name][calendar_id] = {}
+                cache['_calendar'].setdefault(Calendar.__name__, {})
+                for calendar in calendars:
+                    cache['_calendar'][Calendar.__name__][calendar.id] = {}
             return [x.name for x in calendars] + \
                     [x.name + '.ics' for x in calendars]
         if uri and uri.startswith('Calendars/'):
-            calendar_id = self.calendar(uri)
+            calendar_id = cls.calendar(uri)
             if  calendar_id and not (uri[10:].split('/', 1) + [None])[1]:
-                domain = self._caldav_filter_domain_event(filter)
-                event_ids = event_obj.search([
-                    ('calendar', '=', calendar_id),
-                    domain,
-                    ])
-                events = event_obj.browse(event_ids)
+                domain = cls._caldav_filter_domain_event(filter)
+                events = Event.search([
+                        ('calendar', '=', calendar_id),
+                        domain,
+                        ])
                 if cache is not None:
                     cache.setdefault('_calendar', {})
-                    cache['_calendar'].setdefault(event_obj._name, {})
-                    for event_id in event_ids:
-                        cache['_calendar'][event_obj._name][event_id] = {}
+                    cache['_calendar'].setdefault(Event.__name__, {})
+                    for event in events:
+                        cache['_calendar'][Event.__name__][event.id] = {}
                 return [x.uuid + '.ics' for x in events]
             return []
-        res = super(Collection, self).get_childs(uri, filter=filter,
-                cache=cache)
+        childs = super(Collection, cls).get_childs(uri, filter=filter,
+            cache=cache)
         if not uri and not filter:
-            res.append('Calendars')
+            childs.append('Calendars')
         elif not uri and filter:
             if filter.localName == 'principal-property-search':
-                res.append('Calendars')
-        return res
+                childs.append('Calendars')
+        return childs
 
-    def get_resourcetype(self, uri, cache=None):
+    @classmethod
+    def get_resourcetype(cls, uri, cache=None):
         from pywebdav.lib.constants import COLLECTION, OBJECT
         if uri in ('Calendars', 'Calendars/'):
             return COLLECTION
-        calendar_id = self.calendar(uri)
+        calendar_id = cls.calendar(uri)
         if calendar_id:
             if not (uri[10:].split('/', 1) + [None])[1]:
                 return COLLECTION
             return OBJECT
-        elif self.calendar(uri, ics=True):
+        elif cls.calendar(uri, ics=True):
             return OBJECT
-        return super(Collection, self).get_resourcetype(uri, cache=cache)
+        return super(Collection, cls).get_resourcetype(uri, cache=cache)
 
-    def get_displayname(self, uri, cache=None):
-        calendar_obj = Pool().get('calendar.calendar')
+    @classmethod
+    def get_displayname(cls, uri, cache=None):
+        Calendar = Pool().get('calendar.calendar')
         if uri in ('Calendars', 'Calendars/'):
             return 'Calendars'
-        calendar_id = self.calendar(uri)
+        calendar_id = cls.calendar(uri)
         if calendar_id:
             if not (uri[10:].split('/', 1) + [None])[1]:
-                return calendar_obj.browse(calendar_id).rec_name
+                return Calendar(calendar_id).rec_name
             return uri.split('/')[-1]
-        elif self.calendar(uri, ics=True):
+        elif cls.calendar(uri, ics=True):
             return uri.split('/')[-1]
-        return super(Collection, self).get_displayname(uri, cache=cache)
+        return super(Collection, cls).get_displayname(uri, cache=cache)
 
-    def get_contenttype(self, uri, cache=None):
-        if self.event(uri) \
-                or self.calendar(uri, ics=True):
+    @classmethod
+    def get_contenttype(cls, uri, cache=None):
+        if cls.event(uri) \
+                or cls.calendar(uri, ics=True):
             return 'text/calendar'
-        return super(Collection, self).get_contenttype(uri, cache=cache)
+        return super(Collection, cls).get_contenttype(uri, cache=cache)
 
-    def get_creationdate(self, uri, cache=None):
-        calendar_obj = Pool().get('calendar.calendar')
-        event_obj = Pool().get('calendar.event')
+    @classmethod
+    def get_creationdate(cls, uri, cache=None):
+        Calendar = Pool().get('calendar.calendar')
+        Event = Pool().get('calendar.event')
 
-        calendar_id = self.calendar(uri)
+        calendar_id = cls.calendar(uri)
         if not calendar_id:
-            calendar_id = self.calendar(uri, ics=True)
+            calendar_id = cls.calendar(uri, ics=True)
         if calendar_id:
             if not (uri[10:].split('/', 1) + [None])[1]:
                 if cache is not None:
                     cache.setdefault('_calendar', {})
-                    cache['_calendar'].setdefault(calendar_obj._name, {})
-                    ids = cache['_calendar'][calendar_obj._name].keys()
+                    cache['_calendar'].setdefault(Calendar.__name__, {})
+                    ids = cache['_calendar'][Calendar.__name__].keys()
                     if calendar_id not in ids:
                         ids.append(calendar_id)
                     elif 'creationdate' in cache['_calendar'][
-                            calendar_obj._name][calendar_id]:
-                        return cache['_calendar'][calendar_obj._name][
+                            Calendar.__name__][calendar_id]:
+                        return cache['_calendar'][Calendar.__name__][
                             calendar_id]['creationdate']
                 else:
                     ids = [calendar_id]
@@ -285,30 +287,30 @@ class Collection(ModelSQL, ModelView):
                     red_sql, red_ids = reduce_ids('id', sub_ids)
                     cursor.execute('SELECT id, ' \
                                 'EXTRACT(epoch FROM create_date) ' \
-                            'FROM "' + calendar_obj._table + '" ' \
+                            'FROM "' + Calendar._table + '" ' \
                             'WHERE ' + red_sql, red_ids)
                     for calendar_id2, date in cursor.fetchall():
                         if calendar_id2 == calendar_id:
                             res = date
                         if cache is not None:
-                            cache['_calendar'][calendar_obj._name]\
+                            cache['_calendar'][Calendar.__name__]\
                                     .setdefault(calendar_id2, {})
-                            cache['_calendar'][calendar_obj._name][
+                            cache['_calendar'][Calendar.__name__][
                                 calendar_id2]['creationdate'] = date
                 if res is not None:
                     return res
             else:
-                event_id = self.event(uri, calendar_id=calendar_id)
+                event_id = cls.event(uri, calendar_id=calendar_id)
                 if event_id:
                     if cache is not None:
                         cache.setdefault('_calendar', {})
-                        cache['_calendar'].setdefault(event_obj._name, {})
-                        ids = cache['_calendar'][event_obj._name].keys()
+                        cache['_calendar'].setdefault(Event.__name__, {})
+                        ids = cache['_calendar'][Event.__name__].keys()
                         if event_id not in ids:
                             ids.append(event_id)
                         elif 'creationdate' in cache['_calendar'][
-                                event_obj._name][event_id]:
-                            return cache['_calendar'][event_obj._name][
+                                Event.__name__][event_id]:
+                            return cache['_calendar'][Event.__name__][
                                 event_id]['creationdate']
                     else:
                         ids = [event_id]
@@ -319,37 +321,39 @@ class Collection(ModelSQL, ModelView):
                         red_sql, red_ids = reduce_ids('id', sub_ids)
                         cursor.execute('SELECT id, ' \
                                 'EXTRACT(epoch FROM create_date) ' \
-                            'FROM "' + event_obj._table + '" ' \
+                            'FROM "' + Event._table + '" ' \
                             'WHERE ' + red_sql, red_ids)
                         for event_id2, date in cursor.fetchall():
                             if event_id2 == event_id:
                                 res = date
                             if cache is not None:
-                                cache['_calendar'][event_obj._name]\
+                                cache['_calendar'][Event.__name__]\
                                         .setdefault(event_id2, {})
-                                cache['_calendar'][event_obj._name][
+                                cache['_calendar'][Event.__name__][
                                     event_id2]['creationdate'] = date
                     if res is not None:
                         return res
-        return super(Collection, self).get_creationdate(uri, cache=cache)
+        return super(Collection, cls).get_creationdate(uri, cache=cache)
 
-    def get_lastmodified(self, uri, cache=None):
-        calendar_obj = Pool().get('calendar.calendar')
-        event_obj = Pool().get('calendar.event')
+    @classmethod
+    def get_lastmodified(cls, uri, cache=None):
+        pool = Pool()
+        Calendar = pool.get('calendar.calendar')
+        Event = pool.get('calendar.event')
 
         cursor = Transaction().cursor
-        calendar_id = self.calendar(uri)
+        calendar_id = cls.calendar(uri)
         if calendar_id:
             if not (uri[10:].split('/', 1) + [None])[1]:
                 if cache is not None:
                     cache.setdefault('_calendar', {})
-                    cache['_calendar'].setdefault(calendar_obj._name, {})
-                    ids = cache['_calendar'][calendar_obj._name].keys()
+                    cache['_calendar'].setdefault(Calendar.__name__, {})
+                    ids = cache['_calendar'][Calendar.__name__].keys()
                     if calendar_id not in ids:
                         ids.append(calendar_id)
                     elif 'lastmodified' in cache['_calendar'][
-                            calendar_obj._name][calendar_id]:
-                        return cache['_calendar'][calendar_obj._name][
+                            Calendar.__name__][calendar_id]:
+                        return cache['_calendar'][Calendar.__name__][
                             calendar_id]['lastmodified']
                 else:
                     ids = [calendar_id]
@@ -360,30 +364,30 @@ class Collection(ModelSQL, ModelView):
                     cursor.execute('SELECT id, ' \
                                 'EXTRACT(epoch FROM ' \
                                 'COALESCE(write_date, create_date)) ' \
-                            'FROM "' + calendar_obj._table + '" ' \
+                            'FROM "' + Calendar.__table__ + '" ' \
                                 'WHERE ' + red_sql, red_ids)
                     for calendar_id2, date in cursor.fetchall():
                         if calendar_id2 == calendar_id:
                             res = date
                         if cache is not None:
-                            cache['_calendar'][calendar_obj._name]\
+                            cache['_calendar'][Calendar.__name__]\
                                     .setdefault(calendar_id2, {})
-                            cache['_calendar'][calendar_obj._name][
+                            cache['_calendar'][Calendar.__name__][
                                 calendar_id2]['lastmodified'] = date
                 if res is not None:
                     return res
             else:
-                event_id = self.event(uri, calendar_id=calendar_id)
+                event_id = cls.event(uri, calendar_id=calendar_id)
                 if event_id:
                     if cache is not None:
                         cache.setdefault('_calendar', {})
-                        cache['_calendar'].setdefault(event_obj._name, {})
-                        ids = cache['_calendar'][event_obj._name].keys()
+                        cache['_calendar'].setdefault(Event.__name__, {})
+                        ids = cache['_calendar'][Event.__name__].keys()
                         if event_id not in ids:
                             ids.append(event_id)
                         elif 'lastmodified' in cache['_calendar'][
-                                event_obj._name][event_id]:
-                            return cache['_calendar'][event_obj._name][
+                                Event.__name__][event_id]:
+                            return cache['_calendar'][Event.__name__][
                                 event_id]['lastmodified']
                     else:
                         ids = [event_id]
@@ -396,7 +400,7 @@ class Collection(ModelSQL, ModelView):
                         cursor.execute('SELECT COALESCE(parent, id), ' \
                                     'MAX(EXTRACT(epoch FROM ' \
                                     'COALESCE(write_date, create_date))) ' \
-                                'FROM "' + event_obj._table + '" ' \
+                                'FROM "' + Event._table + '" ' \
                                 'WHERE ' + red_id_sql + ' ' \
                                     'OR ' + red_parent_sql + ' ' \
                                 'GROUP BY parent, id',
@@ -405,23 +409,23 @@ class Collection(ModelSQL, ModelView):
                             if event_id2 == event_id:
                                 res = date
                             if cache is not None:
-                                cache['_calendar'][event_obj._name]\
+                                cache['_calendar'][Event.__name__]\
                                         .setdefault(event_id2, {})
-                                cache['_calendar'][event_obj._name][
+                                cache['_calendar'][Event.__name__][
                                     event_id2]['lastmodified'] = date
                     if res is not None:
                         return res
-        calendar_ics_id = self.calendar(uri, ics=True)
+        calendar_ics_id = cls.calendar(uri, ics=True)
         if calendar_ics_id:
             if cache is not None:
                 cache.setdefault('_calendar', {})
-                cache['_calendar'].setdefault(calendar_obj._name, {})
-                ids = cache['_calendar'][calendar_obj._name].keys()
+                cache['_calendar'].setdefault(Calendar.__name__, {})
+                ids = cache['_calendar'][Calendar.__name__].keys()
                 if calendar_ics_id not in ids:
                     ids.append(calendar_ics_id)
                 elif 'lastmodified ics' in cache['_calendar'][
-                        calendar_obj._name][calendar_ics_id]:
-                    return cache['_calendar'][calendar_obj._name][
+                        Calendar.__name__][calendar_ics_id]:
+                    return cache['_calendar'][Calendar.__name__][
                         calendar_ics_id]['lastmodified ics']
             else:
                 ids = [calendar_ics_id]
@@ -431,200 +435,210 @@ class Collection(ModelSQL, ModelView):
                 red_sql, red_ids = reduce_ids('calendar', sub_ids)
                 cursor.execute('SELECT calendar, MAX(EXTRACT(epoch FROM ' \
                             'COALESCE(write_date, create_date))) ' \
-                        'FROM "' + event_obj._table + '" ' \
+                        'FROM "' + Event._table + '" ' \
                         'WHERE ' + red_sql + ' ' \
                         'GROUP BY calendar', red_ids)
                 for calendar_id2, date in cursor.fetchall():
                     if calendar_id2 == calendar_ics_id:
                         res = date
                     if cache is not None:
-                        cache['_calendar'][calendar_obj._name]\
+                        cache['_calendar'][Calendar.__name__]\
                                 .setdefault(calendar_id2, {})
-                        cache['_calendar'][calendar_obj._name][
+                        cache['_calendar'][Calendar.__name__][
                             calendar_id2]['lastmodified ics'] = date
             if res is not None:
                 return res
-        return super(Collection, self).get_lastmodified(uri, cache=cache)
+        return super(Collection, cls).get_lastmodified(uri, cache=cache)
 
-    def get_data(self, uri, cache=None):
-        event_obj = Pool().get('calendar.event')
-        calendar_obj = Pool().get('calendar.calendar')
+    @classmethod
+    def get_data(cls, uri, cache=None):
+        pool = Pool()
+        Event = pool.get('calendar.event')
+        Calendar = pool.get('calendar.calendar')
 
-        calendar_id = self.calendar(uri)
+        calendar_id = cls.calendar(uri)
         if calendar_id:
             if not (uri[10:].split('/', 1) + [None])[1]:
                 raise DAV_NotFound
-            event_id = self.event(uri, calendar_id=calendar_id)
+            event_id = cls.event(uri, calendar_id=calendar_id)
             if not event_id:
                 raise DAV_NotFound
-            ical = event_obj.event2ical(event_id)
+            ical = Event.event2ical(event_id)
             return ical.serialize()
-        calendar_ics_id = self.calendar(uri, ics=True)
+        calendar_ics_id = cls.calendar(uri, ics=True)
         if calendar_ics_id:
-            ical = calendar_obj.calendar2ical(calendar_ics_id)
+            ical = Calendar.calendar2ical(calendar_ics_id)
             return ical.serialize()
-        return super(Collection, self).get_data(uri, cache=cache)
+        return super(Collection, cls).get_data(uri, cache=cache)
 
-    def get_calendar_description(self, uri, cache=None):
-        calendar_obj = Pool().get('calendar.calendar')
+    @classmethod
+    def get_calendar_description(cls, uri, cache=None):
+        Calendar = Pool().get('calendar.calendar')
 
-        calendar_id = self.calendar(uri)
+        calendar_id = cls.calendar(uri)
         if calendar_id:
             if not (uri[10:].split('/', 1) + [None])[1]:
                 if cache is not None:
                     cache.setdefault('_calendar', {})
-                    cache['_calendar'].setdefault(calendar_obj._name, {})
-                    ids = cache['_calendar'][calendar_obj._name].keys()
+                    cache['_calendar'].setdefault(Calendar.__name__, {})
+                    ids = cache['_calendar'][Calendar.__name__].keys()
                     if calendar_id not in ids:
                         ids.append(calendar_id)
                     elif 'calendar_description' in cache['_calendar'][
-                            calendar_obj._name][calendar_id]:
-                        res = cache['_calendar'][calendar_obj._name][
+                            Calendar.__name__][calendar_id]:
+                        res = cache['_calendar'][Calendar.__name__][
                             calendar_id]['calendar_description']
                         if res is not None:
                             return res
                 else:
                     ids = [calendar_id]
                 res = None
-                for calendar in calendar_obj.browse(ids):
+                for calendar in Calendar.browse(ids):
                     if calendar.id == calendar_id:
                         res = calendar.description
                     if cache is not None:
-                        cache['_calendar'][calendar_obj._name]\
+                        cache['_calendar'][Calendar.__name__]\
                                 .setdefault(calendar.id, {})
-                        cache['_calendar'][calendar_obj._name][
+                        cache['_calendar'][Calendar.__name__][
                             calendar.id]['calendar_description'] = \
                                 calendar.description
                 if res is not None:
                     return res
         raise DAV_NotFound
 
-    def get_calendar_data(self, uri, cache=None):
-        return self.get_data(uri, cache=cache).decode('utf-8')
+    @classmethod
+    def get_calendar_data(cls, uri, cache=None):
+        return cls.get_data(uri, cache=cache).decode('utf-8')
 
-    def get_calendar_home_set(self, uri, cache=None):
+    @staticmethod
+    def get_calendar_home_set(uri, cache=None):
         return '/Calendars'
 
-    def get_calendar_user_address_set(self, uri, cache=None):
-        user_obj = Pool().get('res.user')
-        user = user_obj.browse(Transaction().user)
+    @staticmethod
+    def get_calendar_user_address_set(uri, cache=None):
+        User = Pool().get('res.user')
+        user = User(Transaction().user)
         if user.email:
             return user.email
         raise DAV_NotFound
 
-    def get_schedule_inbox_URL(self, uri, cache=None):
-        calendar_obj = Pool().get('calendar.calendar')
+    @staticmethod
+    def get_schedule_inbox_URL(uri, cache=None):
+        Calendar = Pool().get('calendar.calendar')
         user = Transaction().user
 
-        calendar_ids = calendar_obj.search([
+        calendars = Calendar.search([
             ('owner', '=', user),
             ], limit=1)
-        if not calendar_ids:
+        if not calendars:
             # Sunbird failed with no value
             return '/Calendars'
-        calendar = calendar_obj.browse(calendar_ids[0])
+        calendar, = calendars
         return '/Calendars/' + calendar.name
 
-    def get_schedule_outbox_URL(self, uri, cache=None):
-        return self.get_schedule_inbox_URL(uri, cache=cache)
+    @classmethod
+    def get_schedule_outbox_URL(cls, uri, cache=None):
+        return cls.get_schedule_inbox_URL(uri, cache=cache)
 
-    def put(self, uri, data, content_type, cache=None):
-        event_obj = Pool().get('calendar.event')
-        calendar_obj = Pool().get('calendar.calendar')
+    @classmethod
+    def put(cls, uri, data, content_type, cache=None):
+        pool = Pool()
+        Event = pool.get('calendar.event')
+        Calendar = pool.get('calendar.calendar')
 
-        calendar_id = self.calendar(uri)
+        calendar_id = cls.calendar(uri)
         if calendar_id:
             if not (uri[10:].split('/', 1) + [None])[1]:
                 raise DAV_Forbidden
-            event_id = self.event(uri, calendar_id=calendar_id)
+            event_id = cls.event(uri, calendar_id=calendar_id)
             if not event_id:
                 ical = vobject.readOne(data)
-                values = event_obj.ical2values(None, ical, calendar_id)
-                event_id = event_obj.create(values)
-                event = event_obj.browse(event_id)
-                calendar = calendar_obj.browse(calendar_id)
+                values = Event.ical2values(None, ical, calendar_id)
+                event = Event.create(values)
+                calendar = Calendar(calendar_id)
                 return (Transaction().cursor.database_name + '/Calendars/' +
                         calendar.name + '/' + event.uuid + '.ics')
             else:
                 ical = vobject.readOne(data)
-                values = event_obj.ical2values(event_id, ical, calendar_id)
-                event_obj.write(event_id, values)
+                values = Event.ical2values(event_id, ical, calendar_id)
+                Event.write([Event(event_id)], values)
                 return
-        calendar_ics_id = self.calendar(uri, ics=True)
+        calendar_ics_id = cls.calendar(uri, ics=True)
         if calendar_ics_id:
             raise DAV_Forbidden
-        return super(Collection, self).put(uri, data, content_type)
+        return super(Collection, cls).put(uri, data, content_type)
 
-    def mkcol(self, uri, cache=None):
+    @classmethod
+    def mkcol(cls, uri, cache=None):
         if uri and uri.startswith('Calendars/'):
             raise DAV_Forbidden
-        return super(Collection, self).mkcol(uri, cache=cache)
+        return super(Collection, cls).mkcol(uri, cache=cache)
 
-    def rmcol(self, uri, cache=None):
-        calendar_obj = Pool().get('calendar.calendar')
+    @classmethod
+    def rmcol(cls, uri, cache=None):
+        Calendar = Pool().get('calendar.calendar')
 
-        calendar_id = self.calendar(uri)
+        calendar_id = cls.calendar(uri)
         if calendar_id:
             if not (uri[10:].split('/', 1) + [None])[1]:
                 try:
-                    calendar_obj.delete(calendar_id)
+                    Calendar.delete([Calendar(calendar_id)])
                 except Exception:
                     raise DAV_Forbidden
                 return 200
             raise DAV_Forbidden
-        return super(Collection, self).rmcol(uri, cache=cache)
+        return super(Collection, cls).rmcol(uri, cache=cache)
 
-    def rm(self, uri, cache=None):
-        event_obj = Pool().get('calendar.event')
+    @classmethod
+    def rm(cls, uri, cache=None):
+        Event = Pool().get('calendar.event')
 
-        calendar_id = self.calendar(uri)
+        calendar_id = cls.calendar(uri)
         if calendar_id:
             if not (uri[10:].split('/', 1) + [None])[1]:
                 return 403
-            event_id = self.event(uri, calendar_id=calendar_id)
+            event_id = cls.event(uri, calendar_id=calendar_id)
             if event_id:
                 try:
-                    event_obj.delete(event_id)
+                    Event.delete([Event(event_id)])
                 except Exception:
                     return 403
                 return 200
             return 404
-        calendar_ics_id = self.calendar(uri, ics=True)
+        calendar_ics_id = cls.calendar(uri, ics=True)
         if calendar_ics_id:
             return 403
-        return super(Collection, self).rm(uri, cache=cache)
+        return super(Collection, cls).rm(uri, cache=cache)
 
-    def exists(self, uri, cache=None):
+    @classmethod
+    def exists(cls, uri, cache=None):
         if uri in ('Calendars', 'Calendars/'):
             return 1
-        calendar_id = self.calendar(uri)
+        calendar_id = cls.calendar(uri)
         if calendar_id:
             if not (uri[10:].split('/', 1) + [None])[1]:
                 return 1
-            if self.event(uri, calendar_id=calendar_id):
+            if cls.event(uri, calendar_id=calendar_id):
                 return 1
-        calendar_ics_id = self.calendar(uri, ics=True)
+        calendar_ics_id = cls.calendar(uri, ics=True)
         if calendar_ics_id:
             return 1
-        return super(Collection, self).exists(uri, cache=cache)
+        return super(Collection, cls).exists(uri, cache=cache)
 
-    def current_user_privilege_set(self, uri, cache=None):
+    @classmethod
+    def current_user_privilege_set(cls, uri, cache=None):
         '''
         Return the privileges of the current user for uri
         Privileges ares: create, read, write, delete
-
-        :param uri: the uri
-        :param cache: the cache
-        :return: a list of privileges
         '''
-        calendar_obj = Pool().get('calendar.calendar')
+        Calendar = Pool().get('calendar.calendar')
 
         if uri in ('Calendars', 'Calendars/'):
             return ['create', 'read', 'write', 'delete']
         if uri and uri.startswith('Calendars/'):
-            calendar_id = self.calendar(uri)
+            calendar_id = cls.calendar(uri)
             if calendar_id:
-                calendar = calendar_obj.browse(calendar_id)
+                calendar = Calendar(calendar_id)
                 user = Transaction().user
                 if user == calendar.owner.id:
                     return ['create', 'read', 'write', 'delete']
@@ -635,7 +649,5 @@ class Collection(ModelSQL, ModelView):
                     res.extend(['read', 'write', 'delete'])
                 return res
             return []
-        return super(Collection, self).current_user_privilege_set(uri,
-                cache=cache)
-
-Collection()
+        return super(Collection, cls).current_user_privilege_set(uri,
+            cache=cache)

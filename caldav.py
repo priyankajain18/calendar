@@ -59,11 +59,11 @@ def _get_caldav_calendar_description(self, uri):
         raise DAV_NotFound
     pool = Pool(Transaction().cursor.database_name)
     try:
-        collection_obj = pool.get('webdav.collection')
+        Collection = pool.get('webdav.collection')
     except KeyError:
         raise DAV_NotFound
     try:
-        res = collection_obj.get_calendar_description(dburi, cache=CACHE)
+        res = Collection.get_calendar_description(dburi, cache=CACHE)
     except AttributeError:
         raise DAV_NotFound
     except DAV_Error, exception:
@@ -84,11 +84,11 @@ def _get_caldav_calendar_data(self, uri):
         raise DAV_NotFound
     pool = Pool(Transaction().cursor.database_name)
     try:
-        collection_obj = pool.get('webdav.collection')
+        Collection = pool.get('webdav.collection')
     except KeyError:
         raise DAV_NotFound
     try:
-        res = collection_obj.get_calendar_data(dburi, cache=CACHE)
+        res = Collection.get_calendar_data(dburi, cache=CACHE)
     except AttributeError:
         raise DAV_NotFound
     except DAV_Error, exception:
@@ -108,11 +108,11 @@ def _get_caldav_calendar_home_set(self, uri):
         raise DAV_NotFound
     pool = Pool(Transaction().cursor.database_name)
     try:
-        collection_obj = pool.get('webdav.collection')
+        Collection = pool.get('webdav.collection')
     except KeyError:
         raise DAV_NotFound
     try:
-        res = collection_obj.get_calendar_home_set(dburi, cache=CACHE)
+        res = Collection.get_calendar_home_set(dburi, cache=CACHE)
     except AttributeError:
         raise DAV_NotFound
     except DAV_Error, exception:
@@ -142,11 +142,11 @@ def _get_caldav_calendar_user_address_set(self, uri):
         raise DAV_NotFound
     pool = Pool(Transaction().cursor.database_name)
     try:
-        collection_obj = pool.get('webdav.collection')
+        Collection = pool.get('webdav.collection')
     except KeyError:
         raise DAV_NotFound
     try:
-        res = collection_obj.get_calendar_user_address_set(dburi, cache=CACHE)
+        res = Collection.get_calendar_user_address_set(dburi, cache=CACHE)
     except AttributeError:
         raise DAV_NotFound
     except DAV_Error, exception:
@@ -172,11 +172,11 @@ def _get_caldav_schedule_inbox_URL(self, uri):
         raise DAV_NotFound
     pool = Pool(Transaction().cursor.database_name)
     try:
-        collection_obj = pool.get('webdav.collection')
+        Collection = pool.get('webdav.collection')
     except KeyError:
         raise DAV_NotFound
     try:
-        res = collection_obj.get_schedule_inbox_URL(dburi, cache=CACHE)
+        res = Collection.get_schedule_inbox_URL(dburi, cache=CACHE)
     except AttributeError:
         raise DAV_NotFound
     except DAV_Error, exception:
@@ -204,11 +204,11 @@ def _get_caldav_schedule_outbox_URL(self, uri):
         raise DAV_NotFound
     pool = Pool(Transaction().cursor.database_name)
     try:
-        collection_obj = pool.get('webdav.collection')
+        Collection = pool.get('webdav.collection')
     except KeyError:
         raise DAV_NotFound
     try:
-        res = collection_obj.get_schedule_outbox_URL(dburi, cache=CACHE)
+        res = Collection.get_schedule_outbox_URL(dburi, cache=CACHE)
     except AttributeError:
         raise DAV_NotFound
     except DAV_Error, exception:
@@ -258,9 +258,9 @@ def _get_caldav_post(self, uri, body, contenttype=''):
     if not dbname:
         raise DAV_Forbidden
     pool = Pool(Transaction().cursor.database_name)
-    calendar_obj = pool.get('calendar.calendar')
+    Calendar = pool.get('calendar.calendar')
     try:
-        res = calendar_obj.post(dburi, body)
+        res = Calendar.post(dburi, body)
     except AttributeError:
         raise DAV_NotFound
     except DAV_Error, exception:
