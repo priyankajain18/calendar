@@ -671,7 +671,7 @@ class Event(ModelSQL, ModelView):
                             ('id', '!=', event.id),
                             ('recurrence', '=', event.recurrence),
                             ])
-                    for event2 in events2:
+                    for event2 in events2[:]:
                         if event2.calendar.owner.email in attendee_emails:
                             attendee_emails.remove(
                                     event2.calendar.owner.email)
@@ -720,8 +720,8 @@ class Event(ModelSQL, ModelView):
         new_events = []
         for event in events:
             current_default = default.copy()
-            current_default['uuid'] = cls.default_uuid()
-            new_events.append(super(Event, cls).copy([event],
+            current_default.setdefault('uuid', cls.default_uuid())
+            new_events.extend(super(Event, cls).copy([event],
                     default=current_default))
         return new_events
 
@@ -784,11 +784,11 @@ class Event(ModelSQL, ModelView):
         pool = Pool()
         Category = pool.get('calendar.category')
         Location = pool.get('calendar.location')
+        Alarm = pool.get('calendar.event.alarm')
         Rdate = pool.get('calendar.event.rdate')
         Exdate = pool.get('calendar.event.exdate')
         Rrule = pool.get('calendar.rrule')
         Exrule = pool.get('calendar.event.exrule')
-        Valarm = pool.get('calendar.event.valarm')
 
         vevents = []
         if not vevent:
@@ -922,7 +922,7 @@ class Event(ModelSQL, ModelView):
                 vals = Attendee.attendee2values(attendee)
                 if vals['email'] in attendees_todel:
                     res['attendees'].append(('write',
-                        attendees_todel[vals['email']], vals))
+                        [attendees_todel[vals['email']]], vals))
                     del attendees_todel[vals['email']]
                 else:
                     res['attendees'].append(('create', vals))
@@ -970,7 +970,7 @@ class Event(ModelSQL, ModelView):
             res.setdefault('alarms', [])
             while vevent.valarm_list:
                 valarm = vevent.valarm_list.pop()
-                res['alarms'].append(('create', Valarm.valarm2values(valarm)))
+                res['alarms'].append(('create', Alarm.valarm2values(valarm)))
 
         if hasattr(ical, 'vtimezone'):
             if ical.vtimezone.tzid.value in pytz.common_timezones:
@@ -1292,14 +1292,15 @@ class Attendee(ModelSQL, ModelView):
         else:
             res = vobject.base.ContentLine('ATTENDEE', [], '')
 
+        selection = dict(self.__class__.status.selection)
         if self.status:
             if hasattr(res, 'partstat_param'):
-                if res.partstat_param.lower() in dict(self.status.selection):
+                if res.partstat_param.lower() in selection:
                     res.partstat_param = self.status.upper()
             else:
                 res.partstat_param = self.status.upper()
         elif hasattr(res, 'partstat_param'):
-            if res.partstat_param.lower() in dict(self.status.selection):
+            if res.partstat_param.lower() in selection:
                 del res.partstat_param
 
         res.value = 'MAILTO:' + self.email
@@ -1315,7 +1316,7 @@ class EventAttendee(ModelSQL, ModelView):
     event = fields.Many2One('calendar.event', 'Event', ondelete='CASCADE',
         required=True, select=True)
 
-    @staticmethod
+    @classmethod
     def create(cls, values):
         Event = Pool().get('calendar.event')
         if values.get('event'):
@@ -1351,7 +1352,7 @@ class EventAttendee(ModelSQL, ModelView):
     @classmethod
     def write(cls, event_attendees, values):
         Event = Pool().get('calendar.event')
-        events = [x.event.id for x in event_attendees]
+        events = [x.event for x in event_attendees]
         if values.get('event'):
             events.append(Event(values['event']))
         if events:

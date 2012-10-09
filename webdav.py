@@ -463,11 +463,11 @@ class Collection:
             event_id = cls.event(uri, calendar_id=calendar_id)
             if not event_id:
                 raise DAV_NotFound
-            ical = Event.event2ical(event_id)
+            ical = Event(event_id).event2ical()
             return ical.serialize()
         calendar_ics_id = cls.calendar(uri, ics=True)
         if calendar_ics_id:
-            ical = Calendar.calendar2ical(calendar_ics_id)
+            ical = Calendar(calendar_ics_id).calendar2ical()
             return ical.serialize()
         return super(Collection, cls).get_data(uri, cache=cache)
 
