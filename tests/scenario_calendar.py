@@ -111,6 +111,8 @@ class TestCase(unittest.TestCase):
             attendee.value = 'MAILTO:%s@example.com' % name
             attendees.append(attendee)
         vevent.attendee_list = attendees
+        caldav.Event(self.client, data=ical.serialize(),
+            parent=self.calendar).save()
 
         Event = Model.get('calendar.event')
         owner_event, = Event.find([
