@@ -617,7 +617,7 @@ class Event(ModelSQL, ModelView):
             'all_day': self.all_day,
             'dtstart': self.dtstart,
             'dtend': self.dtend,
-            'location': self.location.id,
+            'location': self.location.id if self.location else None,
             'status': self.status,
             'organizer': self.organizer,
             'rdates': [('delete_all',)] + [('create', rdate._date2update())
