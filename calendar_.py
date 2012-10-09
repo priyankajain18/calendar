@@ -56,20 +56,20 @@ class Calendar(ModelSQL, ModelView):
     def create(cls, vals):
         calendar = super(Calendar, cls).create(vals)
         # Restart the cache for get_name
-        cls._get_name_cache.reset()
+        cls._get_name_cache.clear()
         return calendar
 
     @classmethod
     def write(cls, calendars, vals):
         super(Calendar, cls).write(calendars, vals)
         # Restart the cache for get_name
-        cls._get_name_cache.reset()
+        cls._get_name_cache.clear()
 
     @classmethod
     def delete(cls, calendars):
         super(Calendar, cls).delete(calendars)
         # Restart the cache for calendar
-        cls._get_name_cache.reset()
+        cls._get_name_cache.clear()
 
     def check_name(self):
         '''
@@ -607,7 +607,7 @@ class Event(ModelSQL, ModelView):
                                     'parent': parent.id,
                                     })
         # Restart the cache for event
-        Collection._event_cache.reset()
+        Collection._event_cache.clear()
         return event
 
     def _event2update(self):
@@ -710,7 +710,7 @@ class Event(ModelSQL, ModelView):
                                         'parent': parent.id,
                                         })
         # Restart the cache for event
-        Collection._event_cache.reset()
+        Collection._event_cache.clear()
 
     @classmethod
     def copy(cls, events, default=None):
@@ -773,7 +773,7 @@ class Event(ModelSQL, ModelView):
                                         })
         super(Event, cls).delete(events)
         # Restart the cache for event
-        Collection._event_cache.reset()
+        Collection._event_cache.clear()
 
     @classmethod
     def ical2values(cls, event_id, ical, calendar_id, vevent=None):
