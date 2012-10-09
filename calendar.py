@@ -569,7 +569,7 @@ class Event(ModelSQL, ModelView):
         return res
 
     def search_calendar_field(self, cursor, user, name, clause, context=None):
-        return [('calendar.' + name[9:],) + clause[1:]]
+        return [('calendar.' + name[9:],) + tuple(clause[1:])]
 
     def check_recurrence(self, cursor, user, ids):
         '''
