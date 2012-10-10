@@ -587,11 +587,13 @@ class Event(ModelSQL, ModelView):
                             new_event, = cls.copy([event], default={
                                     'calendar': calendar.id,
                                     'occurences': None,
+                                    'uuid': event.uuid,
                                     })
                             for occurence in event.occurences:
                                 cls.copy([occurence], default={
                                     'calendar': calendar.id,
                                     'parent': new_event.id,
+                                    'uuid': occurence.uuid,
                                     })
                     else:
                         parents = cls.search([
@@ -605,6 +607,7 @@ class Event(ModelSQL, ModelView):
                             cls.copy([event], default={
                                     'calendar': parent.calendar.id,
                                     'parent': parent.id,
+                                    'uuid': event.uuid,
                                     })
         # Restart the cache for event
         Collection._event_cache.clear()
@@ -690,11 +693,13 @@ class Event(ModelSQL, ModelView):
                                 new_event, = cls.copy([event], default={
                                         'calendar': calendar.id,
                                         'occurences': None,
+                                        'uuid': event.uuid,
                                         })
                                 for occurence in event.occurences:
                                     cls.copy([occurence], default={
                                             'calendar': calendar.id,
                                             'parent': new_event.id,
+                                            'uuid': occurence.uuid,
                                             })
                         else:
                             parents = cls.search([
@@ -708,6 +713,7 @@ class Event(ModelSQL, ModelView):
                                 cls.copy([event], default={
                                         'calendar': parent.calendar.id,
                                         'parent': parent.id,
+                                        'uuid': event.uuid,
                                         })
         # Restart the cache for event
         Collection._event_cache.clear()
