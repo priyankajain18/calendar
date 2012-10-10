@@ -613,11 +613,13 @@ class Event(ModelSQL, ModelView):
                         new_id = self.copy(cursor, 0, event.id, default={
                             'calendar': calendar_id,
                             'occurences': False,
+                            'uuid': event.uuid,
                             }, context=context)
                         for occurence in event.occurences:
                             self.copy(cursor, 0, occurence.id, default={
                                 'calendar': calendar_id,
                                 'parent': new_id,
+                                'uuid': occurence.uuid,
                                 }, context=context)
                 else:
                     parent_ids = self.search(cursor, 0, [
@@ -631,6 +633,7 @@ class Event(ModelSQL, ModelView):
                         self.copy(cursor, 0, event.id, default={
                             'calendar': parent.calendar.id,
                             'parent': parent.id,
+                            'uuid': event.uuid,
                             }, context=context)
         # Restart the cache for event
         collection_obj.event(cursor.dbname)
@@ -725,11 +728,13 @@ class Event(ModelSQL, ModelView):
                             new_id = self.copy(cursor, 0, event.id, default={
                                 'calendar': calendar_id,
                                 'occurences': False,
+                                'uuid': event.uuid,
                                 }, context=context)
                             for occurence in event.occurences:
                                 self.copy(cursor, 0, occurence.id, default={
                                     'calendar': calendar_id,
                                     'parent': new_id,
+                                    'uuid': occurence.uuid,
                                     }, context=context)
                     else:
                         parent_ids = self.search(cursor, 0, [
@@ -743,6 +748,7 @@ class Event(ModelSQL, ModelView):
                             self.copy(cursor, 0, event.id, default={
                                 'calendar': parent.calendar.id,
                                 'parent': parent.id,
+                                'uuid': event.uuid,
                                 }, context=context)
         # Restart the cache for event
         collection_obj.event(cursor.dbname)
