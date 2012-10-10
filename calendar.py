@@ -599,11 +599,13 @@ class Event(ModelSQL, ModelView):
                             new_id = self.copy(event.id, default={
                                 'calendar': calendar_id,
                                 'occurences': False,
+                                'uuid': event.uuid,
                                 })
                             for occurence in event.occurences:
                                 self.copy(occurence.id, default={
                                     'calendar': calendar_id,
                                     'parent': new_id,
+                                    'uuid': occurence.uuid,
                                     })
                     else:
                         parent_ids = self.search([
@@ -616,6 +618,7 @@ class Event(ModelSQL, ModelView):
                             self.copy(event.id, default={
                                 'calendar': parent.calendar.id,
                                 'parent': parent.id,
+                                'uuid': event.uuid,
                                 })
         # Restart the cache for event
         collection_obj.event.reset()
@@ -716,11 +719,13 @@ class Event(ModelSQL, ModelView):
                                 new_id = self.copy(event.id, default={
                                     'calendar': calendar_id,
                                     'occurences': False,
+                                    'uuid': event.uuid,
                                     })
                                 for occurence in event.occurences:
                                     self.copy(occurence.id, default={
                                         'calendar': calendar_id,
                                         'parent': new_id,
+                                        'uuid': occurence.uuid,
                                         })
                         else:
                             parent_ids = self.search([
@@ -733,6 +738,7 @@ class Event(ModelSQL, ModelView):
                                 self.copy(event.id, default={
                                     'calendar': parent.calendar.id,
                                     'parent': parent.id,
+                                    'uuid': event.uuid,
                                     })
         # Restart the cache for event
         collection_obj.event.reset()
