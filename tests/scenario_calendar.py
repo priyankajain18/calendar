@@ -18,7 +18,7 @@ def install_module(name, config):
     module, = Module.find([('name', '=', name)])
     if module.state != 'installed':
         Module.install([module.id], config.context)
-        Wizard('ir.module.module.install_upgrade').execute('start')
+        Wizard('ir.module.module.install_upgrade').execute('upgrade')
 
 
 def configure_user(login, config):
