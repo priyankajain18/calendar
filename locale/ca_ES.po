@@ -70,10 +70,9 @@ msgctxt "field:calendar.alarm,create_date:"
 msgid "Create Date"
 msgstr "Data creació"
 
-#, fuzzy
 msgctxt "field:calendar.alarm,create_uid:"
 msgid "Create User"
-msgstr "Crear usuari"
+msgstr "Usuari creació"
 
 msgctxt "field:calendar.alarm,id:"
 msgid "ID"
@@ -97,16 +96,15 @@ msgstr "Usuari modificació"
 
 msgctxt "field:calendar.attendee,attendee:"
 msgid "attendee"
-msgstr "assistents"
+msgstr "assistent"
 
 msgctxt "field:calendar.attendee,create_date:"
 msgid "Create Date"
 msgstr "Data creació"
 
-#, fuzzy
 msgctxt "field:calendar.attendee,create_uid:"
 msgid "Create User"
-msgstr "Crear usuari"
+msgstr "Usuari creació"
 
 msgctxt "field:calendar.attendee,email:"
 msgid "Email"
@@ -136,10 +134,9 @@ msgctxt "field:calendar.calendar,create_date:"
 msgid "Create Date"
 msgstr "Data creació"
 
-#, fuzzy
 msgctxt "field:calendar.calendar,create_uid:"
 msgid "Create User"
-msgstr "Crear usuari"
+msgstr "Usuari creació"
 
 msgctxt "field:calendar.calendar,description:"
 msgid "Description"
@@ -155,7 +152,7 @@ msgstr "Nom"
 
 msgctxt "field:calendar.calendar,owner:"
 msgid "Owner"
-msgstr "Amo"
+msgstr "Propietari"
 
 msgctxt "field:calendar.calendar,read_users:"
 msgid "Read Users"
@@ -185,10 +182,9 @@ msgctxt "field:calendar.calendar-read-res.user,create_date:"
 msgid "Create Date"
 msgstr "Data creació"
 
-#, fuzzy
 msgctxt "field:calendar.calendar-read-res.user,create_uid:"
 msgid "Create User"
-msgstr "Crear usuari"
+msgstr "Usuari creació"
 
 msgctxt "field:calendar.calendar-read-res.user,id:"
 msgid "ID"
@@ -218,10 +214,9 @@ msgctxt "field:calendar.calendar-write-res.user,create_date:"
 msgid "Create Date"
 msgstr "Data creació"
 
-#, fuzzy
 msgctxt "field:calendar.calendar-write-res.user,create_uid:"
 msgid "Create User"
-msgstr "Crear usuari"
+msgstr "Usuari creació"
 
 msgctxt "field:calendar.calendar-write-res.user,id:"
 msgid "ID"
@@ -247,10 +242,9 @@ msgctxt "field:calendar.category,create_date:"
 msgid "Create Date"
 msgstr "Data creació"
 
-#, fuzzy
 msgctxt "field:calendar.category,create_uid:"
 msgid "Create User"
-msgstr "Crear usuari"
+msgstr "Usuari creació"
 
 msgctxt "field:calendar.category,id:"
 msgid "ID"
@@ -276,17 +270,14 @@ msgctxt "field:calendar.date,create_date:"
 msgid "Create Date"
 msgstr "Data creació"
 
-#, fuzzy
 msgctxt "field:calendar.date,create_uid:"
 msgid "Create User"
-msgstr "Crear usuari"
+msgstr "Usuari creació"
 
-#, fuzzy
 msgctxt "field:calendar.date,date:"
 msgid "Is Date"
 msgstr "És data"
 
-#, fuzzy
 msgctxt "field:calendar.date,datetime:"
 msgid "Date"
 msgstr "Data"
@@ -295,10 +286,9 @@ msgctxt "field:calendar.date,id:"
 msgid "ID"
 msgstr "ID"
 
-#, fuzzy
 msgctxt "field:calendar.date,rec_name:"
 msgid "Name"
-msgstr "Nom del camp"
+msgstr "Nom"
 
 msgctxt "field:calendar.date,write_date:"
 msgid "Write Date"
@@ -326,7 +316,7 @@ msgstr "Calendari"
 
 msgctxt "field:calendar.event,calendar_owner:"
 msgid "Owner"
-msgstr "Amo"
+msgstr "Propietari"
 
 msgctxt "field:calendar.event,calendar_read_users:"
 msgid "Read Users"
@@ -348,10 +338,9 @@ msgctxt "field:calendar.event,create_date:"
 msgid "Create Date"
 msgstr "Data creació"
 
-#, fuzzy
 msgctxt "field:calendar.event,create_uid:"
 msgid "Create User"
-msgstr "Crear usuari"
+msgstr "Usuari creació"
 
 msgctxt "field:calendar.event,description:"
 msgid "Description"
@@ -453,10 +442,9 @@ msgctxt "field:calendar.event-calendar.category,create_date:"
 msgid "Create Date"
 msgstr "Data creació"
 
-#, fuzzy
 msgctxt "field:calendar.event-calendar.category,create_uid:"
 msgid "Create User"
-msgstr "Crear usuari"
+msgstr "Usuari creació"
 
 msgctxt "field:calendar.event-calendar.category,event:"
 msgid "Event"
@@ -486,10 +474,9 @@ msgctxt "field:calendar.event.alarm,create_date:"
 msgid "Create Date"
 msgstr "Data creació"
 
-#, fuzzy
 msgctxt "field:calendar.event.alarm,create_uid:"
 msgid "Create User"
-msgstr "Crear usuari"
+msgstr "Usuari creació"
 
 msgctxt "field:calendar.event.alarm,event:"
 msgid "Event"
@@ -519,10 +506,9 @@ msgctxt "field:calendar.event.attendee,create_date:"
 msgid "Create Date"
 msgstr "Data creació"
 
-#, fuzzy
 msgctxt "field:calendar.event.attendee,create_uid:"
 msgid "Create User"
-msgstr "Crear usuari"
+msgstr "Usuari creació"
 
 msgctxt "field:calendar.event.attendee,event:"
 msgid "Event"
@@ -552,10 +538,9 @@ msgctxt "field:calendar.event.exdate,create_date:"
 msgid "Create Date"
 msgstr "Data creació"
 
-#, fuzzy
 msgctxt "field:calendar.event.exdate,create_uid:"
 msgid "Create User"
-msgstr "Crear usuari"
+msgstr "Usuari creació"
 
 msgctxt "field:calendar.event.exdate,event:"
 msgid "Event"
@@ -585,10 +570,9 @@ msgctxt "field:calendar.event.exrule,create_date:"
 msgid "Create Date"
 msgstr "Data creació"
 
-#, fuzzy
 msgctxt "field:calendar.event.exrule,create_uid:"
 msgid "Create User"
-msgstr "Crear usuari"
+msgstr "Usuari creació"
 
 msgctxt "field:calendar.event.exrule,event:"
 msgid "Event"
@@ -618,10 +602,9 @@ msgctxt "field:calendar.event.rdate,create_date:"
 msgid "Create Date"
 msgstr "Data creació"
 
-#, fuzzy
 msgctxt "field:calendar.event.rdate,create_uid:"
 msgid "Create User"
-msgstr "Crear usuari"
+msgstr "Usuari creació"
 
 msgctxt "field:calendar.event.rdate,event:"
 msgid "Event"
@@ -651,10 +634,9 @@ msgctxt "field:calendar.event.rrule,create_date:"
 msgid "Create Date"
 msgstr "Data creació"
 
-#, fuzzy
 msgctxt "field:calendar.event.rrule,create_uid:"
 msgid "Create User"
-msgstr "Crear usuari"
+msgstr "Usuari creació"
 
 msgctxt "field:calendar.event.rrule,event:"
 msgid "Event"
@@ -680,10 +662,9 @@ msgctxt "field:calendar.location,create_date:"
 msgid "Create Date"
 msgstr "Data creació"
 
-#, fuzzy
 msgctxt "field:calendar.location,create_uid:"
 msgid "Create User"
-msgstr "Crear usuari"
+msgstr "Usuari creació"
 
 msgctxt "field:calendar.location,id:"
 msgid "ID"
@@ -749,10 +730,9 @@ msgctxt "field:calendar.rrule,create_date:"
 msgid "Create Date"
 msgstr "Data creació"
 
-#, fuzzy
 msgctxt "field:calendar.rrule,create_uid:"
 msgid "Create User"
-msgstr "Crear usuari"
+msgstr "Usuari creació"
 
 msgctxt "field:calendar.rrule,freq:"
 msgid "Frequency"
@@ -816,7 +796,7 @@ msgstr "Alarma"
 
 msgctxt "model:calendar.attendee,name:"
 msgid "Attendee"
-msgstr "Assistents"
+msgstr "Assistent"
 
 msgctxt "model:calendar.calendar,name:"
 msgid "Calendar"
@@ -824,11 +804,11 @@ msgstr "Calendari"
 
 msgctxt "model:calendar.calendar-read-res.user,name:"
 msgid "Calendar - read - User"
-msgstr "Calendari - llegir - usuari"
+msgstr "Calendari - lectura - usuari"
 
 msgctxt "model:calendar.calendar-write-res.user,name:"
 msgid "Calendar - write - User"
-msgstr "Calendari - escriure - usuari"
+msgstr "Calendari - escriptura - usuari"
 
 msgctxt "model:calendar.category,name:"
 msgid "Category"
@@ -852,7 +832,7 @@ msgstr "Alarma"
 
 msgctxt "model:calendar.event.attendee,name:"
 msgid "Attendee"
-msgstr "Assistents"
+msgstr "Assistent"
 
 msgctxt "model:calendar.event.exdate,name:"
 msgid "Exception Date"
@@ -886,15 +866,13 @@ msgctxt "model:ir.action,name:act_event_form"
 msgid "Events"
 msgstr "Esdeveniments"
 
-#, fuzzy
 msgctxt "model:ir.action,name:act_event_form3"
 msgid "Events"
 msgstr "Esdeveniments"
 
-#, fuzzy
 msgctxt "model:ir.ui.menu,name:menu_calendar"
 msgid "Calendar"
-msgstr "Gestió de calendari"
+msgstr "Calendaris"
 
 msgctxt "model:ir.ui.menu,name:menu_calendar_form"
 msgid "Calendars"
@@ -908,9 +886,10 @@ msgctxt "model:res.group,name:group_calendar_admin"
 msgid "Calendar Administration"
 msgstr "Administració de calendari"
 
+#, fuzzy
 msgctxt "selection:calendar.attendee,status:"
 msgid ""
-msgstr "Temptativa"
+msgstr "Recreat"
 
 msgctxt "selection:calendar.attendee,status:"
 msgid "Accepted"
@@ -944,9 +923,10 @@ msgctxt "selection:calendar.event,classification:"
 msgid "Public"
 msgstr "Públic"
 
+#, fuzzy
 msgctxt "selection:calendar.event,status:"
 msgid ""
-msgstr "Tentativo"
+msgstr "Recreat"
 
 msgctxt "selection:calendar.event,status:"
 msgid "Cancelled"
@@ -1050,7 +1030,7 @@ msgstr "Categoria"
 
 msgctxt "view:calendar.event.attendee:"
 msgid "Attendee"
-msgstr "Assistents"
+msgstr "Assistent"
 
 msgctxt "view:calendar.event.attendee:"
 msgid "Attendees"
