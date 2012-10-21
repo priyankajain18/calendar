@@ -872,7 +872,7 @@ msgstr "Eventos"
 
 msgctxt "model:ir.ui.menu,name:menu_calendar"
 msgid "Calendar"
-msgstr "Calendario"
+msgstr "Calendarios"
 
 msgctxt "model:ir.ui.menu,name:menu_calendar_form"
 msgid "Calendars"
