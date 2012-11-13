@@ -364,7 +364,7 @@ class Collection:
                     cursor.execute('SELECT id, ' \
                                 'EXTRACT(epoch FROM ' \
                                 'COALESCE(write_date, create_date)) ' \
-                            'FROM "' + Calendar.__table__ + '" ' \
+                            'FROM "' + Calendar._table + '" ' \
                                 'WHERE ' + red_sql, red_ids)
                     for calendar_id2, date in cursor.fetchall():
                         if calendar_id2 == calendar_id:
