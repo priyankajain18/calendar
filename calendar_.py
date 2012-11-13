@@ -96,8 +96,7 @@ class Calendar(ModelSQL, ModelView):
             cls._get_name_cache.set(name, calendar_id)
         return calendar_id
 
-    @staticmethod
-    def calendar2ical(calendar_id):
+    def calendar2ical(self):
         '''
         Return an iCalendar object for the given calendar_id containing
         all the vevent objects
@@ -107,7 +106,7 @@ class Calendar(ModelSQL, ModelView):
         ical = vobject.iCalendar()
         ical.vevent_list = []
         events = Event.search([
-                ('calendar', '=', calendar_id),
+                ('calendar', '=', self.id),
                 ('parent', '=', None),
                 ])
         for event in events:
