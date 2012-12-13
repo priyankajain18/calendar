@@ -47,7 +47,7 @@ this repository contains the full copyright notices and license terms. -->
                             <separator name="description" colspan="4"/>
                             <field name="description" colspan="4"/>
                         </page>
-                        <page string="Security" id="security">
+                        <page string="Access Permissions" id="permissions">
                             <field name="read_users" colspan="4"/>
                             <field name="write_users" colspan="4"/>
                         </page>
