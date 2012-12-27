@@ -83,15 +83,11 @@ this repository contains the full copyright notices and license terms. -->
             <field name="perm_delete" eval="False"/>
         </record>
         <record model="ir.rule" id="rule_group_read_calendar_line1">
-            <field name="field" search="[('name', '=', 'calendar_owner'), ('model.model', '=', 'calendar.event')]"/>
-            <field name="operator">=</field>
-            <field name="operand">User</field>
+            <field name="domain">[('calendar_owner', '=', user.id)]</field>
             <field name="rule_group" ref="rule_group_read_calendar"/>
         </record>
         <record model="ir.rule" id="rule_group_read_calendar_line2">
-            <field name="field" search="[('name', '=', 'calendar_read_users'), ('model.model', '=', 'calendar.event')]"/>
-            <field name="operator">=</field>
-            <field name="operand">User</field>
+            <field name="domain">[('calendar_read_users', '=', user.id)]</field>
             <field name="rule_group" ref="rule_group_read_calendar"/>
         </record>
 
@@ -105,15 +101,11 @@ this repository contains the full copyright notices and license terms. -->
             <field name="perm_delete" eval="True"/>
         </record>
         <record model="ir.rule" id="rule_group_write_calendar_line1">
-            <field name="field" search="[('name', '=', 'calendar_owner'), ('model.model', '=', 'calendar.event')]"/>
-            <field name="operator">=</field>
-            <field name="operand">User</field>
+            <field name="domain">[('calendar_owner', '=', user.id)]</field>
             <field name="rule_group" ref="rule_group_write_calendar"/>
         </record>
         <record model="ir.rule" id="rule_group_write_calendar_line2">
-            <field name="field" search="[('name', '=', 'calendar_write_users'), ('model.model', '=', 'calendar.event')]"/>
-            <field name="operator">=</field>
-            <field name="operand">User</field>
+            <field name="domain">[('calendar_write_users', '=', user.id)]</field>
             <field name="rule_group" ref="rule_group_write_calendar"/>
         </record>
 
