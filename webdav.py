@@ -554,7 +554,7 @@ class Collection:
             if not event_id:
                 ical = vobject.readOne(data)
                 values = Event.ical2values(None, ical, calendar_id)
-                event = Event.create(values)
+                event, = Event.create([values])
                 calendar = Calendar(calendar_id)
                 return (Transaction().cursor.database_name + '/Calendars/' +
                         calendar.name + '/' + event.uuid + '.ics')
