@@ -38,7 +38,7 @@ def mk_prop_response(self, uri, good_props, bad_props, doc):
     if not parent_uri:
         return res
     dbname, parent_uri = TrytonDAVInterface.get_dburi(parent_uri)
-    if  parent_uri in ('Calendars', 'Calendars/'):
+    if parent_uri in ('Calendars', 'Calendars/'):
         ad = doc.createElement('calendar')
         ad.setAttribute('xmlns', 'urn:ietf:params:xml:ns:caldav')
         #Disable groupdav attribute for iPhone
@@ -295,7 +295,8 @@ def do_POST(self):
 
         try:
             DATA = '%s\n' % dc._get_caldav_post(uri, body, ct)
-        except DAV_Error, (ec, dd):
+        except DAV_Error, exception:
+            ec, _ = exception
             return self.send_status(ec)
         self.send_body_chunks(DATA, '200', 'OK', 'OK')
         return

@@ -197,11 +197,11 @@ class Collection:
                 cache['_calendar'].setdefault(Calendar.__name__, {})
                 for calendar in calendars:
                     cache['_calendar'][Calendar.__name__][calendar.id] = {}
-            return [x.name for x in calendars] + \
-                    [x.name + '.ics' for x in calendars]
+            return ([x.name for x in calendars]
+                + [x.name + '.ics' for x in calendars])
         if uri and uri.startswith('Calendars/'):
             calendar_id = cls.calendar(uri)
-            if  calendar_id and not (uri[10:].split('/', 1) + [None])[1]:
+            if calendar_id and not (uri[10:].split('/', 1) + [None])[1]:
                 domain = cls._caldav_filter_domain_event(filter)
                 events = Event.search([
                         ('calendar', '=', calendar_id),
@@ -285,16 +285,16 @@ class Collection:
                 for i in range(0, len(ids), cursor.IN_MAX):
                     sub_ids = ids[i:i + cursor.IN_MAX]
                     red_sql, red_ids = reduce_ids('id', sub_ids)
-                    cursor.execute('SELECT id, ' \
-                                'EXTRACT(epoch FROM create_date) ' \
-                            'FROM "' + Calendar._table + '" ' \
-                            'WHERE ' + red_sql, red_ids)
+                    cursor.execute('SELECT id, '
+                            'EXTRACT(epoch FROM create_date) '
+                        'FROM "' + Calendar._table + '" '
+                        'WHERE ' + red_sql, red_ids)
                     for calendar_id2, date in cursor.fetchall():
                         if calendar_id2 == calendar_id:
                             res = date
                         if cache is not None:
                             cache['_calendar'][Calendar.__name__]\
-                                    .setdefault(calendar_id2, {})
+                                .setdefault(calendar_id2, {})
                             cache['_calendar'][Calendar.__name__][
                                 calendar_id2]['creationdate'] = date
                 if res is not None:
@@ -319,16 +319,16 @@ class Collection:
                     for i in range(0, len(ids), cursor.IN_MAX):
                         sub_ids = ids[i:i + cursor.IN_MAX]
                         red_sql, red_ids = reduce_ids('id', sub_ids)
-                        cursor.execute('SELECT id, ' \
-                                'EXTRACT(epoch FROM create_date) ' \
-                            'FROM "' + Event._table + '" ' \
+                        cursor.execute('SELECT id, '
+                                'EXTRACT(epoch FROM create_date) '
+                            'FROM "' + Event._table + '" '
                             'WHERE ' + red_sql, red_ids)
                         for event_id2, date in cursor.fetchall():
                             if event_id2 == event_id:
                                 res = date
                             if cache is not None:
                                 cache['_calendar'][Event.__name__]\
-                                        .setdefault(event_id2, {})
+                                    .setdefault(event_id2, {})
                                 cache['_calendar'][Event.__name__][
                                     event_id2]['creationdate'] = date
                     if res is not None:
@@ -361,17 +361,17 @@ class Collection:
                 for i in range(0, len(ids), cursor.IN_MAX):
                     sub_ids = ids[i:i + cursor.IN_MAX]
                     red_sql, red_ids = reduce_ids('id', sub_ids)
-                    cursor.execute('SELECT id, ' \
-                                'EXTRACT(epoch FROM ' \
-                                'COALESCE(write_date, create_date)) ' \
-                            'FROM "' + Calendar._table + '" ' \
-                                'WHERE ' + red_sql, red_ids)
+                    cursor.execute('SELECT id, '
+                            'EXTRACT(epoch FROM '
+                                'COALESCE(write_date, create_date)) '
+                        'FROM "' + Calendar._table + '" '
+                        'WHERE ' + red_sql, red_ids)
                     for calendar_id2, date in cursor.fetchall():
                         if calendar_id2 == calendar_id:
                             res = date
                         if cache is not None:
                             cache['_calendar'][Calendar.__name__]\
-                                    .setdefault(calendar_id2, {})
+                                .setdefault(calendar_id2, {})
                             cache['_calendar'][Calendar.__name__][
                                 calendar_id2]['lastmodified'] = date
                 if res is not None:
@@ -397,20 +397,20 @@ class Collection:
                         red_id_sql, red_id_ids = reduce_ids('id', sub_ids)
                         red_parent_sql, red_parent_ids = reduce_ids('parent',
                                 sub_ids)
-                        cursor.execute('SELECT COALESCE(parent, id), ' \
-                                    'MAX(EXTRACT(epoch FROM ' \
-                                    'COALESCE(write_date, create_date))) ' \
-                                'FROM "' + Event._table + '" ' \
-                                'WHERE ' + red_id_sql + ' ' \
-                                    'OR ' + red_parent_sql + ' ' \
-                                'GROUP BY parent, id',
-                                red_id_ids + red_parent_ids)
+                        cursor.execute('SELECT COALESCE(parent, id), '
+                                'MAX(EXTRACT(epoch FROM '
+                                'COALESCE(write_date, create_date))) '
+                            'FROM "' + Event._table + '" '
+                            'WHERE ' + red_id_sql + ' '
+                                'OR ' + red_parent_sql + ' '
+                            'GROUP BY parent, id',
+                            red_id_ids + red_parent_ids)
                         for event_id2, date in cursor.fetchall():
                             if event_id2 == event_id:
                                 res = date
                             if cache is not None:
                                 cache['_calendar'][Event.__name__]\
-                                        .setdefault(event_id2, {})
+                                    .setdefault(event_id2, {})
                                 cache['_calendar'][Event.__name__][
                                     event_id2]['lastmodified'] = date
                     if res is not None:
@@ -433,17 +433,17 @@ class Collection:
             for i in range(0, len(ids), cursor.IN_MAX):
                 sub_ids = ids[i:i + cursor.IN_MAX]
                 red_sql, red_ids = reduce_ids('calendar', sub_ids)
-                cursor.execute('SELECT calendar, MAX(EXTRACT(epoch FROM ' \
-                            'COALESCE(write_date, create_date))) ' \
-                        'FROM "' + Event._table + '" ' \
-                        'WHERE ' + red_sql + ' ' \
-                        'GROUP BY calendar', red_ids)
+                cursor.execute('SELECT calendar, MAX(EXTRACT(epoch FROM '
+                        'COALESCE(write_date, create_date))) '
+                    'FROM "' + Event._table + '" '
+                    'WHERE ' + red_sql + ' '
+                    'GROUP BY calendar', red_ids)
                 for calendar_id2, date in cursor.fetchall():
                     if calendar_id2 == calendar_ics_id:
                         res = date
                     if cache is not None:
                         cache['_calendar'][Calendar.__name__]\
-                                .setdefault(calendar_id2, {})
+                            .setdefault(calendar_id2, {})
                         cache['_calendar'][Calendar.__name__][
                             calendar_id2]['lastmodified ics'] = date
             if res is not None:
@@ -498,7 +498,7 @@ class Collection:
                         res = calendar.description
                     if cache is not None:
                         cache['_calendar'][Calendar.__name__]\
-                                .setdefault(calendar.id, {})
+                            .setdefault(calendar.id, {})
                         cache['_calendar'][Calendar.__name__][
                             calendar.id]['calendar_description'] = \
                                 calendar.description
