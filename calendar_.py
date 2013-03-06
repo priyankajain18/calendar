@@ -1647,6 +1647,7 @@ class EventRDate(ModelSQL, ModelView):
 class EventExDate(EventRDate):
     'Exception Date'
     __name__ = 'calendar.event.exdate'
+    _table = 'calendar_event_exdate'  # Needed to override EventRDate._table
 
 
 class RRule(ModelSQL, ModelView):
