@@ -23,38 +23,12 @@ this repository contains the full copyright notices and license terms. -->
         <record model="ir.ui.view" id="calendar_view_tree">
             <field name="model">calendar.calendar</field>
             <field name="type">tree</field>
-            <field name="arch" type="xml">
-                <![CDATA[
-                <tree string="Calendars">
-                    <field name="name"/>
-                    <field name="owner"/>
-                </tree>
-                ]]>
-            </field>
+            <field name="name">calendar_tree</field>
         </record>
         <record model="ir.ui.view" id="calendar_view_form">
             <field name="model">calendar.calendar</field>
             <field name="type">form</field>
-            <field name="arch" type="xml">
-                <![CDATA[
-                <form string="Calendar">
-                    <label name="name"/>
-                    <field name="name"/>
-                    <label name="owner"/>
-                    <field name="owner"/>
-                    <notebook colspan="4">
-                        <page string="General" id="general">
-                            <separator name="description" colspan="4"/>
-                            <field name="description" colspan="4"/>
-                        </page>
-                        <page string="Access Permissions" id="permissions">
-                            <field name="read_users" colspan="4"/>
-                            <field name="write_users" colspan="4"/>
-                        </page>
-                    </notebook>
-                </form>
-                ]]>
-            </field>
+            <field name="name">calendar_form</field>
         </record>
         <record model="ir.action.act_window" id="act_calendar_form">
             <field name="name">Calendars</field>
@@ -112,142 +86,45 @@ this repository contains the full copyright notices and license terms. -->
         <record model="ir.ui.view" id="category_view_tree">
             <field name="model">calendar.category</field>
             <field name="type">tree</field>
-            <field name="arch" type="xml">
-                <![CDATA[
-                <tree string="Categories">
-                    <field name="name"/>
-                </tree>
-                ]]>
-            </field>
+            <field name="name">category_tree</field>
         </record>
 
         <record model="ir.ui.view" id="category_view_form">
             <field name="model">calendar.category</field>
             <field name="type">form</field>
-            <field name="arch" type="xml">
-                <![CDATA[
-                <form string="Category">
-                    <label name="name"/>
-                    <field name="name"/>
-                </form>
-                ]]>
-            </field>
+            <field name="name">category_form</field>
         </record>
 
         <record model="ir.ui.view" id="location_view_tree">
             <field name="model">calendar.location</field>
             <field name="type">tree</field>
-            <field name="arch" type="xml">
-                <![CDATA[
-                <tree string="Locations">
-                    <field name="name"/>
-                </tree>
-                ]]>
-            </field>
+            <field name="name">location_tree</field>
         </record>
 
         <record model="ir.ui.view" id="location_view_form">
             <field name="model">calendar.location</field>
             <field name="type">form</field>
-            <field name="arch" type="xml">
-                <![CDATA[
-                <form string="Location">
-                    <label name="name"/>
-                    <field name="name"/>
-                </form>
-                ]]>
-            </field>
+            <field name="name">location_form</field>
         </record>
 
         <record model="ir.ui.view" id="event_view_tree">
             <field name="model">calendar.event</field>
             <field name="type">tree</field>
             <field name="priority" eval="10"/>
-            <field name="arch" type="xml">
-                <![CDATA[
-                <tree string="Events">
-                    <field name="calendar"/>
-                    <field name="summary"/>
-                    <field name="all_day"/>
-                    <field name="dtstart"/>
-                    <field name="dtend"/>
-                    <field name="status"/>
-                </tree>
-                ]]>
-            </field>
+            <field name="name">event_tree</field>
         </record>
 
-        <record model="ir.ui.view" id="event_vieww_tree_occurence">
+        <record model="ir.ui.view" id="event_view_tree_occurence">
             <field name="model">calendar.event</field>
             <field name="type">tree</field>
             <field name="priority" eval="20"/>
-            <field name="arch" type="xml">
-                <![CDATA[
-                <tree string="Events">
-                    <field name="summary"/>
-                    <field name="recurrence"/>
-                    <field name="all_day"/>
-                    <field name="dtstart"/>
-                    <field name="dtend"/>
-                    <field name="status"/>
-                </tree>
-                ]]>
-            </field>
+            <field name="name">event_tree_occurence</field>
         </record>
 
         <record model="ir.ui.view" id="event_view_form">
             <field name="model">calendar.event</field>
             <field name="type">form</field>
-            <field name="arch" type="xml">
-                <![CDATA[
-                <form string="Event">
-                    <label name="summary"/>
-                    <field name="summary"/>
-                    <label name="recurrence"/>
-                    <field name="recurrence"/>
-                    <notebook colspan="4">
-                        <page string="General" id="general">
-                            <label name="location"/>
-                            <field name="location"/>
-                            <label name="status"/>
-                            <field name="status"/>
-                            <label name="classification"/>
-                            <field name="classification"/>
-                            <label name="calendar"/>
-                            <field name="calendar"/>
-                            <label name="all_day"/>
-                            <field name="all_day"/>
-                            <label name="transp"/>
-                            <field name="transp"/>
-                            <label name="dtstart"/>
-                            <field name="dtstart"/>
-                            <label name="dtend"/>
-                            <field name="dtend"/>
-                            <separator name="description" colspan="4"/>
-                            <field name="description" colspan="4"/>
-                        </page>
-                        <page string="Categories" id="categories">
-                            <field name="categories" colspan="4"/>
-                        </page>
-                        <page string="Attendees" id="attendees">
-                            <label name="organizer"/>
-                            <field name="organizer"/>
-                            <field name="attendees" colspan="4"/>
-                        </page>
-                        <page string="Occurences" id="occurences"
-                            states="{'invisible': Bool(Eval('_parent_parent'))}">
-                            <field name="rrules" colspan="2"/>
-                            <field name="rdates" colspan="2"/>
-                            <field name="exrules" colspan="2"/>
-                            <field name="exdates" colspan="2"/>
-                            <field name="occurences" colspan="4"
-                                view_ids="calendar.event_vieww_tree_occurence"/>
-                        </page>
-                    </notebook>
-                    <field name="parent" colspan="4" invisible="1"/>
-                </form>
-                ]]>
-            </field>
+            <field name="name">event_form</field>
         </record>
 
         <record model="ir.action.act_window" id="act_event_form">
@@ -293,208 +170,62 @@ this repository contains the full copyright notices and license terms. -->
         <record model="ir.ui.view" id="attendee_view_tree">
             <field name="model">calendar.event.attendee</field>
             <field name="type">tree</field>
-            <field name="arch" type="xml">
-                <![CDATA[
-                <tree string="Attendees">
-                    <field name="event"/>
-                    <field name="email"/>
-                    <field name="status"/>
-                </tree>
-                ]]>
-            </field>
+            <field name="name">attendee_tree</field>
         </record>
 
         <record model="ir.ui.view" id="attendee_view_form">
             <field name="model">calendar.event.attendee</field>
             <field name="type">form</field>
-            <field name="arch" type="xml">
-                <![CDATA[
-                <form string="Attendee">
-                    <label name="event"/>
-                    <field name="event" colspan="3"/>
-                    <label name="email"/>
-                    <field name="email"/>
-                    <label name="status"/>
-                    <field name="status"/>
-                </form>
-                ]]>
-            </field>
+            <field name="name">attendee_form</field>
         </record>
 
         <record model="ir.ui.view" id="rdate_view_tree">
             <field name="model">calendar.event.rdate</field>
             <field name="type">tree</field>
-            <field name="arch" type="xml">
-                <![CDATA[
-                <tree string="Recurrence Dates">
-                    <field name="event"/>
-                    <field name="datetime"/>
-                    <field name="date"/>
-                </tree>
-                ]]>
-            </field>
+            <field name="name">rdate_tree</field>
         </record>
 
         <record model="ir.ui.view" id="rdate_view_form">
             <field name="model">calendar.event.rdate</field>
             <field name="type">form</field>
-            <field name="arch" type="xml">
-                <![CDATA[
-                <form string="Recurrence Date">
-                    <label name="event"/>
-                    <field name="event" colspan="3"/>
-                    <label name="datetime"/>
-                    <field name="datetime"/>
-                    <label name="date"/>
-                    <field name="date"/>
-                </form>
-                ]]>
-            </field>
+            <field name="name">rdate_form</field>
         </record>
 
         <record model="ir.ui.view" id="exdate_view_tree">
             <field name="model">calendar.event.exdate</field>
             <field name="type">tree</field>
-            <field name="arch" type="xml">
-                <![CDATA[
-                <tree string="Exception Dates">
-                    <field name="event"/>
-                    <field name="datetime"/>
-                    <field name="date"/>
-                </tree>
-                ]]>
-            </field>
+            <field name="name">exdate_tree</field>
         </record>
 
         <record model="ir.ui.view" id="exdate_view_form">
             <field name="model">calendar.event.exdate</field>
             <field name="type">form</field>
-            <field name="arch" type="xml">
-                <![CDATA[
-                <form string="Exception Date">
-                    <label name="event"/>
-                    <field name="event" colspan="3"/>
-                    <label name="datetime"/>
-                    <field name="datetime"/>
-                    <label name="date"/>
-                    <field name="date"/>
-                </form>
-                ]]>
-            </field>
+            <field name="name">exdate_form</field>
         </record>
 
         <record model="ir.ui.view" id="rrule_view_tree">
             <field name="model">calendar.event.rrule</field>
             <field name="type">tree</field>
-            <field name="arch" type="xml">
-                <![CDATA[
-                <tree string="Recurrence Rules">
-                    <field name="event"/>
-                    <field name="freq"/>
-                </tree>
-                ]]>
-            </field>
+            <field name="name">rrule_tree</field>
         </record>
 
         <record model="ir.ui.view" id="rrule_view_form">
             <field name="model">calendar.event.rrule</field>
             <field name="type">form</field>
-            <field name="arch" type="xml">
-                <![CDATA[
-                <form string="Recurrence Rule">
-                    <label name="event"/>
-                    <field name="event" colspan="3"/>
-                    <label name="freq"/>
-                    <field name="freq" colspan="3"/>
-                    <label name="until"/>
-                    <field name="until"/>
-                    <label name="until_date"/>
-                    <field name="until_date"/>
-                    <label name="count"/>
-                    <field name="count" colspan="3"/>
-                    <label name="interval"/>
-                    <field name="interval" colspan="3"/>
-                    <label name="bysecond"/>
-                    <field name="bysecond" colspan="3"/>
-                    <label name="byminute"/>
-                    <field name="byminute" colspan="3"/>
-                    <label name="byhour"/>
-                    <field name="byhour" colspan="3"/>
-                    <label name="byday"/>
-                    <field name="byday" colspan="3"/>
-                    <label name="bymonthday"/>
-                    <field name="bymonthday" colspan="3"/>
-                    <label name="byyearday"/>
-                    <field name="byyearday" colspan="3"/>
-                    <label name="byweekno"/>
-                    <field name="byweekno" colspan="3"/>
-                    <label name="bymonth"/>
-                    <field name="bymonth" colspan="3"/>
-                    <label name="bysetpos"/>
-                    <field name="bysetpos" colspan="3"/>
-                    <label name="wkst"/>
-                    <field name="wkst" colspan="3"/>
-                </form>
-                ]]>
-            </field>
+            <field name="name">rrule_form</field>
         </record>
 
         <record model="ir.ui.view" id="exrule_view_tree">
             <field name="model">calendar.event.exrule</field>
             <field name="type">tree</field>
-            <field name="arch" type="xml">
-                <![CDATA[
-                <tree string="Exception Rules">
-                    <field name="event"/>
-                    <field name="freq"/>
-                </tree>
-                ]]>
-            </field>
+            <field name="name">exrule_tree</field>
         </record>
 
         <record model="ir.ui.view" id="exrule_view_form">
             <field name="model">calendar.event.exrule</field>
             <field name="type">form</field>
-            <field name="arch" type="xml">
-                <![CDATA[
-                <form string="Exception Rule">
-                    <label name="event"/>
-                    <field name="event" colspan="3"/>
-                    <label name="freq"/>
-                    <field name="freq" colspan="3"/>
-                    <label name="until"/>
-                    <field name="until"/>
-                    <label name="until_date"/>
-                    <field name="until_date"/>
-                    <label name="count"/>
-                    <field name="count" colspan="3"/>
-                    <label name="interval"/>
-                    <field name="interval" colspan="3"/>
-                    <label name="bysecond"/>
-                    <field name="bysecond" colspan="3"/>
-                    <label name="byminute"/>
-                    <field name="byminute" colspan="3"/>
-                    <label name="byhour"/>
-                    <field name="byhour" colspan="3"/>
-                    <label name="byday"/>
-                    <field name="byday" colspan="3"/>
-                    <label name="bymonthday"/>
-                    <field name="bymonthday" colspan="3"/>
-                    <label name="byyearday"/>
-                    <field name="byyearday" colspan="3"/>
-                    <label name="byweekno"/>
-                    <field name="byweekno" colspan="3"/>
-                    <label name="bymonth"/>
-                    <field name="bymonth" colspan="3"/>
-                    <label name="bysetpos"/>
-                    <field name="bysetpos" colspan="3"/>
-                    <label name="wkst"/>
-                    <field name="wkst" colspan="3"/>
-                </form>
-                ]]>
-            </field>
+            <field name="name">exrule_form</field>
         </record>
-
 
     </data>
 </tryton>
