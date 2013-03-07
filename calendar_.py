@@ -43,14 +43,14 @@ class Calendar(ModelSQL, ModelView):
         super(Calendar, cls).__setup__()
         cls._sql_constraints = [
             ('name_uniq', 'UNIQUE(name)',
-                'The name of calendar must be unique!'),
+                'The name of calendar must be unique.'),
             ('owner_uniq', 'UNIQUE(owner)',
-                'A user can have only one calendar!'),
+                'A user can have only one calendar.'),
             ]
         cls._order.insert(0, ('name', 'ASC'))
-        cls._constraints += [
-            ('check_name', 'Calendar name can not end with .ics'),
-            ]
+        cls._error_messages.update({
+                'invalid_name': 'Calendar name "%s" can not end with .ics',
+                })
 
     @classmethod
     def create(cls, vlist):
@@ -71,13 +71,18 @@ class Calendar(ModelSQL, ModelView):
         # Restart the cache for calendar
         cls._get_name_cache.clear()
 
+    @classmethod
+    def validate(cls, calendars):
+        super(Calendar, cls).validate(calendars)
+        for calendar in calendars:
+            calendar.check_name()
+
     def check_name(self):
         '''
         Check the name doesn't end with .ics
         '''
         if self.name.endswith('.ics'):
-            return False
-        return True
+            self.raise_user_error('invalid_name', (self.name,))
 
     @classmethod
     def get_name(cls, name):
@@ -368,7 +373,7 @@ class Category(ModelSQL, ModelView):
         super(Category, cls).__setup__()
         cls._sql_constraints = [
             ('name_uniq', 'UNIQUE(name)',
-                'The name of calendar category must be unique!'),
+                'The name of calendar category must be unique.'),
             ]
         cls._order.insert(0, ('name', 'ASC'))
 
@@ -383,7 +388,7 @@ class Location(ModelSQL, ModelView):
         super(Location, cls).__setup__()
         cls._sql_constraints = [
             ('name_uniq', 'UNIQUE(name)',
-                'The name of calendar location must be unique!'),
+                'The name of calendar location must be unique.'),
             ]
         cls._order.insert(0, ('name', 'ASC'))
 
@@ -479,13 +484,10 @@ class Event(ModelSQL, ModelView):
         super(Event, cls).__setup__()
         cls._sql_constraints = [
             ('uuid_recurrence_uniq', 'UNIQUE(uuid, calendar, recurrence)',
-                'UUID and recurrence must be unique in a calendar!'),
-            ]
-        cls._constraints += [
-            ('check_recurrence', 'invalid_recurrence'),
+                'UUID and recurrence must be unique in a calendar.'),
             ]
         cls._error_messages.update({
-                'invalid_recurrence': 'Recurrence can not be recurrent!',
+                'invalid_recurrence': 'Recurrence "%s" can not be recurrent.',
                 })
 
     @classmethod
@@ -543,6 +545,12 @@ class Event(ModelSQL, ModelView):
     def search_calendar_field(cls, name, clause):
         return [('calendar.' + name[9:],) + tuple(clause[1:])]
 
+    @classmethod
+    def validate(cls, events):
+        super(Event, cls).validate(events)
+        for event in events:
+            event.check_recurrence()
+
     def check_recurrence(self):
         '''
         Check the recurrence is not recurrent.
@@ -553,8 +561,7 @@ class Event(ModelSQL, ModelView):
                     or self.exdates \
                     or self.exrules \
                     or self.occurences:
-                return False
-        return True
+                self.raise_user_error('invalid_recurrence', (event.rec_name,))
 
     @classmethod
     def create(cls, vlist):
@@ -1694,29 +1701,24 @@ class RRule(ModelSQL, ModelView):
         cls._sql_constraints += [
             ('until_count_only_one',
                 'CHECK(until IS NULL OR count IS NULL OR count = 0)',
-                'Only one of "until" and "count" can be set!'),
-            ]
-        cls._constraints += [
-            ('check_bysecond', 'invalid_bysecond'),
-            ('check_byminute', 'invalid_byminute'),
-            ('check_byhour', 'invalid_byhour'),
-            ('check_byday', 'invalid_byday'),
-            ('check_bymonthday', 'invalid_bymonthday'),
-            ('check_byyearday', 'invalid_byyearday'),
-            ('check_byweekno', 'invalid_byweekno'),
-            ('check_bymonth', 'invalid_bymonth'),
-            ('check_bysetpos', 'invalid_bysetpos'),
+                'Only one of "until" and "count" can be set.'),
             ]
         cls._error_messages.update({
-                'invalid_bysecond': 'Invalid "By Second"',
-                'invalid_byminute': 'Invalid "By Minute"',
-                'invalid_byhour': 'Invalid "By Hour"',
-                'invalid_byday': 'Invalid "By Day"',
-                'invalid_bymonthday': 'Invalid "By Month Day"',
-                'invalid_byyearday': 'Invalid "By Year Day"',
-                'invalid_byweekno': 'Invalid "By Week Number"',
-                'invalid_bymonth': 'Invalid "By Month"',
-                'invalid_bysetpos': 'Invalid "By Position"',
+                'invalid_bysecond': ('Invalid "By Second" in recurrence rule '
+                    '"%s"'),
+                'invalid_byminute': ('Invalid "By Minute" in recurrence rule '
+                    '"%s"'),
+                'invalid_byhour': 'Invalid "By Hour" in recurrence rule "%s"',
+                'invalid_byday': 'Invalid "By Day" in recurrence rule "%s"',
+                'invalid_bymonthday': ('Invalid "By Month Day" in recurrence '
+                    'rule "%s"'),
+                'invalid_byyearday': ('Invalid "By Year Day" in recurrence '
+                    'rule "%s"'),
+                'invalid_byweekno': ('Invalid "By Week Number" in recurrence '
+                    'rule "%s"'),
+                'invalid_bymonth': 'Invalid "By Month" in recurrence rule "%s"',
+                'invalid_bysetpos': ('Invalid "By Position" in recurrence rule '
+                    '"%s"'),
                 })
 
     @classmethod
@@ -1727,16 +1729,29 @@ class RRule(ModelSQL, ModelView):
         table.drop_constraint('until_count')
         return super(RRule, cls).__register__(module_name)
 
+    @classmethod
+    def validate(cls, rules):
+        super(RRule, cls).validate(rules)
+        for rule in rules:
+            rule.check_bysecond()
+            rule.check_byminute()
+            rule.check_byhour()
+            rule.check_byday()
+            rule.check_bymonthday()
+            rule.check_byyearday()
+            rule.check_byweekno()
+            rule.check_bymonth()
+            rule.check_bysetpos()
+
     def check_bysecond(self):
         if self.bysecond:
             for second in self.bysecond.split(','):
                 try:
                     second = int(second)
                 except Exception:
-                    return False
+                    second = -1
                 if not (second >= 0 and second <= 59):
-                    return False
-        return True
+                    self.raise_user_error('invalid_bysecond', (rule.rec_name,))
 
     def check_byminute(self):
         if self.byminute:
@@ -1744,10 +1759,9 @@ class RRule(ModelSQL, ModelView):
                 try:
                     minute = int(minute)
                 except Exception:
-                    return False
+                    minute = -1
                 if not (minute >= 0 and minute <= 59):
-                    return False
-        return True
+                    self.raise_user_error('invalid_byminute', (rule.rec_name,))
 
     def check_byhour(self):
         if self.byhour:
@@ -1755,27 +1769,25 @@ class RRule(ModelSQL, ModelView):
                 try:
                     hour = int(hour)
                 except Exception:
-                    return False
+                    hour = -1
                 if not (hour >= 0 and hour <= 23):
-                    return False
-        return True
+                    self.raise_user_error('invalid_byhour', (rule.rec_name,))
 
     def check_byday(self):
         if self.byday:
             for weekdaynum in self.byday.split(','):
                 weekday = weekdaynum[-2:]
                 if weekday not in ('SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'):
-                    return False
+                    self.raise_user_error('invalid_byday', (rule.rec_name,))
                 ordwk = weekday[:-2]
                 if not ordwk:
                     continue
                 try:
                     ordwk = int(ordwk)
                 except Exception:
-                    return False
+                    ordwk = -1
                 if not (abs(ordwk) >= 1 and abs(ordwk) <= 53):
-                    return False
-        return True
+                    self.raise_user_error('invalid_byday', (rule.rec_name,))
 
     def check_bymonthday(self):
         if self.bymonthday:
@@ -1783,10 +1795,10 @@ class RRule(ModelSQL, ModelView):
                 try:
                     monthdaynum = int(monthdaynum)
                 except Exception:
-                    return False
+                    monthdaynum = -100
                 if not (abs(monthdaynum) >= 1 and abs(monthdaynum) <= 31):
-                    return False
-        return True
+                    self.raise_user_error('invalid_bymonthday', (
+                            rule.rec_name,))
 
     def check_byyearday(self):
         if self.byyearday:
@@ -1794,10 +1806,9 @@ class RRule(ModelSQL, ModelView):
                 try:
                     yeardaynum = int(yeardaynum)
                 except Exception:
-                    return False
+                    yeardaynum = -1000
                 if not (abs(yeardaynum) >= 1 and abs(yeardaynum) <= 366):
-                    return False
-        return True
+                    self.raise_user_error('invalid_byyearday', (rule.rec_name,))
 
     def check_byweekno(self):
         if self.byweekno:
@@ -1805,10 +1816,9 @@ class RRule(ModelSQL, ModelView):
                 try:
                     weeknum = int(weeknum)
                 except Exception:
-                    return False
+                    weeknum = -100
                 if not (abs(weeknum) >= 1 and abs(weeknum) <= 53):
-                    return False
-        return True
+                    self.raise_user_error('invalid_byweekno', (rule.rec_name,))
 
     def check_bymonth(self):
         if self.bymonth:
@@ -1816,10 +1826,9 @@ class RRule(ModelSQL, ModelView):
                 try:
                     monthnum = int(monthnum)
                 except Exception:
-                    return False
+                    monthnum = -1
                 if not (monthnum >= 1 and monthnum <= 12):
-                    return False
-        return True
+                    self.raise_user_error('invalid_bymonth', (rule.rec_name,))
 
     def check_bysetpos(self):
         if self.bysetpos:
@@ -1827,10 +1836,9 @@ class RRule(ModelSQL, ModelView):
                 try:
                     setposday = int(setposday)
                 except Exception:
-                    return False
+                    setposday = -1000
                 if not (abs(setposday) >= 1 and abs(setposday) <= 366):
-                    return False
-        return True
+                    self.raise_user_error('invalid_bysetpos', (rule.rec_name,))
 
     def _rule2update(self):
         res = {}
