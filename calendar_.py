@@ -6,7 +6,7 @@ import dateutil.tz
 import pytz
 import datetime
 import xml.dom.minidom
-from trytond.model import ModelSQL, ModelView, fields
+from trytond.model import Model, ModelSQL, ModelView, fields
 from trytond.tools import reduce_ids
 from trytond.backend import TableHandler
 from trytond.pyson import If, Bool, Eval
@@ -15,8 +15,8 @@ from trytond.cache import Cache
 from trytond.pool import Pool
 
 __all__ = ['Calendar', 'ReadUser', 'WriteUser', 'Category', 'Location',
-    'Event', 'EventCategory', 'Alarm', 'EventAlarm', 'Attendee',
-    'EventAttendee', 'Date', 'EventRDate', 'EventExDate', 'RRule',
+    'Event', 'EventCategory', 'AlarmMixin', 'EventAlarm', 'AttendeeMixin',
+    'EventAttendee', 'DateMixin', 'EventRDate', 'EventExDate', 'RRuleMixin',
     'EventRRule', 'EventExRule']
 
 tzlocal = dateutil.tz.tzlocal()
@@ -499,7 +499,6 @@ class Event(ModelSQL, ModelView):
             models_data = ModelData.search([
                     ('fs_id', '=', 'rule_group_read_calendar_line3'),
                     ('module', '=', module_name),
-                    ('inherit', '=', None),
                     ], limit=1)
             if models_data:
                 model_data, = models_data
@@ -1204,9 +1203,7 @@ class EventCategory(ModelSQL):
             ondelete='CASCADE', required=True, select=True)
 
 
-class Alarm(ModelSQL):
-    'Alarm'
-    __name__ = 'calendar.alarm'
+class AlarmMixin:
     valarm = fields.Binary('valarm')
 
     @classmethod
@@ -1226,14 +1223,27 @@ class Alarm(ModelSQL):
             return vobject.readOne(str(self.valarm))
 
 
-class EventAlarm(ModelSQL):
+class EventAlarm(AlarmMixin, ModelSQL, ModelView):
     'Alarm'
     __name__ = 'calendar.event.alarm'
-    _inherits = {'calendar.alarm': 'calendar_alarm'}
-    calendar_alarm = fields.Many2One('calendar.alarm', 'Calendar Alarm',
-            required=True, ondelete='CASCADE', select=True)
     event = fields.Many2One('calendar.event', 'Event', ondelete='CASCADE',
             required=True, select=True)
+
+    @classmethod
+    def __register__(cls, module_name):
+        cursor = Transaction().cursor
+
+        super(EventAlarm, cls).__register__(module_name)
+
+        table = TableHandler(cursor, cls, module_name)
+
+        # Migration from 2.6: Remove inherits calendar.alarm
+        if table.column_exist('calendar_alarm'):
+            cursor.execute('UPDATE "' + cls._table + '" AS e '
+                'SET valarm = (SELECT a.valarm '
+                    'FROM calendar_alarm AS a '
+                    'WHERE a.id = e.calendar_alarm)')
+            table.drop_column('calendar_alarm', True)
 
     @classmethod
     def create(cls, vlist):
@@ -1262,28 +1272,14 @@ class EventAlarm(ModelSQL):
     def delete(cls, event_alarms):
         pool = Pool()
         Event = pool.get('calendar.event')
-        Alarm = pool.get('calendar.alarm')
-        alarms = [a.calendar_alarm for a in event_alarms]
         events = [x.event for x in event_alarms]
         if events:
             # Update write_date of event
             Event.write(events, {})
         super(EventAlarm, cls).delete(event_alarms)
-        if alarms:
-            Alarm.delete(alarms)
-
-    @classmethod
-    def valarm2values(cls, alarm):
-        Alarm = Pool().get('calendar.alarm')
-        return Alarm.valarm2values(alarm)
-
-    def alarm2valarm(self):
-        return self.calendar_alarm.alarm2valarm()
 
 
-class Attendee(ModelSQL, ModelView):
-    'Attendee'
-    __name__ = 'calendar.attendee'
+class AttendeeMixin:
     email = fields.Char('Email', required=True, states={
         'readonly': Eval('id', 0) > 0,
         }, depends=['id'])
@@ -1349,14 +1345,30 @@ class Attendee(ModelSQL, ModelView):
         return res
 
 
-class EventAttendee(ModelSQL, ModelView):
+class EventAttendee(AttendeeMixin, ModelSQL, ModelView):
     'Attendee'
     __name__ = 'calendar.event.attendee'
-    _inherits = {'calendar.attendee': 'calendar_attendee'}
-    calendar_attendee = fields.Many2One('calendar.attendee',
-        'Calendar Attendee', required=True, ondelete='CASCADE', select=True)
     event = fields.Many2One('calendar.event', 'Event', ondelete='CASCADE',
         required=True, select=True)
+
+    @classmethod
+    def __register__(cls, module_name):
+        cursor = Transaction().cursor
+
+        super(EventAttendee, cls).__register__(module_name)
+
+        table = TableHandler(cursor, cls, module_name)
+
+        # Migration from 2.6: Remove inherits calendar.attendee
+        if table.column_exist('calendar_attendee'):
+            cursor.execute('UPDATE "' + cls._table + '" AS e '
+                'SET email = (SELECT a.email '
+                    'FROM calendar_attendee AS a '
+                    'WHERE a.id = e.calendar_attendee), '
+                'status = (SELECT a.status '
+                    'FROM calendar_attendee AS a '
+                    'WHERE a.id = e.calendar_attendee)')
+            table.drop_column('calendar_attendee', True)
 
     @classmethod
     def create(cls, vlist):
@@ -1444,9 +1456,7 @@ class EventAttendee(ModelSQL, ModelView):
     def delete(cls, event_attendees):
         pool = Pool()
         Event = pool.get('calendar.event')
-        Attendee = pool.get('calendar.attendee')
 
-        calendar_attendees = [a.calendar_attendee for a in event_attendees]
         events = [x.event for x in event_attendees]
         if events:
             # Update write_date of event
@@ -1498,53 +1508,13 @@ class EventAttendee(ModelSQL, ModelView):
                                 'status': 'declined',
                                 })
         super(EventAttendee, cls).delete(event_attendees)
-        if calendar_attendees:
-            Attendee.delete(calendar_attendees)
-
-    @classmethod
-    def copy(cls, event_attendees, default=None):
-        Attendee = Pool().get('calendar.attendee')
-
-        if default is None:
-            default = {}
-        default = default.copy()
-        new_event_attendees = []
-        for event_attendee in event_attendees:
-            default['calendar_attendee'], = Attendee.copy(
-                    [event_attendee.calendar_attendee])
-            new_event_attendees.extend(super(EventAttendee, cls).copy(
-                    [event_attendee], default=default))
-        return new_event_attendees
-
-    def _attendee2update(self):
-        return self.calendar_attendee._attendee2update()
-
-    @staticmethod
-    def attendee2values(attendee):
-        Attendee = Pool().get('calendar.attendee')
-        return Attendee.attendee2values(attendee)
-
-    def attendee2attendee(self):
-        return self.calendar_attendee.attendee2attendee()
 
 
-class Date(ModelSQL, ModelView):
-    'Calendar Date'
-    __name__ = 'calendar.date'
+class DateMixin:
     _rec_name = 'datetime'
     date = fields.Boolean('Is Date',
         help='Ignore time of field "Date", but handle as date only.')
     datetime = fields.DateTime('Date', required=True)
-
-    @classmethod
-    def __register__(cls, module_name):
-        cursor = Transaction().cursor
-        # Migration from 1.4: calendar.rdate renamed to calendar.date
-        old_table = 'calendar_rdate'
-        if TableHandler.table_exist(cursor, old_table):
-            TableHandler.table_rename(cursor, old_table, cls._table)
-
-        super(Date, cls).__register__(module_name)
 
     def _date2update(self):
         return {
@@ -1581,13 +1551,10 @@ class Date(ModelSQL, ModelView):
             return self.datetime.replace(tzinfo=tzlocal).astimezone(tzutc)
 
 
-class EventRDate(ModelSQL, ModelView):
+class EventRDate(DateMixin, ModelSQL, ModelView):
     'Recurrence Date'
     __name__ = 'calendar.event.rdate'
-    _inherits = {'calendar.date': 'calendar_date'}
     _rec_name = 'datetime'
-    calendar_date = fields.Many2One('calendar.date', 'Calendar Date',
-            required=True, ondelete='CASCADE', select=True)
     event = fields.Many2One('calendar.event', 'Event', ondelete='CASCADE',
             select=True, required=True)
 
@@ -1601,6 +1568,19 @@ class EventRDate(ModelSQL, ModelView):
             table.column_rename(old_column, 'calendar_date')
 
         super(EventRDate, cls).__register__(module_name)
+
+        table = TableHandler(cursor, cls, module_name)
+
+        # Migration from 2.6: Remove inherits calendar.date
+        if table.column_exist('calendar_date'):
+            cursor.execute('UPDATE "' + cls._table + '" AS e '
+                'SET date = (SELECT a.date '
+                    'FROM calendar_date AS a '
+                    'WHERE a.id = e.calendar_date), '
+                'datetime = (SELECT a.datetime '
+                    'FROM calendar_date AS a '
+                    'WHERE a.id = e.calendar_date)')
+            table.drop_column('calendar_date', True)
 
     @classmethod
     def create(cls, vlist):
@@ -1629,26 +1609,11 @@ class EventRDate(ModelSQL, ModelView):
     def delete(cls, event_rdates):
         pool = Pool()
         Event = pool.get('calendar.event')
-        Date = pool.get('calendar.date')
-        dates = [a.calendar_date for a in event_rdates]
         events = [x.event for x in event_rdates]
         if events:
             # Update write_date of event
             Event.write(events, {})
         super(EventRDate, cls).delete(event_rdates)
-        if dates:
-            Date.delete(dates)
-
-    def _date2update(self):
-        return self.calendar_date._date2update()
-
-    @classmethod
-    def date2values(cls, date):
-        Date = Pool().get('calendar.date')
-        return Date.date2values(date)
-
-    def date2date(self):
-        return self.calendar_date.date2date()
 
 
 class EventExDate(EventRDate):
@@ -1657,11 +1622,8 @@ class EventExDate(EventRDate):
     _table = 'calendar_event_exdate'  # Needed to override EventRDate._table
 
 
-class RRule(ModelSQL, ModelView):
-    'Recurrence Rule'
-    __name__ = 'calendar.rrule'
+class RRuleMixin(Model):
     _rec_name = 'freq'
-
     freq = fields.Selection([
         ('secondly', 'Secondly'),
         ('minutely', 'Minutely'),
@@ -1697,7 +1659,7 @@ class RRule(ModelSQL, ModelView):
 
     @classmethod
     def __setup__(cls):
-        super(RRule, cls).__setup__()
+        super(RRuleMixin, cls).__setup__()
         cls._sql_constraints += [
             ('until_count_only_one',
                 'CHECK(until IS NULL OR count IS NULL OR count = 0)',
@@ -1722,16 +1684,8 @@ class RRule(ModelSQL, ModelView):
                 })
 
     @classmethod
-    def __register__(cls, module_name):
-        cursor = Transaction().cursor
-        # Migrate from 1.4: unit_count replaced by until_count_only_one
-        table = TableHandler(cursor, cls, module_name)
-        table.drop_constraint('until_count')
-        return super(RRule, cls).__register__(module_name)
-
-    @classmethod
     def validate(cls, rules):
-        super(RRule, cls).validate(rules)
+        super(RRuleMixin, cls).validate(rules)
         for rule in rules:
             rule.check_bysecond()
             rule.check_byminute()
@@ -1904,16 +1858,30 @@ class RRule(ModelSQL, ModelView):
         return res
 
 
-class EventRRule(ModelSQL, ModelView):
+class EventRRule(RRuleMixin, ModelSQL, ModelView):
     'Recurrence Rule'
     __name__ = 'calendar.event.rrule'
-    _inherits = {'calendar.rrule': 'calendar_rrule'}
-    _rec_name = 'freq'
-
-    calendar_rrule = fields.Many2One('calendar.rrule', 'Calendar RRule',
-            required=True, ondelete='CASCADE', select=True)
     event = fields.Many2One('calendar.event', 'Event', ondelete='CASCADE',
             select=True, required=True)
+
+    @classmethod
+    def __register__(cls, module_name):
+        cursor = Transaction().cursor
+
+        super(EventRRule, cls).__register__(module_name)
+
+        table = TableHandler(cursor, cls, module_name)
+
+        # Migration from 2.6: Remove inherits calendar.rrule
+        if table.column_exist('calendar_rrule'):
+            for field in (f for f in dir(RRuleMixin)
+                    if isinstance(f, fields.Field)):
+                cursor.execute(('UPDATE "' + cls._table + '" AS e '
+                        'SET "%(field)s" = (SELECT a."%(field)s" '
+                            'FROM calendar_rrule AS r '
+                            'WHERE r.id = e.calendar_rrule)')
+                    % {'field': field})
+            table.drop_column('calendar_rrule', True)
 
     @classmethod
     def create(cls, vlist):
@@ -1942,26 +1910,11 @@ class EventRRule(ModelSQL, ModelView):
     def delete(cls, event_rrules):
         pool = Pool()
         Event = pool.get('calendar.event')
-        Rrule = pool.get('calendar.rrule')
-        rrules = [a.calendar_rrule for a in event_rrules]
         events = [x.event for x in event_rrules]
         if events:
             # Update write_date of event
             Event.write(events, {})
         super(EventRRule, cls).delete(event_rrules)
-        if rrules:
-            Rrule.delete(rrules)
-
-    def _rule2update(self):
-        return self.calendar_rrule._rule2update()
-
-    @classmethod
-    def rule2values(self, rule):
-        Rule = Pool().get('calendar.rrule')
-        return Rule.rule2values(rule)
-
-    def rule2rule(self):
-        return self.calendar_rrule.rule2rule()
 
 
 class EventExRule(EventRRule):
