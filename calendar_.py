@@ -560,7 +560,7 @@ class Event(ModelSQL, ModelView):
                     or self.exdates \
                     or self.exrules \
                     or self.occurences:
-                self.raise_user_error('invalid_recurrence', (event.rec_name,))
+                self.raise_user_error('invalid_recurrence', (self.rec_name,))
 
     @classmethod
     def create(cls, vlist):
@@ -1705,7 +1705,7 @@ class RRuleMixin(Model):
                 except Exception:
                     second = -1
                 if not (second >= 0 and second <= 59):
-                    self.raise_user_error('invalid_bysecond', (rule.rec_name,))
+                    self.raise_user_error('invalid_bysecond', (self.rec_name,))
 
     def check_byminute(self):
         if self.byminute:
@@ -1715,7 +1715,7 @@ class RRuleMixin(Model):
                 except Exception:
                     minute = -1
                 if not (minute >= 0 and minute <= 59):
-                    self.raise_user_error('invalid_byminute', (rule.rec_name,))
+                    self.raise_user_error('invalid_byminute', (self.rec_name,))
 
     def check_byhour(self):
         if self.byhour:
@@ -1725,14 +1725,14 @@ class RRuleMixin(Model):
                 except Exception:
                     hour = -1
                 if not (hour >= 0 and hour <= 23):
-                    self.raise_user_error('invalid_byhour', (rule.rec_name,))
+                    self.raise_user_error('invalid_byhour', (self.rec_name,))
 
     def check_byday(self):
         if self.byday:
             for weekdaynum in self.byday.split(','):
                 weekday = weekdaynum[-2:]
                 if weekday not in ('SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'):
-                    self.raise_user_error('invalid_byday', (rule.rec_name,))
+                    self.raise_user_error('invalid_byday', (self.rec_name,))
                 ordwk = weekday[:-2]
                 if not ordwk:
                     continue
@@ -1741,7 +1741,7 @@ class RRuleMixin(Model):
                 except Exception:
                     ordwk = -1
                 if not (abs(ordwk) >= 1 and abs(ordwk) <= 53):
-                    self.raise_user_error('invalid_byday', (rule.rec_name,))
+                    self.raise_user_error('invalid_byday', (self.rec_name,))
 
     def check_bymonthday(self):
         if self.bymonthday:
@@ -1752,7 +1752,7 @@ class RRuleMixin(Model):
                     monthdaynum = -100
                 if not (abs(monthdaynum) >= 1 and abs(monthdaynum) <= 31):
                     self.raise_user_error('invalid_bymonthday', (
-                            rule.rec_name,))
+                            self.rec_name,))
 
     def check_byyearday(self):
         if self.byyearday:
@@ -1762,7 +1762,7 @@ class RRuleMixin(Model):
                 except Exception:
                     yeardaynum = -1000
                 if not (abs(yeardaynum) >= 1 and abs(yeardaynum) <= 366):
-                    self.raise_user_error('invalid_byyearday', (rule.rec_name,))
+                    self.raise_user_error('invalid_byyearday', (self.rec_name,))
 
     def check_byweekno(self):
         if self.byweekno:
@@ -1772,7 +1772,7 @@ class RRuleMixin(Model):
                 except Exception:
                     weeknum = -100
                 if not (abs(weeknum) >= 1 and abs(weeknum) <= 53):
-                    self.raise_user_error('invalid_byweekno', (rule.rec_name,))
+                    self.raise_user_error('invalid_byweekno', (self.rec_name,))
 
     def check_bymonth(self):
         if self.bymonth:
@@ -1782,7 +1782,7 @@ class RRuleMixin(Model):
                 except Exception:
                     monthnum = -1
                 if not (monthnum >= 1 and monthnum <= 12):
-                    self.raise_user_error('invalid_bymonth', (rule.rec_name,))
+                    self.raise_user_error('invalid_bymonth', (self.rec_name,))
 
     def check_bysetpos(self):
         if self.bysetpos:
@@ -1792,7 +1792,7 @@ class RRuleMixin(Model):
                 except Exception:
                     setposday = -1000
                 if not (abs(setposday) >= 1 and abs(setposday) <= 366):
-                    self.raise_user_error('invalid_bysetpos', (rule.rec_name,))
+                    self.raise_user_error('invalid_bysetpos', (self.rec_name,))
 
     def _rule2update(self):
         res = {}
