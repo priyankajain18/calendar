@@ -796,6 +796,7 @@ class Event(ModelSQL, ModelView):
         the event id for write or None for create
         '''
         pool = Pool()
+        Attendee = pool.get('calendar.event.attendee')
         Category = pool.get('calendar.category')
         Location = pool.get('calendar.location')
         Alarm = pool.get('calendar.event.alarm')
