@@ -956,8 +956,7 @@ class Event(ModelSQL, ModelView):
             to_create = []
             while vevent.rdate_list:
                 rdate = vevent.rdate_list.pop()
-                to_create += [Rdate.date2values(rdate)
-                    for rdate in rdate.value]
+                to_create += [Rdate.date2values(d) for d in rdate.value]
             if to_create:
                 res['rdates'].append(('create', to_create))
 
@@ -968,8 +967,7 @@ class Event(ModelSQL, ModelView):
             to_create = []
             while vevent.exdate_list:
                 exdate = vevent.exdate_list.pop()
-                to_create += [Exdate.date2values(exdate)
-                    for exdate in exdate.value]
+                to_create += [Exdate.date2values(d) for d in exdate.value]
             if to_create:
                 res['exdates'].append(('create', to_create))
 
