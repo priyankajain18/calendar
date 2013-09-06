@@ -2,6 +2,10 @@
 #this repository contains the full copyright notices and license terms.
 import vobject
 import urllib
+from sql.functions import Extract
+from sql.conditionals import Coalesce
+from sql.aggregate import Max
+
 from pywebdav.lib.errors import DAV_NotFound, DAV_Forbidden
 from trytond.tools import reduce_ids
 from trytond.cache import Cache
@@ -262,6 +266,8 @@ class Collection:
     def get_creationdate(cls, uri, cache=None):
         Calendar = Pool().get('calendar.calendar')
         Event = Pool().get('calendar.event')
+        calendar = Calendar.__table__()
+        event = Event.__table__()
 
         calendar_id = cls.calendar(uri)
         if not calendar_id:
@@ -284,11 +290,10 @@ class Collection:
                 cursor = Transaction().cursor
                 for i in range(0, len(ids), cursor.IN_MAX):
                     sub_ids = ids[i:i + cursor.IN_MAX]
-                    red_sql, red_ids = reduce_ids('id', sub_ids)
-                    cursor.execute('SELECT id, '
-                            'EXTRACT(epoch FROM create_date) '
-                        'FROM "' + Calendar._table + '" '
-                        'WHERE ' + red_sql, red_ids)
+                    red_sql = reduce_ids(calendar.id, sub_ids)
+                    cursor.execute(*calendar.select(calendar.id,
+                            Extract('EPOCH', calendar.create_date),
+                            where=red_sql))
                     for calendar_id2, date in cursor.fetchall():
                         if calendar_id2 == calendar_id:
                             res = date
@@ -318,11 +323,10 @@ class Collection:
                     cursor = Transaction().cursor
                     for i in range(0, len(ids), cursor.IN_MAX):
                         sub_ids = ids[i:i + cursor.IN_MAX]
-                        red_sql, red_ids = reduce_ids('id', sub_ids)
-                        cursor.execute('SELECT id, '
-                                'EXTRACT(epoch FROM create_date) '
-                            'FROM "' + Event._table + '" '
-                            'WHERE ' + red_sql, red_ids)
+                        red_sql = reduce_ids(event.id, sub_ids)
+                        cursor.execute(*event.select(event.id,
+                                Extract('EPOCH', event.create_date),
+                                where=red_sql))
                         for event_id2, date in cursor.fetchall():
                             if event_id2 == event_id:
                                 res = date
@@ -340,6 +344,8 @@ class Collection:
         pool = Pool()
         Calendar = pool.get('calendar.calendar')
         Event = pool.get('calendar.event')
+        calendar = Calendar.__table__()
+        event = Event.__table__()
 
         cursor = Transaction().cursor
         calendar_id = cls.calendar(uri)
@@ -360,12 +366,11 @@ class Collection:
                 res = None
                 for i in range(0, len(ids), cursor.IN_MAX):
                     sub_ids = ids[i:i + cursor.IN_MAX]
-                    red_sql, red_ids = reduce_ids('id', sub_ids)
-                    cursor.execute('SELECT id, '
-                            'EXTRACT(epoch FROM '
-                                'COALESCE(write_date, create_date)) '
-                        'FROM "' + Calendar._table + '" '
-                        'WHERE ' + red_sql, red_ids)
+                    red_sql = reduce_ids(calendar.id, sub_ids)
+                    cursor.execute(*calendar.select(calendar.id,
+                            Extract('EPOCH', Coalesce(calendar.write_date,
+                                    calendar.create_date)),
+                            where=red_sql))
                     for calendar_id2, date in cursor.fetchall():
                         if calendar_id2 == calendar_id:
                             res = date
@@ -394,17 +399,14 @@ class Collection:
                     res = None
                     for i in range(0, len(ids), cursor.IN_MAX / 2):
                         sub_ids = ids[i:i + cursor.IN_MAX / 2]
-                        red_id_sql, red_id_ids = reduce_ids('id', sub_ids)
-                        red_parent_sql, red_parent_ids = reduce_ids('parent',
-                                sub_ids)
-                        cursor.execute('SELECT COALESCE(parent, id), '
-                                'MAX(EXTRACT(epoch FROM '
-                                'COALESCE(write_date, create_date))) '
-                            'FROM "' + Event._table + '" '
-                            'WHERE ' + red_id_sql + ' '
-                                'OR ' + red_parent_sql + ' '
-                            'GROUP BY parent, id',
-                            red_id_ids + red_parent_ids)
+                        red_id_sql = reduce_ids(event.id, sub_ids)
+                        red_parent_sql = reduce_ids(event.parent, sub_ids)
+                        cursor.execute(*event.select(
+                                Coalesce(event.parent, event.id),
+                                Max(Extract('EPOCH', Coalesce(event.write_date,
+                                            event.create_date))),
+                                where=red_id_sql | red_parent_sql,
+                                group_by=(event.parent, event.id)))
                         for event_id2, date in cursor.fetchall():
                             if event_id2 == event_id:
                                 res = date
@@ -432,12 +434,12 @@ class Collection:
             res = None
             for i in range(0, len(ids), cursor.IN_MAX):
                 sub_ids = ids[i:i + cursor.IN_MAX]
-                red_sql, red_ids = reduce_ids('calendar', sub_ids)
-                cursor.execute('SELECT calendar, MAX(EXTRACT(epoch FROM '
-                        'COALESCE(write_date, create_date))) '
-                    'FROM "' + Event._table + '" '
-                    'WHERE ' + red_sql + ' '
-                    'GROUP BY calendar', red_ids)
+                red_sql = reduce_ids(event.calendar, sub_ids)
+                cursor.execute(*event.select(event.calendar,
+                        Max(Extract('EPOCH', Coalesce(event.write_date,
+                                    event.create_date))),
+                        where=red_sql,
+                        group_by=event.calendar))
                 for calendar_id2, date in cursor.fetchall():
                     if calendar_id2 == calendar_ics_id:
                         res = date

@@ -10,6 +10,7 @@ Prerequisites
  * pywebdav >= 0.9.8 (http://sourceforge.net/projects/pywebdav/)
  * python-dateutil (http://labix.org/python-dateutil)
  * pytz (http://pytz.sourceforge.net/)
+ * python-sql (http://code.google.com/p/python-sql/)
 
 Installation
 ------------

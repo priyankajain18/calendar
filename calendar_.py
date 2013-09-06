@@ -6,9 +6,11 @@ import dateutil.tz
 import pytz
 import datetime
 import xml.dom.minidom
+from sql import Table, Column
+
 from trytond.model import Model, ModelSQL, ModelView, fields
 from trytond.tools import reduce_ids
-from trytond.backend import TableHandler
+from trytond import backend
 from trytond.pyson import If, Bool, Eval
 from trytond.transaction import Transaction
 from trytond.cache import Cache
@@ -652,12 +654,14 @@ class Event(ModelSQL, ModelView):
 
         super(Event, cls).write(events, values)
 
+        table = cls.__table__()
         for i in range(0, len(events), cursor.IN_MAX):
             sub_ids = map(int, events[i:i + cursor.IN_MAX])
-            red_sql, red_ids = reduce_ids('id', sub_ids)
-            cursor.execute('UPDATE "' + cls._table + '" '
-                'SET sequence = sequence + 1 '
-                'WHERE ' + red_sql, red_ids)
+            red_sql = reduce_ids(table.id, sub_ids)
+            cursor.execute(*table.update(
+                    columns=[table.sequence],
+                    values=[table.sequence + 1],
+                    where=red_sql))
 
         if not values:
             return
@@ -1230,7 +1234,9 @@ class EventAlarm(AlarmMixin, ModelSQL, ModelView):
 
     @classmethod
     def __register__(cls, module_name):
+        TableHandler = backend.get('TableHandler')
         cursor = Transaction().cursor
+        sql_table = cls.__table__()
 
         super(EventAlarm, cls).__register__(module_name)
 
@@ -1238,10 +1244,11 @@ class EventAlarm(AlarmMixin, ModelSQL, ModelView):
 
         # Migration from 2.6: Remove inherits calendar.alarm
         if table.column_exist('calendar_alarm'):
-            cursor.execute('UPDATE "' + cls._table + '" AS e '
-                'SET valarm = (SELECT a.valarm '
-                    'FROM calendar_alarm AS a '
-                    'WHERE a.id = e.calendar_alarm)')
+            alarm = Table('calendar_alarm')
+            cursor.execute(*sql_table.update(
+                    columns=[sql_table.calendar_alarm],
+                    values=[alarm.select(alarm.valarm,
+                            where=alarm.id == sql_table.calendar_alarm)]))
             table.drop_column('calendar_alarm', True)
 
     @classmethod
@@ -1352,7 +1359,9 @@ class EventAttendee(AttendeeMixin, ModelSQL, ModelView):
 
     @classmethod
     def __register__(cls, module_name):
+        TableHandler = backend.get('TableHandler')
         cursor = Transaction().cursor
+        sql_table = cls.__table__()
 
         super(EventAttendee, cls).__register__(module_name)
 
@@ -1360,13 +1369,14 @@ class EventAttendee(AttendeeMixin, ModelSQL, ModelView):
 
         # Migration from 2.6: Remove inherits calendar.attendee
         if table.column_exist('calendar_attendee'):
-            cursor.execute('UPDATE "' + cls._table + '" AS e '
-                'SET email = (SELECT a.email '
-                    'FROM calendar_attendee AS a '
-                    'WHERE a.id = e.calendar_attendee), '
-                'status = (SELECT a.status '
-                    'FROM calendar_attendee AS a '
-                    'WHERE a.id = e.calendar_attendee)')
+            attendee = Table('calendar_attendee')
+            cursor.execute(*sql_table.update(
+                    columns=[sql_table.email, sql_table.status],
+                    values=[attendee.select(attendee.email,
+                            where=attendee.id == sql_table.calendar_attendee),
+                        attendee.select(attendee.status,
+                            where=attendee.id == sql_table.calendar_attendee),
+                        ]))
             table.drop_column('calendar_attendee', True)
 
     @classmethod
@@ -1559,7 +1569,9 @@ class EventRDate(DateMixin, ModelSQL, ModelView):
 
     @classmethod
     def __register__(cls, module_name):
+        TableHandler = backend.get('TableHandler')
         cursor = Transaction().cursor
+        sql_table = cls.__table__()
         # Migration from 1.4: calendar_rdate renamed to calendar_date
         table = TableHandler(cursor, cls, module_name)
         old_column = 'calendar_rdate'
@@ -1572,13 +1584,13 @@ class EventRDate(DateMixin, ModelSQL, ModelView):
 
         # Migration from 2.6: Remove inherits calendar.date
         if table.column_exist('calendar_date'):
-            cursor.execute('UPDATE "' + cls._table + '" AS e '
-                'SET date = (SELECT a.date '
-                    'FROM calendar_date AS a '
-                    'WHERE a.id = e.calendar_date), '
-                'datetime = (SELECT a.datetime '
-                    'FROM calendar_date AS a '
-                    'WHERE a.id = e.calendar_date)')
+            date = Table('calendar_date')
+            cursor.execute(*sql_table.update(
+                    columns=[sql_table.date, sql_table.datetime],
+                    values=[date.select(date.date,
+                            where=date.id == sql_table.calendar_date),
+                        date.select(date.datetime,
+                            where=date.id == sql_table.calendar_date)]))
             table.drop_column('calendar_date', True)
 
     @classmethod
@@ -1865,7 +1877,9 @@ class EventRRule(RRuleMixin, ModelSQL, ModelView):
 
     @classmethod
     def __register__(cls, module_name):
+        TableHandler = backend.get('TableHandler')
         cursor = Transaction().cursor
+        sql_table = cls.__table__()
 
         super(EventRRule, cls).__register__(module_name)
 
@@ -1873,13 +1887,13 @@ class EventRRule(RRuleMixin, ModelSQL, ModelView):
 
         # Migration from 2.6: Remove inherits calendar.rrule
         if table.column_exist('calendar_rrule'):
+            rrule = Table('calendar_rrule')
             for field in (f for f in dir(RRuleMixin)
                     if isinstance(f, fields.Field)):
-                cursor.execute(('UPDATE "' + cls._table + '" AS e '
-                        'SET "%(field)s" = (SELECT a."%(field)s" '
-                            'FROM calendar_rrule AS r '
-                            'WHERE r.id = e.calendar_rrule)')
-                    % {'field': field})
+                cursor.execute(*sql_table.update(
+                        columns=[Column(sql_table, field)],
+                        values=[rrule.select(Column(rrule, field),
+                                where=rrule.id == sql_table.calendar_rrule)]))
             table.drop_column('calendar_rrule', True)
 
     @classmethod
