@@ -1246,7 +1246,7 @@ class EventAlarm(AlarmMixin, ModelSQL, ModelView):
         if table.column_exist('calendar_alarm'):
             alarm = Table('calendar_alarm')
             cursor.execute(*sql_table.update(
-                    columns=[sql_table.calendar_alarm],
+                    columns=[sql_table.valarm],
                     values=[alarm.select(alarm.valarm,
                             where=alarm.id == sql_table.calendar_alarm)]))
             table.drop_column('calendar_alarm', True)
