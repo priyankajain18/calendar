@@ -875,20 +875,8 @@ msgid "Confidential"
 msgstr "Confidentiel"
 
 msgctxt "selection:calendar.event,classification:"
-msgid "Confidential"
-msgstr "Confidentiel"
-
-msgctxt "selection:calendar.event,classification:"
 msgid "Private"
 msgstr "Privé"
-
-msgctxt "selection:calendar.event,classification:"
-msgid "Private"
-msgstr "Privé"
-
-msgctxt "selection:calendar.event,classification:"
-msgid "Public"
-msgstr "Publique"
 
 msgctxt "selection:calendar.event,classification:"
 msgid "Public"
@@ -899,20 +887,8 @@ msgid ""
 msgstr ""
 
 msgctxt "selection:calendar.event,status:"
-msgid ""
-msgstr ""
-
-msgctxt "selection:calendar.event,status:"
 msgid "Cancelled"
 msgstr "Annulé"
-
-msgctxt "selection:calendar.event,status:"
-msgid "Cancelled"
-msgstr "Annulé"
-
-msgctxt "selection:calendar.event,status:"
-msgid "Confirmed"
-msgstr "Confirmé"
 
 msgctxt "selection:calendar.event,status:"
 msgid "Confirmed"
@@ -922,21 +898,9 @@ msgctxt "selection:calendar.event,status:"
 msgid "Tentative"
 msgstr "Tentative"
 
-msgctxt "selection:calendar.event,status:"
-msgid "Tentative"
-msgstr "Tentative"
-
 msgctxt "selection:calendar.event,transp:"
 msgid "Opaque"
 msgstr "Opaque"
-
-msgctxt "selection:calendar.event,transp:"
-msgid "Opaque"
-msgstr "Opaque"
-
-msgctxt "selection:calendar.event,transp:"
-msgid "Transparent"
-msgstr "transparent"
 
 msgctxt "selection:calendar.event,transp:"
 msgid "Transparent"
@@ -1087,20 +1051,8 @@ msgid "Calendar"
 msgstr "Calendrier"
 
 msgctxt "view:calendar.calendar:"
-msgid "Calendar"
-msgstr "Calendrier"
-
-msgctxt "view:calendar.calendar:"
 msgid "Calendars"
 msgstr "Calendriers"
-
-msgctxt "view:calendar.calendar:"
-msgid "Calendars"
-msgstr "Calendriers"
-
-msgctxt "view:calendar.calendar:"
-msgid "General"
-msgstr "Général"
 
 msgctxt "view:calendar.calendar:"
 msgid "General"
@@ -1109,14 +1061,6 @@ msgstr "Général"
 msgctxt "view:calendar.category:"
 msgid "Categories"
 msgstr "Catégories"
-
-msgctxt "view:calendar.category:"
-msgid "Categories"
-msgstr "Catégories"
-
-msgctxt "view:calendar.category:"
-msgid "Category"
-msgstr "Catégorie"
 
 msgctxt "view:calendar.category:"
 msgid "Category"
@@ -1127,28 +1071,12 @@ msgid "Attendee"
 msgstr "Participant"
 
 msgctxt "view:calendar.event.attendee:"
-msgid "Attendee"
-msgstr "Participant"
-
-msgctxt "view:calendar.event.attendee:"
-msgid "Attendees"
-msgstr "Participants"
-
-msgctxt "view:calendar.event.attendee:"
 msgid "Attendees"
 msgstr "Participants"
 
 msgctxt "view:calendar.event.exdate:"
 msgid "Exception Date"
 msgstr "Date d'exception"
-
-msgctxt "view:calendar.event.exdate:"
-msgid "Exception Date"
-msgstr "Date d'exception"
-
-msgctxt "view:calendar.event.exdate:"
-msgid "Exception Dates"
-msgstr "Dates d'exception"
 
 msgctxt "view:calendar.event.exdate:"
 msgid "Exception Dates"
@@ -1159,28 +1087,12 @@ msgid "Exception Rule"
 msgstr "Règle d'exception"
 
 msgctxt "view:calendar.event.exrule:"
-msgid "Exception Rule"
-msgstr "Règle d'exception"
-
-msgctxt "view:calendar.event.exrule:"
-msgid "Exception Rules"
-msgstr "Règles d'exception"
-
-msgctxt "view:calendar.event.exrule:"
 msgid "Exception Rules"
 msgstr "Règles d'exception"
 
 msgctxt "view:calendar.event.rdate:"
 msgid "Recurrence Date"
 msgstr "Date de récurrence"
-
-msgctxt "view:calendar.event.rdate:"
-msgid "Recurrence Date"
-msgstr "Date de récurrence"
-
-msgctxt "view:calendar.event.rdate:"
-msgid "Recurrence Dates"
-msgstr "Dates de récurrence"
 
 msgctxt "view:calendar.event.rdate:"
 msgid "Recurrence Dates"
@@ -1191,20 +1103,8 @@ msgid "Recurrence Rule"
 msgstr "Règle de récurrence"
 
 msgctxt "view:calendar.event.rrule:"
-msgid "Recurrence Rule"
-msgstr "Règle de récurrence"
-
-msgctxt "view:calendar.event.rrule:"
 msgid "Recurrence Rules"
 msgstr "Règles de récurrence"
-
-msgctxt "view:calendar.event.rrule:"
-msgid "Recurrence Rules"
-msgstr "Règles de récurrence"
-
-msgctxt "view:calendar.event:"
-msgid "Attendees"
-msgstr "Participants"
 
 msgctxt "view:calendar.event:"
 msgid "Attendees"
@@ -1215,20 +1115,8 @@ msgid "Categories"
 msgstr "Catégories"
 
 msgctxt "view:calendar.event:"
-msgid "Categories"
-msgstr "Catégories"
-
-msgctxt "view:calendar.event:"
 msgid "Event"
 msgstr "Événement"
-
-msgctxt "view:calendar.event:"
-msgid "Event"
-msgstr "Événement"
-
-msgctxt "view:calendar.event:"
-msgid "Events"
-msgstr "Événements"
 
 msgctxt "view:calendar.event:"
 msgid "Events"
@@ -1239,28 +1127,12 @@ msgid "General"
 msgstr "Général"
 
 msgctxt "view:calendar.event:"
-msgid "General"
-msgstr "Général"
-
-msgctxt "view:calendar.event:"
-msgid "Occurences"
-msgstr "Occurrences"
-
-msgctxt "view:calendar.event:"
 msgid "Occurences"
 msgstr "Occurrences"
 
 msgctxt "view:calendar.location:"
 msgid "Location"
 msgstr "Emplacement"
-
-msgctxt "view:calendar.location:"
-msgid "Location"
-msgstr "Emplacement"
-
-msgctxt "view:calendar.location:"
-msgid "Locations"
-msgstr "Emplacements"
 
 msgctxt "view:calendar.location:"
 msgid "Locations"
