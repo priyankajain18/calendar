@@ -1689,9 +1689,10 @@ class RRuleMixin(Model):
                     'rule "%s"'),
                 'invalid_byweekno': ('Invalid "By Week Number" in recurrence '
                     'rule "%s"'),
-                'invalid_bymonth': 'Invalid "By Month" in recurrence rule "%s"',
-                'invalid_bysetpos': ('Invalid "By Position" in recurrence rule '
-                    '"%s"'),
+                'invalid_bymonth': (
+                    'Invalid "By Month" in recurrence rule "%s"'),
+                'invalid_bysetpos': (
+                    'Invalid "By Position" in recurrence rule "%s"'),
                 })
 
     @classmethod
@@ -1773,7 +1774,8 @@ class RRuleMixin(Model):
                 except Exception:
                     yeardaynum = -1000
                 if not (abs(yeardaynum) >= 1 and abs(yeardaynum) <= 366):
-                    self.raise_user_error('invalid_byyearday', (self.rec_name,))
+                    self.raise_user_error('invalid_byyearday',
+                        (self.rec_name,))
 
     def check_byweekno(self):
         if self.byweekno:
