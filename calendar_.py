@@ -1389,7 +1389,7 @@ class EventAttendee(AttendeeMixin, ModelSQL, ModelView):
                 to_write.append(values['event'])
 
         if to_write:
-            Event.write([Event.browse(to_write)], {})
+            Event.write(Event.browse(to_write), {})
         event_attendees = super(EventAttendee, cls).create(vlist)
         for event_attendee in event_attendees:
             event = event_attendee.event
