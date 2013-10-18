@@ -928,15 +928,15 @@ msgstr "Acceptado"
 
 msgctxt "selection:calendar.event.attendee,status:"
 msgid "Declined"
-msgstr "Rechazar"
+msgstr "Rechazado"
 
 msgctxt "selection:calendar.event.attendee,status:"
 msgid "Delegated"
-msgstr "Delegar"
+msgstr "Delegado"
 
 msgctxt "selection:calendar.event.attendee,status:"
 msgid "Needs Action"
-msgstr "Necesidad  Acción"
+msgstr "Requiere acción"
 
 msgctxt "selection:calendar.event.attendee,status:"
 msgid "Tentative"
@@ -1080,7 +1080,7 @@ msgstr "Categoría"
 
 msgctxt "view:calendar.event.attendee:"
 msgid "Attendee"
-msgstr "Asistentes"
+msgstr "Asistente"
 
 msgctxt "view:calendar.event.attendee:"
 msgid "Attendees"
@@ -1100,7 +1100,7 @@ msgstr "Regla de excepción"
 
 msgctxt "view:calendar.event.exrule:"
 msgid "Exception Rules"
-msgstr "Reglas de excepciones"
+msgstr "Reglas de excepción"
 
 msgctxt "view:calendar.event.rdate:"
 msgid "Recurrence Date"
