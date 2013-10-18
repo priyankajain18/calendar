@@ -886,10 +886,9 @@ msgctxt "selection:calendar.event,classification:"
 msgid "Public"
 msgstr "Público"
 
-#, fuzzy
 msgctxt "selection:calendar.event,status:"
 msgid ""
-msgstr "Punto de Orden"
+msgstr ""
 
 msgctxt "selection:calendar.event,status:"
 msgid "Cancelled"
@@ -911,10 +910,9 @@ msgctxt "selection:calendar.event,transp:"
 msgid "Transparent"
 msgstr "Transparente"
 
-#, fuzzy
 msgctxt "selection:calendar.event.attendee,status:"
 msgid ""
-msgstr "Punto de Orden"
+msgstr ""
 
 msgctxt "selection:calendar.event.attendee,status:"
 msgid "Accepted"
@@ -1048,7 +1046,6 @@ msgctxt "selection:calendar.event.rrule,wkst:"
 msgid "Wednesday"
 msgstr "Miércoles"
 
-#, fuzzy
 msgctxt "view:calendar.calendar:"
 msgid "Access Permissions"
 msgstr "Permisos de Acceso"
