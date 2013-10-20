@@ -894,7 +894,7 @@ msgstr "Públic"
 
 msgctxt "selection:calendar.event,status:"
 msgid ""
-msgstr " "
+msgstr ""
 
 msgctxt "selection:calendar.event,status:"
 msgid "Cancelled"
@@ -918,7 +918,7 @@ msgstr "Transparent"
 
 msgctxt "selection:calendar.event.attendee,status:"
 msgid ""
-msgstr " "
+msgstr ""
 
 msgctxt "selection:calendar.event.attendee,status:"
 msgid "Accepted"
