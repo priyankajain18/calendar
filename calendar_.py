@@ -792,7 +792,7 @@ class Event(ModelSQL, ModelView):
         Alarm = pool.get('calendar.event.alarm')
         Rdate = pool.get('calendar.event.rdate')
         Exdate = pool.get('calendar.event.exdate')
-        Rrule = pool.get('calendar.rrule')
+        Rrule = pool.get('calendar.event.rrule')
         Exrule = pool.get('calendar.event.exrule')
 
         vevents = []
