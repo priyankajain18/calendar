@@ -631,14 +631,14 @@ class Event(ModelSQL, ModelView):
             'location': self.location.id if self.location else None,
             'status': self.status,
             'organizer': self.organizer,
-            'rdates': [('delete_all',)] + ('create', [rdate._date2update()
-                for rdate in self.rdates]),
-            'exdates': [('delete_all',)] + ('create', [exdate._date2update()
-                for exdate in self.exdates]),
-            'rrules': [('delete_all',)] + ('create', [rrule._date2update()
-                for rrule in self.rrules]),
-            'exrules': [('delete_all',)] + ('create', [exrule._date2update()
-                for exrule in self.exrules]),
+            'rdates': [('delete_all',)] + [('create', [rdate._date2update()
+                        for rdate in self.rdates])],
+            'exdates': [('delete_all',)] + [('create', [exdate._date2update()
+                        for exdate in self.exdates])],
+            'rrules': [('delete_all',)] + [('create', [rrule._date2update()
+                        for rrule in self.rrules])],
+            'exrules': [('delete_all',)] + [('create', [exrule._date2update()
+                        for exrule in self.exrules])],
             }
 
     @classmethod
