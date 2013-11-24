@@ -1647,6 +1647,7 @@ class RRuleMixin(Model):
     bymonth = fields.Char('By Month')
     bysetpos = fields.Char('By Position')
     wkst = fields.Selection([
+        (None, ''),
         ('su', 'Sunday'),
         ('mo', 'Monday'),
         ('tu', 'Tuesday'),
