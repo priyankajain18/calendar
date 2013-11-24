@@ -524,12 +524,6 @@ class Event(ModelSQL, ModelView):
         return 'opaque'
 
     @staticmethod
-    def default_timezone():
-        User = Pool().get('res.user')
-        user = User(Transaction().user)
-        return user.timezone
-
-    @staticmethod
     def timezones():
         return [(x, x) for x in pytz.common_timezones] + [('', '')]
 
@@ -1052,15 +1046,9 @@ class Event(ModelSQL, ModelView):
         '''
         Return an iCalendar instance of vobject for event
         '''
-        pool = Pool()
-        User = pool.get('res.user')
-
-        user = User(Transaction().user)
         if self.timezone:
             tzevent = pytz.timezone(self.timezone)
             tzevent = dateutil.tz.gettz(self.timezone)
-        elif user.timezone:
-            tzevent = dateutil.tz.gettz(user.timezone)
         else:
             tzevent = tzlocal
 
