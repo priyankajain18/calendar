@@ -62,8 +62,8 @@ class Calendar(ModelSQL, ModelView):
         return calendars
 
     @classmethod
-    def write(cls, calendars, vals):
-        super(Calendar, cls).write(calendars, vals)
+    def write(cls, calendars, values, *args):
+        super(Calendar, cls).write(calendars, values, *args)
         # Restart the cache for get_name
         cls._get_name_cache.clear()
 
@@ -636,17 +636,21 @@ class Event(ModelSQL, ModelView):
             }
 
     @classmethod
-    def write(cls, events, values):
+    def write(cls, *args):
         pool = Pool()
         Calendar = pool.get('calendar.calendar')
         Collection = pool.get('webdav.collection')
         cursor = Transaction().cursor
 
-        values = values.copy()
-        if 'sequence' in values:
-            del values['sequence']
+        actions = iter(args)
+        args = []
+        for events, values in zip(actions, actions):
+            values = values.copy()
+            if 'sequence' in values:
+                del values['sequence']
+            args.extend((events, values))
 
-        super(Event, cls).write(events, values)
+        super(Event, cls).write(*args)
 
         table = cls.__table__()
         for i in range(0, len(events), cursor.IN_MAX):
@@ -657,69 +661,72 @@ class Event(ModelSQL, ModelView):
                     values=[table.sequence + 1],
                     where=red_sql))
 
-        if not values:
-            return
-        for event in events:
-            if (event.calendar.owner
-                    and (event.organizer == event.calendar.owner.email
-                        or (event.parent
-                            and event.parent.organizer
-                            == event.calendar.owner.email))):
-                if event.organizer == event.calendar.owner.email:
-                    attendee_emails = [x.email for x in event.attendees
-                            if x.status != 'declined'
-                            and x.email != event.organizer]
-                else:
-                    attendee_emails = [x.email for x in event.parent.attendees
+        actions = iter(args)
+        for events, values in zip(actions, actions):
+            if not values:
+                continue
+            for event in events:
+                if (event.calendar.owner
+                        and (event.organizer == event.calendar.owner.email
+                            or (event.parent
+                                and event.parent.organizer
+                                == event.calendar.owner.email))):
+                    if event.organizer == event.calendar.owner.email:
+                        attendee_emails = [x.email for x in event.attendees
+                                if x.status != 'declined'
+                                and x.email != event.organizer]
+                    else:
+                        attendee_emails = [x.email
+                            for x in event.parent.attendees
                             if x.status != 'declined'
                             and x.email != event.parent.organizer]
-                with Transaction().set_user(0):
-                    events2 = cls.search([
-                            ('uuid', '=', event.uuid),
-                            ('id', '!=', event.id),
-                            ('recurrence', '=', event.recurrence),
-                            ])
-                    for event2 in events2[:]:
-                        if event2.calendar.owner.email in attendee_emails:
-                            attendee_emails.remove(
-                                    event2.calendar.owner.email)
-                        else:
-                            events2.remove(event2)
-                            cls.delete([event2])
-                    if events2:
-                        cls.write(events2, event._event2update())
-                if attendee_emails:
                     with Transaction().set_user(0):
-                        calendars = Calendar.search([
-                                ('owner.email', 'in', attendee_emails),
+                        events2 = cls.search([
+                                ('uuid', '=', event.uuid),
+                                ('id', '!=', event.id),
+                                ('recurrence', '=', event.recurrence),
                                 ])
-                        if not event.recurrence:
-                            for calendar in calendars:
-                                new_event, = cls.copy([event], default={
-                                        'calendar': calendar.id,
-                                        'occurences': None,
-                                        'uuid': event.uuid,
-                                        })
-                                for occurence in event.occurences:
-                                    cls.copy([occurence], default={
-                                            'calendar': calendar.id,
-                                            'parent': new_event.id,
-                                            'uuid': occurence.uuid,
-                                            })
-                        else:
-                            parents = cls.search([
-                                    ('uuid', '=', event.uuid),
-                                    ('calendar.owner.email', 'in',
-                                        attendee_emails),
-                                    ('id', '!=', event.id),
-                                    ('recurrence', '=', None),
+                        for event2 in events2[:]:
+                            if event2.calendar.owner.email in attendee_emails:
+                                attendee_emails.remove(
+                                        event2.calendar.owner.email)
+                            else:
+                                events2.remove(event2)
+                                cls.delete([event2])
+                        if events2:
+                            cls.write(events2, event._event2update())
+                    if attendee_emails:
+                        with Transaction().set_user(0):
+                            calendars = Calendar.search([
+                                    ('owner.email', 'in', attendee_emails),
                                     ])
-                            for parent in parents:
-                                cls.copy([event], default={
-                                        'calendar': parent.calendar.id,
-                                        'parent': parent.id,
-                                        'uuid': event.uuid,
-                                        })
+                            if not event.recurrence:
+                                for calendar in calendars:
+                                    new_event, = cls.copy([event], default={
+                                            'calendar': calendar.id,
+                                            'occurences': None,
+                                            'uuid': event.uuid,
+                                            })
+                                    for occurence in event.occurences:
+                                        cls.copy([occurence], default={
+                                                'calendar': calendar.id,
+                                                'parent': new_event.id,
+                                                'uuid': occurence.uuid,
+                                                })
+                            else:
+                                parents = cls.search([
+                                        ('uuid', '=', event.uuid),
+                                        ('calendar.owner.email', 'in',
+                                            attendee_emails),
+                                        ('id', '!=', event.id),
+                                        ('recurrence', '=', None),
+                                        ])
+                                for parent in parents:
+                                    cls.copy([event], default={
+                                            'calendar': parent.calendar.id,
+                                            'parent': parent.id,
+                                            'uuid': event.uuid,
+                                            })
         # Restart the cache for event
         Collection._event_cache.clear()
 
@@ -1252,15 +1259,19 @@ class EventAlarm(AlarmMixin, ModelSQL, ModelView):
         return super(EventAlarm, cls).create(vlist)
 
     @classmethod
-    def write(cls, event_alarms, values):
+    def write(cls, *args):
         Event = Pool().get('calendar.event')
-        events = [x.event for x in event_alarms]
-        if values.get('event'):
-            events.append(Event(values['event']))
+
+        actions = iter(args)
+        events = []
+        for event_alarms, values in zip(actions, actions):
+            events += [x.event for x in event_alarms]
+            if values.get('event'):
+                events.append(Event(values['event']))
         if events:
             # Update write_date of event
             Event.write(events, {})
-        return super(EventAlarm, cls).write(event_alarms, values)
+        super(EventAlarm, cls).write(*args)
 
     @classmethod
     def delete(cls, event_alarms):
@@ -1408,21 +1419,28 @@ class EventAttendee(AttendeeMixin, ModelSQL, ModelView):
         return event_attendees
 
     @classmethod
-    def write(cls, event_attendees, values):
+    def write(cls, *args):
         Event = Pool().get('calendar.event')
-        events = [x.event for x in event_attendees]
-        if values.get('event'):
-            events.append(Event(values['event']))
+
+        actions = iter(args)
+        args = []
+        events = []
+        for event_attendees, values in zip(actions, actions):
+            events += [x.event for x in event_attendees]
+            if values.get('event'):
+                events.append(Event(values['event']))
+            if 'email' in values:
+                values = values.copy()
+                del values['email']
+            args.extend((event_attendees, values))
+
         if events:
             # Update write_date of event
             Event.write(events, {})
 
-        if 'email' in values:
-            values = values.copy()
-            del values['email']
+        super(EventAttendee, cls).write(*args)
 
-        super(EventAttendee, cls).write(event_attendees, values)
-        for event_attendee in event_attendees:
+        for event_attendee in sum(args[::2], []):
             event = event_attendee.event
             if (event.calendar.owner
                     and (event.organizer == event.calendar.owner.email
@@ -1594,15 +1612,19 @@ class EventRDate(DateMixin, ModelSQL, ModelView):
         return super(EventRDate, cls).create(vlist)
 
     @classmethod
-    def write(cls, event_rdates, values):
+    def write(cls, *args):
         Event = Pool().get('calendar.event')
-        events = [x.event for x in event_rdates]
-        if values.get('event'):
-            events.append(Event(values['event']))
+
+        actions = iter(args)
+        events = []
+        for event_rdates, values in zip(actions, actions):
+            events += [x.event for x in event_rdates]
+            if values.get('event'):
+                events.append(Event(values['event']))
         if events:
             # Update write_date of event
             Event.write(events, {})
-        super(EventRDate, cls).write(event_rdates, values)
+        super(EventRDate, cls).write(*args)
 
     @classmethod
     def delete(cls, event_rdates):
@@ -1900,15 +1922,19 @@ class EventRRule(RRuleMixin, ModelSQL, ModelView):
         return super(EventRRule, cls).create(vlist)
 
     @classmethod
-    def write(cls, event_rrules, values):
+    def write(cls, *args):
         Event = Pool().get('calendar.event')
-        events = [x.event for x in event_rrules]
-        if values.get('event'):
-            events.append(Event(values['event']))
+
+        actions = iter(args)
+        events = []
+        for event_rrules, values in zip(actions, actions):
+            events += [x.event for x in event_rrules]
+            if values.get('event'):
+                events.append(Event(values['event']))
         if events:
             # Update write_date of event
             Event.write(events, {})
-        super(EventRRule, cls).write(event_rrules, values)
+        super(EventRRule, cls).write(*args)
 
     @classmethod
     def delete(cls, event_rrules):
