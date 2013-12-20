@@ -625,13 +625,17 @@ class Event(ModelSQL, ModelView):
             'location': self.location.id if self.location else None,
             'status': self.status,
             'organizer': self.organizer,
-            'rdates': [('delete_all',)] + [('create', [rdate._date2update()
+            'rdates': [('delete', [r.id for r in self.rdates])]
+            + [('create', [rdate._date2update()
                         for rdate in self.rdates])],
-            'exdates': [('delete_all',)] + [('create', [exdate._date2update()
+            'exdates': [('delete', [r.id for r in self.exdates])]
+            + [('create', [exdate._date2update()
                         for exdate in self.exdates])],
-            'rrules': [('delete_all',)] + [('create', [rrule._date2update()
+            'rrules': [('delete', [r.id for r in self.rrules])]
+            + [('create', [rrule._date2update()
                         for rrule in self.rrules])],
-            'exrules': [('delete_all',)] + [('create', [exrule._date2update()
+            'exrules': [('delete', [r.id for r in self.exrules])]
+            + [('create', [exrule._date2update()
                         for exrule in self.exrules])],
             }
 
@@ -877,6 +881,7 @@ class Event(ModelSQL, ModelView):
             res['status'] = vevent.status.value.lower()
         else:
             res['status'] = ''
+        res['categories'] = [('remove', [c.id for c in event.categories])]
         if hasattr(vevent, 'categories'):
             with Transaction().set_context(active_test=False):
                 categories = Category.search([
@@ -893,9 +898,7 @@ class Event(ModelSQL, ModelView):
                             })
             if to_create:
                 categories += Category.create(to_create)
-            res['categories'] = [('set', map(int, categories))]
-        else:
-            res['categories'] = [('unlink_all',)]
+            res['categories'] += [('add', map(int, categories))]
         if hasattr(vevent, 'class'):
             if getattr(vevent, 'class').value.lower() in \
                     dict(cls.classification.selection):
