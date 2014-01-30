@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #This file is part of Tryton.  The COPYRIGHT file at the top level of
 #this repository contains the full copyright notices and license terms.
-from optparse import OptionParser
+from argparse import ArgumentParser
 from urlparse import urlparse
 import unittest
 import sys
@@ -158,12 +158,12 @@ class TestCase(unittest.TestCase):
                     ]), [])
 
 if __name__ == '__main__':
-    parser = OptionParser()
-    parser.add_option('--xmlrpc', dest='xmlrpc', metavar='URL',
+    parser = ArgumentParser()
+    parser.add_argument('--xmlrpc', dest='xmlrpc', metavar='URL',
         help='use trytond XML-RPC at URL')
-    parser.add_option('--url', dest='url', metavar='URL',
+    parser.add_argument('--url', dest='url', metavar='URL',
         help='use calendar at URL')
-    (options, args) = parser.parse_args()
+    options = parser.parse_args()
     config = config.set_xmlrpc(options.xmlrpc)
     xmlrpc_user = urlparse(options.xmlrpc).username
     user = urlparse(options.url).username
