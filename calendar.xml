@@ -18,7 +18,8 @@ this repository contains the full copyright notices and license terms. -->
             <field name="group" ref="group_calendar_admin"/>
         </record>
 
-        <menuitem name="Calendar" sequence="8" id="menu_calendar"/>
+        <menuitem name="Calendar" sequence="8" id="menu_calendar"
+            icon="tryton-calendar"/>
 
         <record model="ir.ui.view" id="calendar_view_tree">
             <field name="model">calendar.calendar</field>
