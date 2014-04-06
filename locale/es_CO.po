@@ -296,7 +296,7 @@ msgstr "Descripción"
 
 msgctxt "field:calendar.event,dtend:"
 msgid "End Date"
-msgstr "Fecha Fin"
+msgstr "Fecha Final"
 
 msgctxt "field:calendar.event,dtstart:"
 msgid "Start Date"
@@ -360,7 +360,7 @@ msgstr "Resumen"
 
 msgctxt "field:calendar.event,timezone:"
 msgid "Timezone"
-msgstr "Zona horaria"
+msgstr "Zona Horaria"
 
 msgctxt "field:calendar.event,transp:"
 msgid "Time Transparency"
@@ -600,7 +600,7 @@ msgstr "Esta Fecha"
 
 msgctxt "field:calendar.event.exrule,wkst:"
 msgid "Week Day"
-msgstr "Día de la Semana"
+msgstr "Día de Semana"
 
 msgctxt "field:calendar.event.exrule,write_date:"
 msgid "Write Date"
@@ -724,7 +724,7 @@ msgstr "Esta Fecha"
 
 msgctxt "field:calendar.event.rrule,wkst:"
 msgid "Week Day"
-msgstr "Día de la Semana"
+msgstr "Día de Semana"
 
 msgctxt "field:calendar.event.rrule,write_date:"
 msgid "Write Date"
@@ -772,7 +772,7 @@ msgstr "El usuario debe tener un email"
 
 msgctxt "help:calendar.event,uuid:"
 msgid "Universally Unique Identifier"
-msgstr "Idenitificador Universal Único"
+msgstr "Identificador Único Universal"
 
 msgctxt "help:calendar.event.exdate,date:"
 msgid "Ignore time of field \"Date\", but handle as date only."
@@ -963,6 +963,10 @@ msgid "Yearly"
 msgstr "Anualmente"
 
 msgctxt "selection:calendar.event.exrule,wkst:"
+msgid ""
+msgstr ""
+
+msgctxt "selection:calendar.event.exrule,wkst:"
 msgid "Friday"
 msgstr "Viernes"
 
@@ -1017,6 +1021,10 @@ msgstr "Semanalmente"
 msgctxt "selection:calendar.event.rrule,freq:"
 msgid "Yearly"
 msgstr "Anualmente"
+
+msgctxt "selection:calendar.event.rrule,wkst:"
+msgid ""
+msgstr ""
 
 msgctxt "selection:calendar.event.rrule,wkst:"
 msgid "Friday"
