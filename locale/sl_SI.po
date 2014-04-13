@@ -128,7 +128,7 @@ msgstr "ID"
 
 msgctxt "field:calendar.calendar,name:"
 msgid "Name"
-msgstr "Ident"
+msgstr "Naziv"
 
 msgctxt "field:calendar.calendar,owner:"
 msgid "Owner"
@@ -959,6 +959,10 @@ msgid "Yearly"
 msgstr "Letno"
 
 msgctxt "selection:calendar.event.exrule,wkst:"
+msgid ""
+msgstr ""
+
+msgctxt "selection:calendar.event.exrule,wkst:"
 msgid "Friday"
 msgstr "Petek"
 
@@ -1013,6 +1017,10 @@ msgstr "Tedensko"
 msgctxt "selection:calendar.event.rrule,freq:"
 msgid "Yearly"
 msgstr "Letno"
+
+msgctxt "selection:calendar.event.rrule,wkst:"
+msgid ""
+msgstr ""
 
 msgctxt "selection:calendar.event.rrule,wkst:"
 msgid "Friday"
