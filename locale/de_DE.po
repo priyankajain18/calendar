@@ -8,7 +8,7 @@ msgstr "Es kann nur ein Kalender pro Benutzer eingetragen werden."
 
 msgctxt "error:calendar.calendar:"
 msgid "Calendar name \"%s\" can not end with .ics"
-msgstr "Der Name des Kalenders darf nicht mit .ics enden"
+msgstr "Der Name von Kalender \"%s\" darf nicht mit .ics enden"
 
 msgctxt "error:calendar.calendar:"
 msgid "The name of calendar must be unique."
@@ -121,7 +121,7 @@ msgstr "Erstellt durch"
 
 msgctxt "field:calendar.calendar,description:"
 msgid "Description"
-msgstr "Bezeichnung"
+msgstr "Beschreibung"
 
 msgctxt "field:calendar.calendar,id:"
 msgid "ID"
@@ -293,7 +293,7 @@ msgstr "Erstellt durch"
 
 msgctxt "field:calendar.event,description:"
 msgid "Description"
-msgstr "Bezeichnung"
+msgstr "Beschreibung"
 
 msgctxt "field:calendar.event,dtend:"
 msgid "End Date"
@@ -437,7 +437,7 @@ msgstr "Name"
 
 msgctxt "field:calendar.event.alarm,valarm:"
 msgid "valarm"
-msgstr ""
+msgstr "Alarm"
 
 msgctxt "field:calendar.event.alarm,write_date:"
 msgid "Write Date"
@@ -968,6 +968,10 @@ msgid "Yearly"
 msgstr "Jährlich"
 
 msgctxt "selection:calendar.event.exrule,wkst:"
+msgid ""
+msgstr ""
+
+msgctxt "selection:calendar.event.exrule,wkst:"
 msgid "Friday"
 msgstr "Freitag"
 
@@ -1022,6 +1026,10 @@ msgstr "Wöchentlich"
 msgctxt "selection:calendar.event.rrule,freq:"
 msgid "Yearly"
 msgstr "Jährlich"
+
+msgctxt "selection:calendar.event.rrule,wkst:"
+msgid ""
+msgstr ""
 
 msgctxt "selection:calendar.event.rrule,wkst:"
 msgid "Friday"
