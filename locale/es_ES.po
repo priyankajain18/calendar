@@ -148,7 +148,7 @@ msgstr "Propietario"
 
 msgctxt "field:calendar.calendar,read_users:"
 msgid "Read Users"
-msgstr "Usuarios con lectura"
+msgstr "Usuarios con permisos de lectura"
 
 msgctxt "field:calendar.calendar,rec_name:"
 msgid "Name"
@@ -164,7 +164,7 @@ msgstr "Usuario modificación"
 
 msgctxt "field:calendar.calendar,write_users:"
 msgid "Write Users"
-msgstr "Usuarios con escritura"
+msgstr "Usuarios con permisos de escritura"
 
 msgctxt "field:calendar.calendar-read-res.user,calendar:"
 msgid "Calendar"
@@ -280,11 +280,11 @@ msgstr "Propietario"
 
 msgctxt "field:calendar.event,calendar_read_users:"
 msgid "Read Users"
-msgstr "Usuarios con lectura"
+msgstr "Usuarios con permisos de lectura"
 
 msgctxt "field:calendar.event,calendar_write_users:"
 msgid "Write Users"
-msgstr "Usuarios con escritura"
+msgstr "Usuarios con permisos de escritura"
 
 msgctxt "field:calendar.event,categories:"
 msgid "Categories"
@@ -488,7 +488,7 @@ msgstr "Nombre"
 
 msgctxt "field:calendar.event.attendee,status:"
 msgid "Participation Status"
-msgstr "Estat de participacions"
+msgstr "Estado de participación"
 
 msgctxt "field:calendar.event.attendee,write_date:"
 msgid "Write Date"
@@ -596,7 +596,7 @@ msgstr "ID"
 
 msgctxt "field:calendar.event.exrule,interval:"
 msgid "Interval"
-msgstr "Intérvalo"
+msgstr "Intervalo"
 
 msgctxt "field:calendar.event.exrule,rec_name:"
 msgid "Name"
@@ -720,7 +720,7 @@ msgstr "ID"
 
 msgctxt "field:calendar.event.rrule,interval:"
 msgid "Interval"
-msgstr "Intérvalo"
+msgstr "Intervalo"
 
 msgctxt "field:calendar.event.rrule,rec_name:"
 msgid "Name"
@@ -788,19 +788,19 @@ msgstr "Identificador universal único."
 
 msgctxt "help:calendar.event.exdate,date:"
 msgid "Ignore time of field \"Date\", but handle as date only."
-msgstr "Ingnora la hora del campo \"Fecha\", pero usar como única fecha."
+msgstr "Ignora la hora del campo \"Fecha\", pero usar como única fecha."
 
 msgctxt "help:calendar.event.exrule,until_date:"
 msgid "Ignore time of field \"Until Date\", but handle as date only."
-msgstr "Ingnora la hora del campo \"Hasta la fecha\", pero usar como única fecha."
+msgstr "Ignora la hora del campo \"Hasta la fecha\", pero usar como única fecha."
 
 msgctxt "help:calendar.event.rdate,date:"
 msgid "Ignore time of field \"Date\", but handle as date only."
-msgstr "Ingnora la hora del campo \"Fecha\", pero usar como única fecha."
+msgstr "Ignora la hora del campo \"Fecha\", pero usar como única fecha."
 
 msgctxt "help:calendar.event.rrule,until_date:"
 msgid "Ignore time of field \"Until Date\", but handle as date only."
-msgstr "Ingnora la hora del campo \"Hasta la fecha\", pero usar como única fecha."
+msgstr "Ignora la hora del campo \"Hasta la fecha\", pero usar como única fecha."
 
 msgctxt "model:calendar.calendar,name:"
 msgid "Calendar"
@@ -880,7 +880,7 @@ msgstr "Eventos"
 
 msgctxt "model:res.group,name:group_calendar_admin"
 msgid "Calendar Administration"
-msgstr "Administración de calendario"
+msgstr "Administración de calendarios"
 
 msgctxt "selection:calendar.event,classification:"
 msgid "Confidential"
@@ -924,7 +924,7 @@ msgstr ""
 
 msgctxt "selection:calendar.event.attendee,status:"
 msgid "Accepted"
-msgstr "Acceptado"
+msgstr "Aceptado"
 
 msgctxt "selection:calendar.event.attendee,status:"
 msgid "Declined"
@@ -969,6 +969,10 @@ msgstr "Semanalmente"
 msgctxt "selection:calendar.event.exrule,freq:"
 msgid "Yearly"
 msgstr "Anualmente"
+
+msgctxt "selection:calendar.event.exrule,wkst:"
+msgid ""
+msgstr ""
 
 msgctxt "selection:calendar.event.exrule,wkst:"
 msgid "Friday"
@@ -1025,6 +1029,10 @@ msgstr "Semanalmente"
 msgctxt "selection:calendar.event.rrule,freq:"
 msgid "Yearly"
 msgstr "Anualmente"
+
+msgctxt "selection:calendar.event.rrule,wkst:"
+msgid ""
+msgstr ""
 
 msgctxt "selection:calendar.event.rrule,wkst:"
 msgid "Friday"
