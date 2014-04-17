@@ -868,7 +868,7 @@ msgstr "Évenement"
 
 msgctxt "model:res.group,name:group_calendar_admin"
 msgid "Calendar Administration"
-msgstr "Administration calendrier"
+msgstr "Administration des calendriers"
 
 msgctxt "selection:calendar.event,classification:"
 msgid "Confidential"
@@ -959,6 +959,10 @@ msgid "Yearly"
 msgstr "Annuel"
 
 msgctxt "selection:calendar.event.exrule,wkst:"
+msgid ""
+msgstr ""
+
+msgctxt "selection:calendar.event.exrule,wkst:"
 msgid "Friday"
 msgstr "Vendredi"
 
@@ -1013,6 +1017,10 @@ msgstr "hebdomadaire"
 msgctxt "selection:calendar.event.rrule,freq:"
 msgid "Yearly"
 msgstr "Annuel"
+
+msgctxt "selection:calendar.event.rrule,wkst:"
+msgid ""
+msgstr ""
 
 msgctxt "selection:calendar.event.rrule,wkst:"
 msgid "Friday"
