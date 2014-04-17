@@ -8,7 +8,7 @@ msgstr "Un usuari només pot tenir un calendari."
 
 msgctxt "error:calendar.calendar:"
 msgid "Calendar name \"%s\" can not end with .ics"
-msgstr "El nom del calendari \"%s\" no ha de finalitzar amb la extensió .ics"
+msgstr "El nom del calendari \"%s\" no ha de finalitzar amb l'extensió .ics"
 
 msgctxt "error:calendar.calendar:"
 msgid "The name of calendar must be unique."
@@ -144,7 +144,7 @@ msgstr "Propietari"
 
 msgctxt "field:calendar.calendar,read_users:"
 msgid "Read Users"
-msgstr "Usuaris amb lectura"
+msgstr "Usuaris amb permisos de lectura"
 
 msgctxt "field:calendar.calendar,rec_name:"
 msgid "Name"
@@ -160,7 +160,7 @@ msgstr "Usuari modificació"
 
 msgctxt "field:calendar.calendar,write_users:"
 msgid "Write Users"
-msgstr "Usuaris amb escriptura"
+msgstr "Usuaris amb permisos d'escriptura"
 
 msgctxt "field:calendar.calendar-read-res.user,calendar:"
 msgid "Calendar"
@@ -276,11 +276,11 @@ msgstr "Propietari"
 
 msgctxt "field:calendar.event,calendar_read_users:"
 msgid "Read Users"
-msgstr "Usuaris amb lectura"
+msgstr "Usuaris amb permisos de lectura"
 
 msgctxt "field:calendar.event,calendar_write_users:"
 msgid "Write Users"
-msgstr "Usuaris amb escriptura"
+msgstr "Usuaris amb permisos d'escriptura"
 
 msgctxt "field:calendar.event,categories:"
 msgid "Categories"
@@ -468,7 +468,7 @@ msgstr "Usuari creació"
 
 msgctxt "field:calendar.event.attendee,email:"
 msgid "Email"
-msgstr "Email"
+msgstr "Correu electrònic"
 
 msgctxt "field:calendar.event.attendee,event:"
 msgid "Event"
@@ -568,7 +568,7 @@ msgstr "Per dia de l'any"
 
 msgctxt "field:calendar.event.exrule,count:"
 msgid "Count"
-msgstr "Contador"
+msgstr "Comptador"
 
 msgctxt "field:calendar.event.exrule,create_date:"
 msgid "Create Date"
@@ -592,7 +592,7 @@ msgstr "ID"
 
 msgctxt "field:calendar.event.exrule,interval:"
 msgid "Interval"
-msgstr "Intèrval"
+msgstr "Interval"
 
 msgctxt "field:calendar.event.exrule,rec_name:"
 msgid "Name"
@@ -692,7 +692,7 @@ msgstr "Per dia de l'any"
 
 msgctxt "field:calendar.event.rrule,count:"
 msgid "Count"
-msgstr "Contador"
+msgstr "Comptador"
 
 msgctxt "field:calendar.event.rrule,create_date:"
 msgid "Create Date"
@@ -716,7 +716,7 @@ msgstr "ID"
 
 msgctxt "field:calendar.event.rrule,interval:"
 msgid "Interval"
-msgstr "Intèrval"
+msgstr "Interval"
 
 msgctxt "field:calendar.event.rrule,rec_name:"
 msgid "Name"
@@ -776,29 +776,29 @@ msgstr "Calendaris"
 
 msgctxt "help:calendar.calendar,owner:"
 msgid "The user must have an email"
-msgstr "L'usuari ha de tenir un correu electrònic"
+msgstr "L'usuari ha de tenir un correu electrònic."
 
 msgctxt "help:calendar.event,uuid:"
 msgid "Universally Unique Identifier"
-msgstr "Identificador universal únic"
+msgstr "Identificador universal únic."
 
 msgctxt "help:calendar.event.exdate,date:"
 msgid "Ignore time of field \"Date\", but handle as date only."
-msgstr "Ingnora la hora del camp \"Data\", però utilitza com a única data."
+msgstr "Ignora la hora del camp \"Data\", però utilitza com a única data."
 
 msgctxt "help:calendar.event.exrule,until_date:"
 msgid "Ignore time of field \"Until Date\", but handle as date only."
 msgstr ""
-"Ingnora la hora del camp \"Fins a la data\", però utilitza com a única data."
+"Ignora la hora del camp \"Fins a la data\", però utilitza com a única data."
 
 msgctxt "help:calendar.event.rdate,date:"
 msgid "Ignore time of field \"Date\", but handle as date only."
-msgstr "Ingnora la hora del camp \"Data\", però utilitza com a única data."
+msgstr "Ignora la hora del camp \"Data\", però utilitza com a única data."
 
 msgctxt "help:calendar.event.rrule,until_date:"
 msgid "Ignore time of field \"Until Date\", but handle as date only."
 msgstr ""
-"Ingnora la hora del camp \"Fins a la data\", però utilitza com a única data."
+"Ignora la hora del camp \"Fins a la data\", però utilitza com a única data."
 
 msgctxt "model:calendar.calendar,name:"
 msgid "Calendar"
@@ -878,7 +878,7 @@ msgstr "Esdeveniments"
 
 msgctxt "model:res.group,name:group_calendar_admin"
 msgid "Calendar Administration"
-msgstr "Administració de calendari"
+msgstr "Administració de calendaris"
 
 msgctxt "selection:calendar.event,classification:"
 msgid "Confidential"
@@ -942,7 +942,7 @@ msgstr "Temptatiu"
 
 msgctxt "selection:calendar.event.exrule,freq:"
 msgid "Daily"
-msgstr "Diariament"
+msgstr "Diàriament"
 
 msgctxt "selection:calendar.event.exrule,freq:"
 msgid "Hourly"
@@ -967,6 +967,10 @@ msgstr "Setmanalment"
 msgctxt "selection:calendar.event.exrule,freq:"
 msgid "Yearly"
 msgstr "Anualment"
+
+msgctxt "selection:calendar.event.exrule,wkst:"
+msgid ""
+msgstr ""
 
 msgctxt "selection:calendar.event.exrule,wkst:"
 msgid "Friday"
@@ -998,7 +1002,7 @@ msgstr "Dimecres"
 
 msgctxt "selection:calendar.event.rrule,freq:"
 msgid "Daily"
-msgstr "Diariament"
+msgstr "Diàriament"
 
 msgctxt "selection:calendar.event.rrule,freq:"
 msgid "Hourly"
@@ -1023,6 +1027,10 @@ msgstr "Setmanalment"
 msgctxt "selection:calendar.event.rrule,freq:"
 msgid "Yearly"
 msgstr "Anualment"
+
+msgctxt "selection:calendar.event.rrule,wkst:"
+msgid ""
+msgstr ""
 
 msgctxt "selection:calendar.event.rrule,wkst:"
 msgid "Friday"
