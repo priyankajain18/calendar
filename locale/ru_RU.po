@@ -967,6 +967,10 @@ msgid "Yearly"
 msgstr "Ежегодно"
 
 msgctxt "selection:calendar.event.exrule,wkst:"
+msgid ""
+msgstr ""
+
+msgctxt "selection:calendar.event.exrule,wkst:"
 msgid "Friday"
 msgstr "Пятница"
 
@@ -1021,6 +1025,10 @@ msgstr "Еженедельно"
 msgctxt "selection:calendar.event.rrule,freq:"
 msgid "Yearly"
 msgstr "Ежегодно"
+
+msgctxt "selection:calendar.event.rrule,wkst:"
+msgid ""
+msgstr ""
 
 msgctxt "selection:calendar.event.rrule,wkst:"
 msgid "Friday"

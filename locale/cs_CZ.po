@@ -959,6 +959,10 @@ msgid "Yearly"
 msgstr ""
 
 msgctxt "selection:calendar.event.exrule,wkst:"
+msgid ""
+msgstr ""
+
+msgctxt "selection:calendar.event.exrule,wkst:"
 msgid "Friday"
 msgstr ""
 
@@ -1012,6 +1016,10 @@ msgstr ""
 
 msgctxt "selection:calendar.event.rrule,freq:"
 msgid "Yearly"
+msgstr ""
+
+msgctxt "selection:calendar.event.rrule,wkst:"
+msgid ""
 msgstr ""
 
 msgctxt "selection:calendar.event.rrule,wkst:"
