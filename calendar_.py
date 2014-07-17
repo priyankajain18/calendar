@@ -9,7 +9,7 @@ import xml.dom.minidom
 from sql import Table, Column
 
 from trytond.model import Model, ModelSQL, ModelView, fields
-from trytond.tools import reduce_ids
+from trytond.tools import reduce_ids, grouped_slice
 from trytond import backend
 from trytond.pyson import If, Bool, Eval
 from trytond.transaction import Transaction
@@ -657,8 +657,7 @@ class Event(ModelSQL, ModelView):
         super(Event, cls).write(*args)
 
         table = cls.__table__()
-        for i in range(0, len(events), cursor.IN_MAX):
-            sub_ids = map(int, events[i:i + cursor.IN_MAX])
+        for sub_ids in grouped_slice(events, cursor.IN_MAX):
             red_sql = reduce_ids(table.id, sub_ids)
             cursor.execute(*table.update(
                     columns=[table.sequence],

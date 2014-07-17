@@ -7,7 +7,7 @@ from sql.conditionals import Coalesce
 from sql.aggregate import Max
 
 from pywebdav.lib.errors import DAV_NotFound, DAV_Forbidden
-from trytond.tools import reduce_ids
+from trytond.tools import reduce_ids, grouped_slice
 from trytond.cache import Cache
 from trytond.transaction import Transaction
 from trytond.pool import Pool, PoolMeta
@@ -288,8 +288,7 @@ class Collection:
                     ids = [calendar_id]
                 res = None
                 cursor = Transaction().cursor
-                for i in range(0, len(ids), cursor.IN_MAX):
-                    sub_ids = ids[i:i + cursor.IN_MAX]
+                for sub_ids in grouped_slice(ids):
                     red_sql = reduce_ids(calendar.id, sub_ids)
                     cursor.execute(*calendar.select(calendar.id,
                             Extract('EPOCH', calendar.create_date),
@@ -321,8 +320,7 @@ class Collection:
                         ids = [event_id]
                     res = None
                     cursor = Transaction().cursor
-                    for i in range(0, len(ids), cursor.IN_MAX):
-                        sub_ids = ids[i:i + cursor.IN_MAX]
+                    for sub_ids in grouped_slice(ids):
                         red_sql = reduce_ids(event.id, sub_ids)
                         cursor.execute(*event.select(event.id,
                                 Extract('EPOCH', event.create_date),
@@ -364,8 +362,7 @@ class Collection:
                 else:
                     ids = [calendar_id]
                 res = None
-                for i in range(0, len(ids), cursor.IN_MAX):
-                    sub_ids = ids[i:i + cursor.IN_MAX]
+                for sub_ids in grouped_slice(ids):
                     red_sql = reduce_ids(calendar.id, sub_ids)
                     cursor.execute(*calendar.select(calendar.id,
                             Extract('EPOCH', Coalesce(calendar.write_date,
@@ -397,8 +394,7 @@ class Collection:
                     else:
                         ids = [event_id]
                     res = None
-                    for i in range(0, len(ids), cursor.IN_MAX / 2):
-                        sub_ids = ids[i:i + cursor.IN_MAX / 2]
+                    for sub_ids in grouped_slice(ids, cursor.IN_MAX / 2):
                         red_id_sql = reduce_ids(event.id, sub_ids)
                         red_parent_sql = reduce_ids(event.parent, sub_ids)
                         cursor.execute(*event.select(
@@ -432,8 +428,7 @@ class Collection:
             else:
                 ids = [calendar_ics_id]
             res = None
-            for i in range(0, len(ids), cursor.IN_MAX):
-                sub_ids = ids[i:i + cursor.IN_MAX]
+            for sub_ids in grouped_slice(ids):
                 red_sql = reduce_ids(event.calendar, sub_ids)
                 cursor.execute(*event.select(event.calendar,
                         Max(Extract('EPOCH', Coalesce(event.write_date,
