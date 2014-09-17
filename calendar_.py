@@ -163,7 +163,7 @@ class Calendar(ModelSQL, ModelView):
         else:
             ical.vfreebusy.add('dtend').value = dtend.astimezone(tzutc)
 
-        with Transaction().set_user(0):
+        with Transaction().set_context(_check_access=False):
             events = Event.search([
                     ['OR',
                         [('dtstart', '<=', dtstart),
@@ -200,7 +200,7 @@ class Calendar(ModelSQL, ModelView):
                 freebusy_dtstart.astimezone(tzutc),
                 freebusy_dtend.astimezone(tzutc))]
 
-        with Transaction().set_user(0):
+        with Transaction().set_context(_check_access=False):
             events = Event.search([
                     ('parent', '=', None),
                     ('dtstart', '<=', dtend),
@@ -320,7 +320,7 @@ class Calendar(ModelSQL, ModelView):
                 email = attendee.value
                 if attendee.value.lower().startswith('mailto:'):
                     email = attendee.value[7:]
-                with Transaction().set_user(0):
+                with Transaction().set_context(_check_access=False):
                     calendars = cls.search([
                             ('owner.email', '=', email),
                             ])
@@ -497,14 +497,13 @@ class Event(ModelSQL, ModelView):
         # Migrate from 1.4: remove classification_public
         ModelData = Pool().get('ir.model.data')
         Rule = Pool().get('ir.rule')
-        with Transaction().set_user(0):
-            models_data = ModelData.search([
-                    ('fs_id', '=', 'rule_group_read_calendar_line3'),
-                    ('module', '=', module_name),
-                    ], limit=1)
-            if models_data:
-                model_data, = models_data
-                Rule.delete([Rule(model_data.db_id)])
+        models_data = ModelData.search([
+                ('fs_id', '=', 'rule_group_read_calendar_line3'),
+                ('module', '=', module_name),
+                ], limit=1)
+        if models_data:
+            model_data, = models_data
+            Rule.delete([Rule(model_data.db_id)])
         return super(Event, cls).__register__(module_name)
 
     @staticmethod
@@ -580,7 +579,7 @@ class Event(ModelSQL, ModelView):
                             if x.status != 'declined'
                             and x.email != event.parent.organizer]
                 if attendee_emails:
-                    with Transaction().set_user(0):
+                    with Transaction().set_context(_check_access=False):
                         calendars = Calendar.search([
                                 ('owner.email', 'in', attendee_emails),
                                 ])
@@ -683,7 +682,7 @@ class Event(ModelSQL, ModelView):
                             for x in event.parent.attendees
                             if x.status != 'declined'
                             and x.email != event.parent.organizer]
-                    with Transaction().set_user(0):
+                    with Transaction().set_context(_check_access=False):
                         events2 = cls.search([
                                 ('uuid', '=', event.uuid),
                                 ('id', '!=', event.id),
@@ -699,7 +698,7 @@ class Event(ModelSQL, ModelView):
                         if events2:
                             cls.write(events2, event._event2update())
                     if attendee_emails:
-                        with Transaction().set_user(0):
+                        with Transaction().set_context(_check_access=False):
                             calendars = Calendar.search([
                                     ('owner.email', 'in', attendee_emails),
                                     ])
@@ -765,7 +764,7 @@ class Event(ModelSQL, ModelView):
                     attendee_emails = [x.email for x in event.parent.attendees
                             if x.email != event.parent.organizer]
                 if attendee_emails:
-                    with Transaction().set_user(0):
+                    with Transaction().set_context(_check_access=False):
                         cls.delete(cls.search([
                                     ('uuid', '=', event.uuid),
                                     ('calendar.owner.email', 'in',
@@ -779,7 +778,7 @@ class Event(ModelSQL, ModelView):
                     organizer = event.organizer
                 else:
                     organizer = event.parent.organizer
-                with Transaction().set_user(0):
+                with Transaction().set_context(_check_access=False):
                     events2 = cls.search([
                             ('uuid', '=', event.uuid),
                             ('calendar.owner.email', '=', organizer),
@@ -1406,7 +1405,7 @@ class EventAttendee(AttendeeMixin, ModelSQL, ModelView):
                     attendee_emails = [x.email for x in event.parent.attendees
                             if x.email != event.parent.organizer]
                 if attendee_emails:
-                    with Transaction().set_user(0):
+                    with Transaction().set_context(_check_access=False):
                         events = Event.search([
                                 ('uuid', '=', event.uuid),
                                 ('calendar.owner.email', 'in',
@@ -1456,7 +1455,7 @@ class EventAttendee(AttendeeMixin, ModelSQL, ModelView):
                     attendee_emails = [x.email for x in event.parent.attendees
                             if x.email != event.parent.organizer]
                 if attendee_emails:
-                    with Transaction().set_user(0):
+                    with Transaction().set_context(_check_access=False):
                         other_attendees = cls.search([
                                 ('event.uuid', '=', event.uuid),
                                 ('event.calendar.owner.email', 'in',
@@ -1493,7 +1492,7 @@ class EventAttendee(AttendeeMixin, ModelSQL, ModelView):
                     attendee_emails = [x.email for x in event.parent.attendees
                             if x.email != event.parent.organizer]
                 if attendee_emails:
-                    with Transaction().set_user(0):
+                    with Transaction().set_context(_check_access=False):
                         attendees = cls.search([
                                 ('event.uuid', '=', event.uuid),
                                 ('event.calendar.owner.email', 'in',
@@ -1512,7 +1511,7 @@ class EventAttendee(AttendeeMixin, ModelSQL, ModelView):
                     organizer = event.organizer
                 else:
                     organizer = event.parent.organizer
-                with Transaction().set_user(0):
+                with Transaction().set_context(_check_access=False):
                     attendees = cls.search([
                             ('event.uuid', '=', event.uuid),
                             ('event.calendar.owner.email', '=', organizer),
