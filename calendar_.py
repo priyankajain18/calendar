@@ -1,5 +1,5 @@
-#This file is part of Tryton.  The COPYRIGHT file at the top level of
-#this repository contains the full copyright notices and license terms.
+# This file is part of Tryton.  The COPYRIGHT file at the top level of
+# this repository contains the full copyright notices and license terms.
 import uuid
 import vobject
 import dateutil.tz
@@ -217,7 +217,6 @@ class Calendar(ModelSQL, ModelView):
         for event in events:
             event_ical = event.event2ical()
             if event_ical.vevent.rruleset:
-                between_dtstart, between_dtend = dtstart, dtend
                 for freebusy_dtstart in event_ical.vevent.rruleset:
                     if freebusy_dtstart.replace(tzinfo=tzlocal) > dtend:
                         break

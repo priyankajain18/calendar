@@ -1,5 +1,5 @@
-#This file is part of Tryton.  The COPYRIGHT file at the top level of
-#this repository contains the full copyright notices and license terms.
+# This file is part of Tryton.  The COPYRIGHT file at the top level of
+# this repository contains the full copyright notices and license terms.
 import urlparse
 import urllib
 from string import atoi
@@ -16,12 +16,12 @@ from trytond.transaction import Transaction
 domimpl = xml.dom.minidom.getDOMImplementation()
 
 TrytonDAVInterface.PROPS['urn:ietf:params:xml:ns:caldav'] = (
-        'calendar-description',
-        'calendar-data',
-        'calendar-home-set',
-        'calendar-user-address-set',
-        'schedule-inbox-URL',
-        'schedule-outbox-URL',
+    'calendar-description',
+    'calendar-data',
+    'calendar-home-set',
+    'calendar-user-address-set',
+    'schedule-inbox-URL',
+    'schedule-outbox-URL',
     )
 TrytonDAVInterface.PROPS['DAV:'] = tuple(list(TrytonDAVInterface.PROPS['DAV:'])
     + ['principal-collection-set'])
@@ -41,13 +41,13 @@ def mk_prop_response(self, uri, good_props, bad_props, doc):
     if parent_uri in ('Calendars', 'Calendars/'):
         ad = doc.createElement('calendar')
         ad.setAttribute('xmlns', 'urn:ietf:params:xml:ns:caldav')
-        #Disable groupdav attribute for iPhone
-        #vc = doc.createElement('vevent-collection')
-        #vc.setAttribute('xmlns', 'http://groupdav.org/')
+        # Disable groupdav attribute for iPhone
+        # vc = doc.createElement('vevent-collection')
+        # vc.setAttribute('xmlns', 'http://groupdav.org/')
         cols = res.getElementsByTagName('D:collection')
         if cols:
             cols[0].parentNode.appendChild(ad)
-            #cols[0].parentNode.appendChild(vc)
+            # cols[0].parentNode.appendChild(vc)
     return res
 
 propfind.PROPFIND.mk_prop_response = mk_prop_response
@@ -126,8 +126,8 @@ def _get_caldav_calendar_home_set(self, uri):
     doc = domimpl.createDocument(None, 'href', None)
     href = doc.documentElement
     href.tagName = 'D:href'
-    #iPhone doesn't handle "http" in href
-    #huri = doc.createTextNode(urlparse.urlunsplit(uparts))
+    # iPhone doesn't handle "http" in href
+    # huri = doc.createTextNode(urlparse.urlunsplit(uparts))
     huri = doc.createTextNode(urllib.quote('/' + dbname + res))
     href.appendChild(huri)
     return href
