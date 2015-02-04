@@ -3,6 +3,7 @@
 this repository contains the full copyright notices and license terms. -->
 <tree string="Exception Dates">
     <field name="event"/>
-    <field name="datetime"/>
+    <field name="datetime" widget="date"/>
+    <field name="datetime" widget="time" string="Time"/>
     <field name="date"/>
 </tree>

@@ -5,7 +5,9 @@ this repository contains the full copyright notices and license terms. -->
     <field name="calendar"/>
     <field name="summary"/>
     <field name="all_day"/>
-    <field name="dtstart"/>
-    <field name="dtend"/>
+    <field name="dtstart" widget="date"/>
+    <field name="dtstart" widget="time" string="Start Time"/>
+    <field name="dtend" widget="date"/>
+    <field name="dtend" widget="time" string="End Time"/>
     <field name="status"/>
 </tree>
