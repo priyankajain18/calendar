@@ -879,7 +879,8 @@ class Event(ModelSQL, ModelView):
             res['status'] = vevent.status.value.lower()
         else:
             res['status'] = ''
-        res['categories'] = [('remove', [c.id for c in event.categories])]
+        if event:
+            res['categories'] = [('remove', [c.id for c in event.categories])]
         if hasattr(vevent, 'categories'):
             with Transaction().set_context(active_test=False):
                 categories = Category.search([
