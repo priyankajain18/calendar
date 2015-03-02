@@ -883,7 +883,7 @@ class Event(ModelSQL, ModelView):
                     dict(cls.classification.selection):
                 res['classification'] = getattr(vevent, 'class').value.lower()
             else:
-                res['classification'] = 'public'
+                res['classification'] = 'private'
         else:
             res['classification'] = 'public'
         if hasattr(vevent, 'location'):
