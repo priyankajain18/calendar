@@ -11,7 +11,7 @@ from sql import Table, Column
 from trytond.model import Model, ModelSQL, ModelView, fields
 from trytond.tools import reduce_ids, grouped_slice
 from trytond import backend
-from trytond.pyson import If, Bool, Eval
+from trytond.pyson import If, Bool, Eval, PYSONEncoder
 from trytond.transaction import Transaction
 from trytond.cache import Cache
 from trytond.pool import Pool
@@ -536,6 +536,12 @@ class Event(ModelSQL, ModelView):
                     or self.exrules \
                     or self.occurences:
                 self.raise_user_error('invalid_recurrence', (self.rec_name,))
+
+    @classmethod
+    def view_attributes(cls):
+        return [('//page[@id="occurences"]', 'states', {
+                    'invisible': Bool(Eval('_parent_parent')),
+                    })]
 
     @classmethod
     def create(cls, vlist):
