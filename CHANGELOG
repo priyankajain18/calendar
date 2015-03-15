@@ -1,3 +1,4 @@
+* Add support for PyPy
 * Add record rule to calendar
 * Add full access to calendar admin. group
 
